@@ -54,7 +54,7 @@
             this.buttonX1.ImagePosition = DevComponents.DotNetBar.eImagePosition.Top;
             this.buttonX1.Location = new System.Drawing.Point(7, 58);
             this.buttonX1.Name = "buttonX1";
-            this.buttonX1.Size = new System.Drawing.Size(209, 78);
+            this.buttonX1.Size = new System.Drawing.Size(209, 64);
             this.buttonX1.Style = DevComponents.DotNetBar.eDotNetBarStyle.VS2005;
             this.buttonX1.TabIndex = 184;
             this.buttonX1.Text = "启动一个线程";
