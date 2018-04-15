@@ -1,0 +1,177 @@
+﻿1.线程
+2.断点
+3.查看 d系列
+4.指针查看 dd系列
+5.反汇编
+6.栈
+7.修改
+8.进线程命令
+
+一：调试开始
+File->Open Executable 打开一个进程进行调试
+File->Attach a Proccess 附加到一个进程调试
+这里如果是附加 下面有一个NoninvXX意思是不可以下断点
+
+线程：User(只支持R3)
+.attach pid 附加到一个进程
+.detach 脱离进程
+显示所有线程
+~*
+显示当前活动线程.
+~.
+显示引起异常的线程
+~#
+显示第二个线程
+~2
+选择第二个线程
+~2 s
+显示所有线程的栈：
+~* kb
+二：断点(全支持R3 R0)
+1.bl/bc/bd/be(支持*,1-n格式）例如bd 0-2 禁用0 1 2号断点
+Bl显示全部断点
+Bc去除断点
+Bd禁用断点
+Be启用断点
+2.bp/bu/ba/bm
+Bp 同OD 也支持符号 但前提是模块已经在内存中
+Bu符号下断 用户同bp 并且可以再模块未加载前下断 必须有PDB 下次打开工作工具时自动下断
+Ba内存断点
+ba access size 地址
+access 是访问的方式，比如 e (执行)，r (读/写)，w (写)
+size是监控访问的位置的大小，以字节为单位。值为 1、2或4，在64位机器上还可以是8。
+比如要对内存0x804ef129进行写操作的时候下断点，可以用命令 ba w4 0x804ef129，一旦发生在0x804ef129的写操作，那么系统就会停下来。
+
+Bm正则下断 在所有Dis开头的函数下断 bm modu!Dis* 支持加偏移
+
+内核中对某一个进程下断,当这个进程访问时 才断下
+bp /p eprocess //进程断点
+bp /t ethread //线程断点
+
+bp address
+bp model!func
+bu model!func
+bm model!fu*c 在所有Dis开头的函数下断 bm modu!Dis* 支持加偏移
+ba w4/r4/e4/i4 address//内存断点（w写,r读写 e执行 i暂定）
+
+总结：
+BU：符号断点（延迟断点），绑定在符号，长期存在，可以设置在某个未加载的函数上。
+BP：地址断点，绑定在某个特定的地址，地址所在模块卸载后，断点移除消失
+BM：设置符合模式的多个断点，默认的是bu类型；可以加/d设置为bp类型。
+Ba：内存断点 访问 写入 执行
+
+三：查看
+1.dt命令
+dt [nt!]_PEB [-r] 显示详细信息
+Dt _eprocess -r address 就是把结构都展开
+dt nt!_P* 显示p开头的结构
+Dt _nt!_p*
+dt [nt!]_PEB address （driverobject为例）
+Dt _eprocess address
+dt [nt!]_PEB Ldr 7ffdf000
+只关系结构下的某一个成员 后面的地址是结构地址
+dt _eprocess Debugport address 这个address是Eprocess的地址
+dt [nt!]_EPROCESS
+Dt _eprocess
+x nt!zw*显示匹配符号
+
+2.d/db/dw/dW/dd/dq/dp/dc/dD/df/da/du/ds/dS
+要求掌握的是 db dw dd dq da du ds dS dc
+其中字符的a 与 s u与S的区别在于一个是结构一个是WCHAR或CHAR
+数
+db 以一个字节显示值和ASSCII字符
+dw 显示2字节的值
+dd 显示4字节的值
+dq 显示8字节的值
+dp 显示指针长度的值（32等同于dd,64等同于dq )
+dD 显示double实数(8字节)的值
+df 显示float实数(4字节)的值
+字符：
+da 显示asscii值
+du 显示unicode值
+ds 显示ANSI_STRING值
+dS显示UNICODE_STRING的值
+混合显示
+dW 显示2字节和asscii的值
+dc 显示4字节和asscii值
+
+后面在L x 表示显示address 0×100字节
+例如：db address L100 显示100字节
+再例如：dw addresss L50 显示100字节 2×50 = 0×100
+
+3.显示一块内存中含有指针的值
+ddp/dpp/dqp /ddu/dpu/dqu /dda/dpa/dqa
+dpp/dpu/dpa/dps
+x1表示要显示的指针长度
+d:4字节；q:8字节;p：32位4字节，64位8字节
+x2表示指针的值显示的形式：
+p:DWORD或者QWORD
+a:ASSCII
+u:UNICODE
+可以直接使用dpx2
+
+4.dds/dqs/dps（显示含有符号地址的内存）
+例子：查看SSDT
+SSDT表的查看：
+kd> x nt!kes*des*table*
+80553fe0 nt!KeServiceDescriptorTableShadow = 
+80554020 nt!KeServiceDescriptorTable = 
+kd> dd 80554020
+80554020 80502b9c 00000000 0000011c 80503010
+80554030 00000000 00000000 00000000 00000000
+80554040 00000000 00000000 00000000 00000000
+80554050 00000000 00000000 00000000 00000000
+80554060 00002710 bf80c0a9 00000000 00000000
+80554070 f7a58a80 f71feb60 82ec3a90 806e2f40
+80554080 00000000 00000000 4422b408 00000000
+80554090 08174448 01cd7c5e 00000000 00000000
+kd> dds 80502b9c L11c
+80502b9c 8059a9f4 nt!NtAcceptConnectPort
+80502ba0 805e7e6e nt!NtAccessCheck
+80502ba4 805eb6b4 nt!NtAccessCheckAndAuditAlarm
+Ntoskrnl.exe
+
+5.反汇编
+u uf
+U反汇编前0×20字节
+Uf 反汇编全部
+U address Lx 反汇编address x行
+
+6.查看栈 寄存器
+kb/kv/kp/dv/r
+kv:提示FPO信息，ChildEBP，retaddr，前三个参数
+kb: ChildEBP，retaddr，前三个参数
+kp:全参数（需要所有符号）
+dv：显示局部变量
+r显示当前寄存器
+?ebp-0×20 加问号表示求ebp-0×20等于多少
+数转换查看
+.formats address
+
+FPO补充:
+框架指针省略（Frame Pointer Omission）（FPO）
+FPO是一种优化，它压缩或者省略了在栈上为该函数创建框架指针的过程。这个选项加速了函数调用，因为不需要建立和移除框架指针（ESP，EBP）了。同时，它还解放出了一个寄存器，用来存储使用频率较高的变量。只在IntelCPU的架构上才有这种优化。目前已经讨论过的任何一种调用约定都保存了前一函数中栈的信息（压栈ebp，然后让ebp = esp，再移动esp来保存局部变量）。一个FPO的函数可能会保存前一函数的栈指针（ESP，EBP），但是并不为当前的函数调用设立EBP。相反，他使用EBP来存储一些其他的变量。debugger 会计算栈指针，但是debugger必须得到一个使用FPO的提醒，该提醒是基于FPO类型的信息的来完成的。
+
+7.修改内存 常用eb
+eb/ed/eD/ef/ep/eq/ew
+ea/eu/(非null结尾的字符)
+za/ezu(null结尾的字符)
+eb address value
+ea address “string”
+e adress value
+机器码：
+ebshort jump e9 near jump ea far jump
+je/jz74 jne/jnz75
+nop90
+Ret*C3
+int3 CC
+
+8.进线程命令
+!process 0 0//列出系统进程信息
+!process 0 7//列出系统进程的详细信息
+!process EPROCESS 7 //列出进程的详细信息
+.process /p EPROCESS //进入该进程上下文
+.thread ETHREAD//进入该线程上下文
+!thread ETHREAD//查看线程结构
+.logopen d:\temp\dump.txt //将windbg的输出放到文件中
+.logclose //关闭打印功能
