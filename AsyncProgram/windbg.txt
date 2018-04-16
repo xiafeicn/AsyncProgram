@@ -175,3 +175,7 @@ int3 CC
 !thread ETHREAD//查看线程结构
 .logopen d:\temp\dump.txt //将windbg的输出放到文件中
 .logclose //关闭打印功能
+
+
+!dumpstackobjects，查看所有在CLR中已经生成的对象信息，
+lmv m clr
