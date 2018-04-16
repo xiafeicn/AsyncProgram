@@ -1,0 +1,722 @@
+USE [gbdatabase]
+GO
+/****** Object:  StoredProcedure [dbo].[get_Report_By_Company]    Script Date: 2018/2/11 16:39:43 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		<victor>
+-- UpdateDate: <2017-01-16>
+-- Description:	<重新计算字段数值>
+-- =============================================
+---exec get_Report_By_Company @p_StartDate = '2018-01-01', @p_EndDate = '2018-02-01', @p_Order = 'order by PV desc', @p_Bundle = '''SOURCE China Professional''', @p_BundleStatus = 'Expired'
+exec get_Report_By_Company @p_StartDate = '2018-01-01', @p_EndDate = '2018-02-01', @p_Order = 'order by PV desc'
+ALTER PROCEDURE [dbo].[get_Report_By_Company] 
+      @p_StartDate date ,
+	  @p_EndDate date ,
+	  @p_Bundle nvarchar(max) = NULL,
+	  @p_Company nvarchar(max) = NULL,
+	  @p_BundleStatus nvarchar(max) = NULL,
+	  @p_Order nvarchar(200) = ''
+AS
+BEGIN
+	
+   SET NOCOUNT ON;
+
+   --计算登录次数
+   Declare @p_count nvarchar(10)
+   Declare @Sql nvarchar(max)
+   --选择Bundle条件
+   Declare @WhereBundle nvarchar(max)
+   --选择未过期Bundle 
+   Declare @WhereBundleActive nvarchar(max)
+   --主表
+   Declare @WhereMainTable nvarchar(max)
+    --选择Company
+   Declare @WhereCompany nvarchar(max)
+   --选择当前一个月日期
+   Declare @WhereUtcCreateAt nvarchar(max)
+   --选择上个月日期
+   Declare @WhereUtcCreateAt1 nvarchar(max)
+   --选择用户的过期时间
+   Declare @WhereExpirationDate nvarchar(max) 
+   --选择登录时间
+   Declare @Wherelogintimeday nvarchar(max)
+   --近90天
+   Declare @last90 date = ''
+   --定义上个月日期
+   Declare @p_StartDate1 date = ''
+   Declare @p_EndDate1 date = ''
+   
+   SET @p_count='0'
+   SET @Sql = N''
+   SET @WhereBundle = N''
+   SET @WhereBundleActive = N''
+   SET @WhereCompany = N''
+   SET @WhereUtcCreateAt = N''
+   SET @WhereUtcCreateAt1 = N''
+   SET @Wherelogintimeday = N''
+   SET @WhereExpirationDate = N''
+   
+   --选择Bundle
+     IF ISNULL(@p_Bundle,'') <> ''
+		 BEGIN 
+		    SET @WhereBundle += N'
+			           AND UserId in
+									 (
+									 select UserId from dbo.UserInRole as ur with (nolock) 
+									 Inner JOIN dbo.Roles as r with (nolock) ON r.RoleID = ur.RoleID 
+		   							 WHERE r.RoleName IN ('+@p_Bundle+')  
+									 )
+			                     '
+
+		 	 SET @WhereBundleActive += N' 
+						 AND UserId in
+									 (
+									 select UserId from dbo.UserInRole as ur with (nolock) 
+									 Inner JOIN dbo.Roles as r with (nolock) ON r.RoleID = ur.RoleID 
+		   							 WHERE r.RoleName IN ('+@p_Bundle+')  and ur.EndDate >  '''+cast(@p_EndDate as nvarchar)+'''
+									 ) '	
+
+		  
+								 		
+		 END   
+	
+	 IF ISNULL(@p_Company,'') <> ''
+	    BEGIN
+		   SET @WhereCompany += N' AND com_name IN ('+@p_Company+') '
+		END
+     IF (ISNULL(@p_StartDate,'') <> '' AND ISNULL(@p_EndDate,'') <> '')
+		BEGIN
+			    SET @p_count=datediff(m,@p_StartDate,@p_EndDate)*8
+
+				SET @last90 = DATEADD(m,-3,@p_EndDate)
+
+				SET @p_StartDate1 = DATEADD(m,-1,@p_StartDate)
+
+				SET @p_EndDate1 = DATEADD(m,-1,@p_EndDate)
+
+		     	SET @WhereUtcCreateAt += N' AND UtcCreateAt >= '''+cast(@p_StartDate as nvarchar)+''' 
+				                            AND UtcCreateAt <= '''+cast(@p_EndDate as nvarchar)+''''
+			
+				SET @WhereUtcCreateAt1 += N' AND UtcCreateAt >= '''+cast(@p_StartDate1 as varchar)+''' 
+				                             AND UtcCreateAt <= '''+cast(@p_EndDate1 as varchar)+''''
+
+				SET @Wherelogintimeday += N' AND LogintimeUTC >= '''+cast(@p_StartDate as nvarchar)+''' 
+				                             AND LogintimeUTC <= '''+cast(@p_EndDate as nvarchar)+''''
+
+			
+		 END
+
+     --设置主表
+
+     IF (@p_BundleStatus = 'Active')
+	     BEGIN
+		   SET  @WhereMainTable = N'
+								  select distinct com_name from  GB_company_dic as c with (nolock)
+								  inner join Users as u with (nolock) on u.companyid = c.ID	
+								  where 1=1  '+ @WhereCompany + @WhereBundleActive +'
+
+								 '
+		 END
+
+	
+	 ELSE IF (@p_BundleStatus = 'Expired')
+	     BEGIN
+		   SET @WhereMainTable = N'
+								(
+								  select distinct com_name from  GB_company_dic as c with (nolock)
+											  inner join Users as u with (nolock) on u.companyid = c.ID					
+											  where 1=1  '+ @WhereCompany + @WhereBundle +'
+								)
+								except
+								(
+								  select distinct com_name from  GB_company_dic as c with (nolock)
+												  inner join Users as u with (nolock) on u.companyid = c.ID	
+												  where 1=1  '+ @WhereCompany + @WhereBundleActive +'
+								)
+			
+							  '
+		 END
+		
+   ELSE
+	     BEGIN
+		   SET @WhereMainTable = N'
+							  select distinct com_name from  GB_company_dic as c with (nolock)
+							  inner join Users as u with (nolock) on u.companyid = c.ID					
+							  where 1=1  '+ @WhereCompany + @WhereBundle +'
+		                      
+							    '
+		 END
+
+  SET @Sql += N'
+ 
+               -- 计算用户这个月跟上个月的PV
+			   select UserId,
+			   Case
+				   when PV1 > ( PV2 * 1.5 ) then 1
+				   when PV1 < ( PV2 * 0.5 ) then 1
+				   else 0
+			   End as Params
+	           into #tempt2
+               from (
+					  select t1.UserId, PV1, PV2 from  
+									 (
+									  select t.UserId, count(*) as PV1 
+											   from (
+												     select e.UserId from gbinfosystem.dbo.EPTracking as e with (nolock)
+													 where 1=1 '+ @WhereUtcCreateAt + @WhereBundle + '
+													 Union all
+													 select m.UserId from gbinfosystem.dbo.MetrixTracking as m with (nolock)
+													 where 1=1 '+ @WhereUtcCreateAt + @WhereBundle + '
+													) as t										
+											   group by t.UserId 
+									 ) as t1
+									  join
+									  (
+									   select t.UserId, count(*) as PV2 
+											   from (
+													 select e.UserId from gbinfosystem.dbo.EPTracking as e with (nolock)		
+													 where 1=1 '+ @WhereUtcCreateAt1 + @WhereBundle + '
+													 Union all
+													 select m.UserId from gbinfosystem.dbo.MetrixTracking as m with (nolock)
+													 where 1=1 '+ @WhereUtcCreateAt1 + @WhereBundle + '
+													 ) as t										
+													group by t.UserId
+									  ) as t2
+						on 	t1.UserId = t2.UserId	
+						) as m	
+          
+		  --查询每家公司的Department，PV排名前三
+          select *, ROW_NUMBER() over (partition by com_name order by PV desc) as RankName
+		  into #tempt1
+		  from (
+                select com_name, Department, count(*) as PV
+	            from  (
+						select e.UserId from gbinfosystem.dbo.EPTracking as e with (nolock)
+						where 1=1 '+ @WhereUtcCreateAt + @WhereBundle + '
+						Union all
+						select m.UserId from gbinfosystem.dbo.MetrixTracking as m with (nolock)	
+						where 1=1 '+ @WhereUtcCreateAt + @WhereBundle + '
+					  ) as e
+			    inner join dbo.Users as u with (nolock) on e.UserId = u.UserID	       
+			    inner join 
+				          (
+						   select * from GB_company_dic with (nolock) where 1=1 ' + @WhereCompany + '
+						  ) as c on u.companyid = c.ID		
+			    group by com_name, Department
+				) as t
+
+		  select p0.com_name, PV, 
+	             NonLoginRate, NonLogin90DaysRate, 
+				 ValidUser,  ActiveUser, PowerUser,  AbnormalUser,	
+				 Top1Department, Top2Department, Top3Department,			 
+				 BusinessDevelopment,  ClinicalOperations_ClinicalDevelopment,
+				 Commercial_Sales, ConsultingFirmRelated,
+				 Finance,  GovernmentAffairs_Communications,
+				 Legal,  MarketResearch_CompetitiveInsights,
+				 Marketing_Branding, Medical,
+				 N_A, Other_HR_IT_Admin,
+				 Pricing_MarketAccess,  R_D,
+			     Regulatory,  StrategicPlanning_Intelligence
+		  from 
+			  (
+			     '+ @WhereMainTable +'
+			  ) as p0
+		  left join
+		            (
+					  select com_name, count(*) as PV
+					                          from (
+													 select e.UserId from gbinfosystem.dbo.EPTracking as e with (nolock)
+													 where 1=1 '+ @WhereUtcCreateAt + @WhereBundle + '
+													 Union all
+													 select m.UserId from gbinfosystem.dbo.MetrixTracking as m with (nolock)
+													 where 1=1 '+ @WhereUtcCreateAt + @WhereBundle + '
+							                       ) as e
+					  inner join dbo.Users as u with (nolock) on e.UserId = u.UserID	       
+					  inner join 
+								(
+								 select * from GB_company_dic with (nolock) where 1=1 ' + @WhereCompany + '
+								 ) as c on u.companyid = c.ID		
+								group by com_name
+					) as p1 on p0.com_name = p1.com_name
+            left join
+			         (
+				       select com_name, count(distinct t.UserID) as NonLoginRate 
+										  from ( 	 
+												select u.UserID from dbo.Users as u with (nolock) 							
+												Except
+												select distinct userid from LoginRecords where LogintimeUTC < '''+ cast(@p_EndDate as nvarchar) +'''
+												) as t 
+												inner join 
+												          (
+														  select * from Users with (nolock) where 1=1 '+ @WhereBundleActive+'
+														  ) as u on u.UserID = t.UserID	
+												inner join dbo.GB_company_dic as c with (nolock) on u.companyid = c.ID
+												where u.IsActive = 1 and u.IsPremium = 1 
+										        '+ @WhereCompany +'
+												group by com_name
+					) as p2 on p0.com_name = p2.com_name
+		  left join
+			      (			 
+	                 select com_name, count(distinct t.UserID) as NonLogin90DaysRate
+		                                from (
+										     	select u.UserID from dbo.Users as u with (nolock)
+												Except
+												select distinct userid from LoginRecords where LogintimeUTC between '''+ cast(@last90 as nvarchar) +''' and '''+ cast(@p_EndDate as nvarchar) +'''
+										     ) as t 
+											inner join 
+												      (
+														select * from Users with (nolock) where 1=1 '+ @WhereBundleActive+'
+													  ) as u on u.UserID = t.UserID	
+											inner join dbo.GB_company_dic as c with (nolock) on u.companyid = c.ID
+											where u.IsActive = 1 and u.IsPremium = 1 			 
+											 '+ @WhereCompany +'
+											group by com_name
+                   ) as p3 on p0.com_name = p3.com_name
+				   
+	    left join
+					( 
+	  				select com_name, count(distinct u.UserID) as ValidUser
+									        from
+											   (
+											   select * from Users with (nolock) where 1=1 '+ @WhereBundleActive+'
+											   ) as u
+										    inner join dbo.GB_company_dic as c on u.companyid = c.ID
+											where u.IsActive = 1 and u.IsPremium = 1					 
+											'+ @WhereCompany+'
+										    group by com_name	
+					) as p4 on p0.com_name = p4.com_name
+          left join 
+	                  (
+					   select com_name, count(distinct t.UserId) as ActiveUser
+								        	from 
+				                                (
+												     select e.UserId from gbinfosystem.dbo.EPTracking as e with (nolock)
+													 where 1=1 '+ @WhereUtcCreateAt + @WhereBundleActive + '
+													 Union all
+													 select m.UserId from gbinfosystem.dbo.MetrixTracking as m with (nolock)
+													 where 1=1 '+ @WhereUtcCreateAt + @WhereBundleActive + '
+											    ) as t					
+											  inner join dbo.Users as u with (nolock) on t.UserId = u.UserID
+											  inner join dbo.GB_company_dic as c with (nolock) on c.ID = u.CompanyId
+											  where u.IsActive = 1 and u.IsPremium = 1 							
+											  ' + @WhereCompany + '
+									          group by com_name
+					  ) as p5 on p0.com_name = p5.com_name
+		     left join
+				      (        
+					   select com_name, count(distinct u.UserID) as PowerUser
+									from 
+										(
+										select * from dbo.Users  with (nolock) where 1=1 '+ @WhereBundleActive +'
+										) as u	
+									inner join dbo.GB_company_dic as c with (nolock) on c.ID = u.CompanyId
+								    inner join (
+												select userid,count(*) as LoginTimes 
+												from dbo.LoginRecords with (nolock) 
+												where 1=1 '+ @Wherelogintimeday +'
+												group by userid
+												having count(*) >= '+ @p_count +'
+											   ) as s on s.userid = u.UserID
+								    where u.IsActive = 1 and u.IsPremium = 1
+									'+ @WhereCompany +'
+							        group by com_name
+				     ) as p6 on p0.com_name = p6.com_name
+			left join
+                     (
+						select com_name, count(*) as AbnormalUser
+						from #tempt2 
+						inner join dbo.Users as u on u.UserID = #tempt2.UserId
+						inner join dbo.GB_company_dic as c with (nolock) on c.ID = u.CompanyId
+						where #tempt2.Params = 1 ' + @WhereCompany + '
+						group by com_name
+	                 ) as p7 on p0.com_name = p7.com_name 
+           	left join
+		            (
+						select s1.com_name, s1.Department as Top1Department, s2.Department as Top2Department, s3.Department as Top3Department  	
+						from
+						   (
+							select com_name, Department from #tempt1 where RankName = 1
+						   ) as s1
+						left join
+								 (
+								   select com_name, Department from #tempt1 where RankName = 2
+								 ) as s2 on s1.com_name = s2.com_name
+						left join 
+								  (
+								   select com_name, Department from #tempt1 where RankName = 3
+								  ) as s3 on s1.com_name = s3.com_name
+					 ) as p24 on p0.com_name = p24.com_name 
+	      left join
+			          (
+						 select com_name, count(*) as BusinessDevelopment
+											  from (
+													 select e.UserId from gbinfosystem.dbo.EPTracking as e with (nolock) 
+													 where 1=1 '+ @WhereUtcCreateAt + @WhereBundle + '
+													 Union all
+													 select m.UserId from gbinfosystem.dbo.MetrixTracking as m with (nolock)
+													 where 1=1 '+ @WhereUtcCreateAt + @WhereBundle + '
+						                         ) as e
+						 inner join dbo.Users as u with (nolock) on e.UserId = u.UserID	 
+						 inner join 
+								  (
+								  select * from dbo.UserFunction with (nolock) where FunctionName = ''Business Development''
+								  ) as f on u.[Function] = f.FunctionId       
+						 inner join 
+								 (
+								 select * from GB_company_dic with (nolock) where 1=1 ' + @WhereCompany + '
+								 ) as c on u.companyid = c.ID		
+								 group by com_name
+					 ) as p8 on p0.com_name = p8.com_name
+			left join
+				      (   
+							 select com_name, count(*) as ClinicalOperations_ClinicalDevelopment
+											 from (
+													 select e.UserId from gbinfosystem.dbo.EPTracking as e with (nolock) 
+													 where 1=1 '+ @WhereUtcCreateAt + @WhereBundle + '
+													 Union all
+													 select m.UserId from gbinfosystem.dbo.MetrixTracking as m with (nolock)
+													 where 1=1 '+ @WhereUtcCreateAt + @WhereBundle + '
+							                       ) as e
+							inner join dbo.Users as u with (nolock) on e.UserId = u.UserID	 
+							inner join 
+									  (
+									  select * from dbo.UserFunction with (nolock) where FunctionName = ''Clinical Operations/Clinical Development''
+									  ) as f on u.[Function] = f.FunctionId       
+							inner join 
+									 (
+									 select * from GB_company_dic with (nolock) where 1=1 ' + @WhereCompany + '
+									 ) as c on u.companyid = c.ID		
+									 group by com_name  
+                      ) as p9 on p0.com_name = p9.com_name
+           left join
+		            (
+					 select com_name, count(*) as Commercial_Sales
+				                             from (
+					                                 select e.UserId from gbinfosystem.dbo.EPTracking as e with (nolock) 
+													 where 1=1 '+ @WhereUtcCreateAt + @WhereBundle + '
+													 Union all
+													 select m.UserId from gbinfosystem.dbo.MetrixTracking as m with (nolock)
+													 where 1=1 '+ @WhereUtcCreateAt + @WhereBundle + '
+				                            	 ) as e
+					 inner join dbo.Users as u with (nolock) on e.UserId = u.UserID	 
+					 inner join 
+							  (
+							  select * from dbo.UserFunction with (nolock) where FunctionName = ''Commercial/Sales''
+							  ) as f on u.[Function] = f.FunctionId       
+					 inner join 
+							 (
+							 select * from GB_company_dic with (nolock) where 1=1 ' + @WhereCompany + '
+							 ) as c on u.companyid = c.ID		
+							 group by com_name  
+                   ) as p10 on p0.com_name = p10.com_name
+           left join
+		            (
+					 select com_name, count(*) as ConsultingFirmRelated
+											 from (
+													  select e.UserId from gbinfosystem.dbo.EPTracking as e with (nolock) 
+													 where 1=1 '+ @WhereUtcCreateAt + @WhereBundle + '
+													 Union all
+													 select m.UserId from gbinfosystem.dbo.MetrixTracking as m with (nolock)
+													 where 1=1 '+ @WhereUtcCreateAt + @WhereBundle + '
+												 ) as e
+					 inner join dbo.Users as u with (nolock) on e.UserId = u.UserID	 
+					 inner join 
+							  (
+							  select * from dbo.UserFunction with (nolock) where FunctionName = ''Consulting Firm Related''
+							  ) as f on u.[Function] = f.FunctionId       
+					 inner join 
+							 (
+							 select * from GB_company_dic with (nolock) where 1=1 ' + @WhereCompany + '
+							 ) as c on u.companyid = c.ID		
+							 group by com_name  
+				    ) as p11 on p0.com_name = p11.com_name
+			left join
+			         (
+ 						 select com_name, count(*) as Finance
+											 from (
+													 select e.UserId from gbinfosystem.dbo.EPTracking as e with (nolock) 
+													 where 1=1 '+ @WhereUtcCreateAt + @WhereBundle + '
+													 Union all
+													 select m.UserId from gbinfosystem.dbo.MetrixTracking as m with (nolock)
+													 where 1=1 '+ @WhereUtcCreateAt + @WhereBundle + '
+						                     ) as e
+						inner join dbo.Users as u with (nolock) on e.UserId = u.UserID	 
+						inner join 
+								  (
+								  select * from dbo.UserFunction with (nolock) where FunctionName = ''Finance''
+								  ) as f on u.[Function] = f.FunctionId       
+						inner join 
+								 (
+								 select * from GB_company_dic with (nolock) where 1=1 ' + @WhereCompany + '
+								 ) as c on u.companyid = c.ID		
+								 group by com_name  
+                     ) as p12 on p0.com_name = p12.com_name
+			left join
+			        (
+					 select com_name, count(*) as GovernmentAffairs_Communications
+											 from (
+													 select e.UserId from gbinfosystem.dbo.EPTracking as e with (nolock) 
+													 where 1=1 '+ @WhereUtcCreateAt + @WhereBundle + '
+													 Union all
+													 select m.UserId from gbinfosystem.dbo.MetrixTracking as m with (nolock)
+													 where 1=1 '+ @WhereUtcCreateAt + @WhereBundle + '
+												 ) as e
+					inner join dbo.Users as u with (nolock) on e.UserId = u.UserID	 
+					inner join 
+							  (
+							  select * from dbo.UserFunction with (nolock) where FunctionName = ''Government Affairs/Communications''
+							  ) as f on u.[Function] = f.FunctionId       
+					inner join 
+							 (
+							 select * from GB_company_dic with (nolock) where 1=1 ' + @WhereCompany + '
+							 ) as c on u.companyid = c.ID		
+							 group by com_name  
+                   ) as p13 on p0.com_name = p13.com_name
+			left join
+			         (
+						 select com_name, count(*) as Legal
+						                            from (
+														 select e.UserId from gbinfosystem.dbo.EPTracking as e with (nolock) 
+														 where 1=1 '+ @WhereUtcCreateAt + @WhereBundle + '
+														 Union all
+														 select m.UserId from gbinfosystem.dbo.MetrixTracking as m with (nolock)
+														 where 1=1 '+ @WhereUtcCreateAt + @WhereBundle + '
+						                             ) as e
+						inner join dbo.Users as u with (nolock) on e.UserId = u.UserID	 
+						inner join 
+								  (
+								  select * from dbo.UserFunction with (nolock) where FunctionName = ''Legal''
+								  ) as f on u.[Function] = f.FunctionId       
+						inner join 
+								 (
+								 select * from GB_company_dic with (nolock) where 1=1 ' + @WhereCompany + '
+								 ) as c on u.companyid = c.ID		
+								 group by com_name  
+					 ) as p14 on p0.com_name = p14.com_name
+			left join
+			         (
+						 select com_name, count(*) as MarketResearch_CompetitiveInsights
+						 from (
+						                                select e.UserId from gbinfosystem.dbo.EPTracking as e with (nolock) 
+														 where 1=1 '+ @WhereUtcCreateAt + @WhereBundle + '
+														 Union all
+														 select m.UserId from gbinfosystem.dbo.MetrixTracking as m with (nolock)
+														 where 1=1 '+ @WhereUtcCreateAt + @WhereBundle + '
+						 ) as e
+						inner join dbo.Users as u with (nolock) on e.UserId = u.UserID	 
+						inner join 
+								  (
+								  select * from dbo.UserFunction with (nolock) where FunctionName = ''Market Research/Competitive Insights''
+								  ) as f on u.[Function] = f.FunctionId       
+						inner join 
+								 (
+								 select * from GB_company_dic with (nolock) where 1=1 ' + @WhereCompany + '
+								 ) as c on u.companyid = c.ID		
+								 group by com_name  
+					 ) as p15 on p0.com_name = p15.com_name
+            left join
+			         (
+						 select com_name, count(*) as Marketing_Branding
+						 from (
+						                                 select e.UserId from gbinfosystem.dbo.EPTracking as e with (nolock) 
+														 where 1=1 '+ @WhereUtcCreateAt + @WhereBundle + '
+														 Union all
+														 select m.UserId from gbinfosystem.dbo.MetrixTracking as m with (nolock)
+														 where 1=1 '+ @WhereUtcCreateAt + @WhereBundle + '
+						 ) as e
+						inner join dbo.Users as u with (nolock) on e.UserId = u.UserID	 
+						inner join 
+								  (
+								  select * from dbo.UserFunction with (nolock) where FunctionName = ''Marketing/Branding''
+								  ) as f on u.[Function] = f.FunctionId       
+						inner join 
+								 (
+								 select * from GB_company_dic with (nolock) where 1=1 ' + @WhereCompany + '
+								 ) as c on u.companyid = c.ID		
+								 group by com_name  
+					) as p16 on p0.com_name = p16.com_name
+			left join
+			         (
+						 select com_name, count(*) as Medical
+						 from (
+						                                select e.UserId from gbinfosystem.dbo.EPTracking as e with (nolock) 
+														 where 1=1 '+ @WhereUtcCreateAt + @WhereBundle + '
+														 Union all
+														 select m.UserId from gbinfosystem.dbo.MetrixTracking as m with (nolock)
+														 where 1=1 '+ @WhereUtcCreateAt + @WhereBundle + '
+						 ) as e
+						inner join dbo.Users as u with (nolock) on e.UserId = u.UserID	 
+						inner join 
+								  (
+								  select * from dbo.UserFunction with (nolock) where FunctionName = ''Medical''
+								  ) as f on u.[Function] = f.FunctionId       
+						inner join 
+								 (
+								 select * from GB_company_dic with (nolock) where 1=1 ' + @WhereCompany + '
+								 ) as c on u.companyid = c.ID		
+								 group by com_name  
+					 ) as p17 on p0.com_name = p17.com_name
+            left join
+			         (
+						 select com_name, count(*) as N_A
+						 from (
+						                                 select e.UserId from gbinfosystem.dbo.EPTracking as e with (nolock) 
+														 where 1=1 '+ @WhereUtcCreateAt + @WhereBundle + '
+														 Union all
+														 select m.UserId from gbinfosystem.dbo.MetrixTracking as m with (nolock)
+														 where 1=1 '+ @WhereUtcCreateAt + @WhereBundle + '
+						 ) as e
+						inner join dbo.Users as u with (nolock) on e.UserId = u.UserID	 
+						inner join 
+								  (
+								  select * from dbo.UserFunction with (nolock) where FunctionName = ''N/A''
+								  ) as f on u.[Function] = f.FunctionId       
+						inner join 
+								 (
+								 select * from GB_company_dic with (nolock) where 1=1 ' + @WhereCompany + '
+								 ) as c on u.companyid = c.ID		
+								 group by com_name  
+                     ) as p18 on p0.com_name = p18.com_name
+			 left join
+			          (
+						 select com_name, count(*) as Other_HR_IT_Admin
+						 from (
+						                                 select e.UserId from gbinfosystem.dbo.EPTracking as e with (nolock) 
+														 where 1=1 '+ @WhereUtcCreateAt + @WhereBundle + '
+														 Union all
+														 select m.UserId from gbinfosystem.dbo.MetrixTracking as m with (nolock)
+														 where 1=1 '+ @WhereUtcCreateAt + @WhereBundle + '
+						 ) as e
+						inner join dbo.Users as u with (nolock) on e.UserId = u.UserID	 
+						inner join 
+								  (
+								  select * from dbo.UserFunction with (nolock) where FunctionName = ''Other (HR/IT/Admin)''
+								  ) as f on u.[Function] = f.FunctionId       
+						inner join 
+								 (
+								 select * from GB_company_dic with (nolock) where 1=1 ' + @WhereCompany + '
+								 ) as c on u.companyid = c.ID		
+								 group by com_name
+					  ) as p19 on p0.com_name = p19.com_name
+            left join
+			         (
+						 select com_name, count(*) as Pricing_MarketAccess
+						 from (
+						                                 select e.UserId from gbinfosystem.dbo.EPTracking as e with (nolock) 
+														 where 1=1 '+ @WhereUtcCreateAt + @WhereBundle + '
+														 Union all
+														 select m.UserId from gbinfosystem.dbo.MetrixTracking as m with (nolock)
+														 where 1=1 '+ @WhereUtcCreateAt + @WhereBundle + '
+						 ) as e
+						inner join dbo.Users as u with (nolock) on e.UserId = u.UserID	 
+						inner join 
+								  (
+								  select * from dbo.UserFunction with (nolock) where FunctionName = ''Pricing/Market Access''
+								  ) as f on u.[Function] = f.FunctionId       
+						inner join 
+								 (
+								 select * from GB_company_dic with (nolock) where 1=1 ' + @WhereCompany + '
+								 ) as c on u.companyid = c.ID		
+								 group by com_name  
+                     ) as p20 on p0.com_name = p20.com_name
+            left join
+			         (
+						 select com_name, count(*) as R_D
+						 from (
+					                                     select e.UserId from gbinfosystem.dbo.EPTracking as e with (nolock) 
+														 where 1=1 '+ @WhereUtcCreateAt + @WhereBundle + '
+														 Union all
+														 select m.UserId from gbinfosystem.dbo.MetrixTracking as m with (nolock)
+														 where 1=1 '+ @WhereUtcCreateAt + @WhereBundle + '
+						 ) as e
+						inner join dbo.Users as u with (nolock) on e.UserId = u.UserID	 
+						inner join 
+								  (
+								  select * from dbo.UserFunction with (nolock) where FunctionName = ''R&D''
+								  ) as f on u.[Function] = f.FunctionId       
+						inner join 
+								 (
+								 select * from GB_company_dic with (nolock) where 1=1 ' + @WhereCompany + '
+								 ) as c on u.companyid = c.ID		
+								 group by com_name  
+					) as p21 on p0.com_name = p21.com_name
+            left join
+			         (
+						 select com_name, count(*) as Regulatory
+						 from (
+						                                 select e.UserId from gbinfosystem.dbo.EPTracking as e with (nolock) 
+														 where 1=1 '+ @WhereUtcCreateAt + @WhereBundle + '
+														 Union all
+														 select m.UserId from gbinfosystem.dbo.MetrixTracking as m with (nolock)
+														 where 1=1 '+ @WhereUtcCreateAt + @WhereBundle + '
+						 ) as e
+						inner join dbo.Users as u with (nolock) on e.UserId = u.UserID	 
+						inner join 
+								  (
+								  select * from dbo.UserFunction with (nolock) where FunctionName = ''Regulatory''
+								  ) as f on u.[Function] = f.FunctionId       
+						inner join 
+								 (
+								 select * from GB_company_dic with (nolock) where 1=1 ' + @WhereCompany + '
+								 ) as c on u.companyid = c.ID		
+								 group by com_name  
+                    ) as p22 on p0.com_name = p22.com_name
+			left join
+			         (
+						 select com_name, count(*) as StrategicPlanning_Intelligence
+						 from (
+						                                 select e.UserId from gbinfosystem.dbo.EPTracking as e with (nolock) 
+														 where 1=1 '+ @WhereUtcCreateAt + @WhereBundle + '
+														 Union all
+														 select m.UserId from gbinfosystem.dbo.MetrixTracking as m with (nolock)
+														 where 1=1 '+ @WhereUtcCreateAt + @WhereBundle + '
+						 ) as e
+						inner join dbo.Users as u with (nolock) on e.UserId = u.UserID	 
+						inner join 
+								  (
+								  select * from dbo.UserFunction with (nolock) where FunctionName = ''Strategic Planning/Intelligence''
+								  ) as f on u.[Function] = f.FunctionId       
+						inner join 
+								 (
+								 select * from GB_company_dic with (nolock) where 1=1 ' + @WhereCompany + '
+								 ) as c on u.companyid = c.ID		
+								 group by com_name  
+					 ) as p23 on p0.com_name = p23.com_name
+					 '+ @p_Order +'
+					 
+			 	select distinct com_name from dbo.GB_company_dic as c with (nolock)
+				       inner join Users as u with (nolock) on u.CompanyId = c.ID
+					   where 1=1 '+ @WhereBundle +'
+					     
+                '
+				 IF ( isnull(@p_Bundle,'') <> '' )
+				  BEGIN
+				     	SET	@Sql += N'
+			                          select distinct RoleName from Roles as r with (nolock)
+									  where RoleName = '+@p_Bundle+'
+			                        '
+
+				  END
+		          ELSE
+				       SET @Sql += N'
+									select distinct RoleName from Roles as r with (nolock)
+										   inner join UserInRole as ur with (nolock) on ur.RoleID = r.RoleID
+										   inner join Users as u with (nolock) on u.UserID = ur.UserID
+										   inner join dbo.GB_company_dic as c with (nolock) on u.CompanyId = c.ID
+										   where 1=1 '+ @WhereCompany +'
+                                    '
+	        
+
+	     -- PRINT @Sql
+          EXEC sp_executesql @Sql, N'
+		  @StartDate date = '' '',
+	      @EndDate date = '' '' ',
+	  	  @StartDate = @p_StartDate,
+		  @EndDate = @p_EndDate
+
+	
+END
+

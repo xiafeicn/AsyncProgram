@@ -36,10 +36,9 @@ namespace WindowsFormsApplication1
                     {
                         Thread.Sleep(1000);
 
-                        textBox1.Invoke(new Action(() =>
-                                   {
-                                       textBox1.AppendText(string.Format("{0},", index++));
-                                   }));
+                        this.BeginInvoke(new Action(() => { textBox1.AppendText(string.Format("{0},", index++));
+                            progressBar1.Value = index;
+                        }));
                     }
                     catch (Exception ex)
                     {
