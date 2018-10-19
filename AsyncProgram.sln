@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.28010.2036
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AsyncProgram", "AsyncProgram\AsyncProgram.csproj", "{94E1073E-5A44-41F2-9181-9A612A2930F1}"
 EndProject
@@ -64,6 +64,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApplication28", "ConsoleApplication28\ConsoleApplication28.csproj", "{CFC8408A-1B88-413A-A392-40EF729CAEBD}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApplication29", "ConsoleApplication29\ConsoleApplication29.csproj", "{FE5EEA3D-321B-4DF7-AC9D-96FF481D11F8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Grabzujuan", "Grabzujuan\Grabzujuan.csproj", "{5133F81C-F96C-4835-8B44-4BC95565E479}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -195,8 +197,15 @@ Global
 		{FE5EEA3D-321B-4DF7-AC9D-96FF481D11F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FE5EEA3D-321B-4DF7-AC9D-96FF481D11F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FE5EEA3D-321B-4DF7-AC9D-96FF481D11F8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5133F81C-F96C-4835-8B44-4BC95565E479}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5133F81C-F96C-4835-8B44-4BC95565E479}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5133F81C-F96C-4835-8B44-4BC95565E479}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5133F81C-F96C-4835-8B44-4BC95565E479}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {54E8FFD8-09FA-4A74-9081-95D9A600ED75}
 	EndGlobalSection
 EndGlobal
