@@ -1,12 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.IO;
 using System.Linq;
+using System.Net.Http;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NHtmlUnit;
+using NHtmlUnit.Html;
+using NHtmlUnit.Util;
 using NSoup;
 
 namespace Grabzujuan
@@ -22,13 +28,64 @@ namespace Grabzujuan
 
             //var qlist = NSoupClient.Parse(html).GetElementById("J_QuestionList");
 
+
+            //var html = GetHtml("https://www.zujuan.com/question?tree_type=category&chid=3&xd=2");
+            //var html = GetHtml("https://www.zujuan.com/question?chid=2&xd=1&tree_type=knowledge&_=1313");
+
+            //var str = JsonConvert.SerializeObject(yuwen(html));
+            var html = GetRealHtmlOrogin("https://www.zujuan.com/question/index?chid=3&xd=1&tree_type=knowledge&page=2&per-page=10");
+
+            var str = JsonConvert.SerializeObject(shuxue(html));
+        }
+        static string GetHtmlOrogin(string url)
+        {
             WebClient webClient = new WebClient(BrowserVersion.CHROME);
-            webClient.CssEnabled = false;
+            webClient.CssEnabled = true;
             webClient.JavaScriptEnabled = true;
-            var page = webClient.GetHtmlPage("https://www.zujuan.com/question?tree_type=category&chid=3&xd=2");
+            //webClient.CookieManager = new CookieManager();
+            //webClient.CookieManager.AddCookie(new Cookie("www.zujuan.com", "chid", "27e8704a451201531cc9941f6f3b709b7e13397751c04b090603ffdb0a56dfb9a:2:{i:0;s:4:\"chid\";i:1;s:1:\"2\";}"));
+            var page = webClient.GetHtmlPage(url);
+
             webClient.WaitForBackgroundJavaScript(1000);
             var html = page.AsXml();
             webClient.Close();
+            return html;
+        }
+
+        static string GetRealHtmlOrogin(string url)
+        {
+            WebClient webClient = new WebClient(BrowserVersion.CHROME);
+            webClient.CssEnabled = true;
+            webClient.JavaScriptEnabled = true;
+            //webClient.CookieManager = new CookieManager();
+            //webClient.CookieManager.AddCookie(new Cookie("www.zujuan.com", "chid", "27e8704a451201531cc9941f6f3b709b7e13397751c04b090603ffdb0a56dfb9a:2:{i:0;s:4:\"chid\";i:1;s:1:\"2\";}"));
+            var page = webClient.GetHtmlPage(url);
+            webClient.WaitForBackgroundJavaScript(1000);
+            page = webClient.GetHtmlPage(url);
+            var html = page.AsXml();
+            webClient.Close();
+            return html;
+        }
+
+        static string GetHtml(string url)
+        {
+            WebClient webClient = new WebClient(BrowserVersion.CHROME);
+            webClient.CssEnabled = true;
+            webClient.JavaScriptEnabled = true;
+            //webClient.CookieManager = new CookieManager();
+            //webClient.CookieManager.AddCookie(new Cookie("www.zujuan.com", "chid", "27e8704a451201531cc9941f6f3b709b7e13397751c04b090603ffdb0a56dfb9a:2:{i:0;s:4:\"chid\";i:1;s:1:\"2\";}"));
+            var page = webClient.GetHtmlPage(url);
+            var button = page.GetElementByClassName("item-list").GetElementsByTagName("a")[0] as HtmlAnchor;
+            HtmlPage realpage = button.Click() as HtmlPage;
+            webClient.WaitForBackgroundJavaScript(1000);
+            var html = realpage.AsXml();
+            webClient.Close();
+            return html;
+        }
+
+
+        public static JArray carwler1(string html)
+        {
             var qlist = NSoupClient.Parse(html).GetElementById("J_QuestionList");
 
             var lis = qlist.GetElementsByTag("li");
@@ -53,9 +110,9 @@ namespace Grabzujuan
                     else
                     {
                         item["meat"] = ans.GetElementsByClass("op-item-meat").Text;
-                       
+
                     }
-                    
+
 
                     opArray.Add(item);
                 }
@@ -64,7 +121,155 @@ namespace Grabzujuan
                 jArray.Add(obj);
             }
 
-            var str = JsonConvert.SerializeObject(jArray);
+            return jArray;
+
+        }
+        public static JArray yuwen(string html)
+        {
+            var qlist = NSoupClient.Parse(html).GetElementById("J_QuestionList");
+
+            var lis = qlist.GetElementsByTag("li");
+
+            var jArray = new JArray();
+            foreach (var li in lis)
+            {
+                JObject obj = new JObject();
+                obj["id"] = li.Attr("data-qid");
+
+                obj["type"] = li.GetElementsByClass("exam-new").Text
+                    ;
+                var exam_q = li.GetElementsByClass("exam-q");
+                if (exam_q[0].GetElementsByTag("img").Count > 0)
+                {
+                    var imgUrl = exam_q[0].GetElementsByTag("img")[0].Attr("src");
+                    var base64 = ConvertHttpImageToBase64(imgUrl);
+
+                    obj["question"] = li.GetElementsByClass("exam-q").Html().Replace(imgUrl, base64);
+                }
+                var type = li.GetElementsByClass("exam-head-left")[0].GetElementsByTag("span");
+
+
+                obj["tixing"] = type[0].Text();
+                obj["tilei"] = type[1].Text();
+                obj["nanyidu"] = type[2].Text();
+                var answers = li.GetElementsByClass("exam-qlist");
+                var opArray = new JArray();
+                foreach (var ans in answers)
+                {
+                    var item = new JObject();
+                    item["exam-q"] = ans.GetElementsByClass("exam-q").Html();
+
+                    opArray.Add(item);
+                }
+
+                obj["option"] = opArray;
+                jArray.Add(obj);
+            }
+
+            return jArray;
+        }
+
+        public static JArray shuxue(string html)
+        {
+            var qlist = NSoupClient.Parse(html).GetElementById("J_QuestionList");
+
+            var lis = qlist.GetElementsByTag("li");
+
+            var jArray = new JArray();
+            foreach (var li in lis)
+            {
+                JObject obj = new JObject();
+                obj["id"] = li.Attr("data-qid");
+                var exam_q = li.GetElementsByClass("exam-q");
+                if (exam_q[0].GetElementsByTag("img").Count > 0)
+                {
+                    var imgUrl = exam_q[0].GetElementsByTag("img")[0].Attr("src");
+                    var base64 = ConvertHttpImageToBase64(imgUrl);
+
+                    obj["question"] = li.GetElementsByClass("exam-q").Html().Replace(imgUrl, base64);
+                }
+                obj["type"] = li.GetElementsByClass("exam-new").Text
+                    ;
+
+                var type = li.GetElementsByClass("exam-head-left")[0].GetElementsByTag("span");
+
+
+                obj["tixing"] = type[0].Text();
+                obj["tilei"] = type[1].Text();
+                obj["nanyidu"] = type[2].Text();
+                var answers = li.GetElementsByClass("op-item");
+                var opArray = new JArray();
+                foreach (var ans in answers)
+                {
+                    var item = new JObject();
+                    item["out"] = ans.GetElementsByClass("op-item-nut").Text;
+                    if (ans.GetElementsByTag("img").Count > 0)
+                    {
+                        item["meat"] = HttpUtility.UrlDecode(ans.GetElementsByClass("mathml").Attr("src")); ;
+                    }
+                    else
+                    {
+                        item["meat"] = ans.GetElementsByClass("op-item-meat").Text;
+
+                    }
+
+
+                    opArray.Add(item);
+                }
+
+
+                obj["option"] = opArray;
+
+                //var qelist = li.GetElementsByClass("exam-qlist");
+                //var qArray = new JArray();
+                //foreach (var q in qelist)
+                //{
+                //    var item = new JObject();
+                //    item["exam-q"] = q.GetElementsByClass("exam-q").Html();
+
+                //    qArray.Add(q);
+                //}
+
+                //obj["question"] = qArray;
+                jArray.Add(obj);
+            }
+
+            return jArray;
+        }
+
+
+        public static string ConvertHttpImageToBase64(string imgUrl)
+        {
+            Image _image = Image.FromStream(System.Net.WebRequest.Create(imgUrl).GetResponse().GetResponseStream() ?? throw new InvalidOperationException());
+            return ImgToBase64String(_image);
+        }
+
+        /// <summary>
+        /// 图片 转为    base64编码的文本
+        /// </summary>
+        /// <param name="bmp">待转的Bitmap</param>
+        /// <returns>转换后的base64字符串</returns>
+        public static String ImgToBase64String(Image bmp)
+        {
+            String strbaser64 = String.Empty;
+            var btarr = convertByte(bmp);
+            strbaser64 = Convert.ToBase64String(btarr);
+
+            return strbaser64;
+        }
+
+        /// <summary>
+        /// Image转byte[]
+        /// </summary>
+        /// <param name="img">Img格式数据</param>
+        /// <returns>byte[]格式数据</returns>
+        public static  byte[] convertByte(Image img)
+        {
+            MemoryStream ms = new MemoryStream();
+            img.Save(ms, img.RawFormat);
+            byte[] bytes = ms.ToArray();
+            ms.Close();
+            return bytes;
         }
     }
 }
