@@ -14,6 +14,7 @@ using NHtmlUnit;
 using NHtmlUnit.Html;
 using NHtmlUnit.Util;
 using NSoup;
+using NSoup.Nodes;
 
 namespace Grabzujuan
 {
@@ -33,7 +34,8 @@ namespace Grabzujuan
             //var html = GetHtml("https://www.zujuan.com/question?chid=2&xd=1&tree_type=knowledge&_=1313");
 
             //var str = JsonConvert.SerializeObject(yuwen(html));
-            var html = GetRealHtmlOrogin("https://www.zujuan.com/question/index?chid=3&xd=1&tree_type=knowledge&page=2&per-page=10");
+            //            var html = GetRealHtmlOrogin("https://www.zujuan.com/question/index?chid=3&xd=1&tree_type=knowledge&page=2&per-page=10");
+            var html = GetRealHtmlOrogin("https://www.zujuan.com/question?chid=3&xd=2&tree_type=knowledge");
 
             var str = JsonConvert.SerializeObject(shuxue(html));
         }
@@ -180,16 +182,63 @@ namespace Grabzujuan
             {
                 JObject obj = new JObject();
                 obj["id"] = li.Attr("data-qid");
-                var exam_q = li.GetElementsByClass("exam-q");
-                if (exam_q[0].GetElementsByTag("img").Count > 0)
-                {
-                    var imgUrl = exam_q[0].GetElementsByTag("img")[0].Attr("src");
-                    var base64 = ConvertHttpImageToBase64(imgUrl);
 
-                    obj["question"] = li.GetElementsByClass("exam-q").Html().Replace(imgUrl, base64);
+                if (li.GetElementsByClass("exam-q").Count > 0)
+                {
+                    var exam_q = li.GetElementsByClass("exam-q")[0];
+                    if (exam_q.GetElementsByTag("img").Count > 0)
+                    {
+                        exam_q = ProcessHtmlImageElement(exam_q);
+
+
+                    }
+                    obj["question"] = exam_q.Html();
                 }
-                obj["type"] = li.GetElementsByClass("exam-new").Text
-                    ;
+
+                if (li.GetElementsByClass("exam-qlist").Count > 0)
+                {
+                    var qList = li.GetElementsByClass("exam-qlist")[0];
+                    var qArray = new JArray();
+                    foreach (var q in qList.GetElementsByClass("exam-q"))
+                    {
+                        var cq = ProcessHtmlImageElement(q);
+                        var item = new JObject();
+                        item["question_item"] = cq.Html();
+
+                        qArray.Add(item);
+                    }
+
+                    obj["question_list"] = qArray;
+                }
+
+                if (li.GetElementsByClass("exam-s").Count > 0)
+                {
+                    var opItems = li.GetElementsByClass("exam-s")[0].GetElementsByClass("op-item");
+                    var opArray = new JArray();
+                    foreach (var ans in opItems)
+                    {
+                        var item = new JObject();
+                        item["out"] = ans.GetElementsByClass("op-item-nut").Text;
+                        var currentAns = ProcessHtmlImageElement(ans);
+                        if (ans.GetElementsByTag("img").Count > 0)
+                        {
+                            item["meat"] = currentAns.GetElementsByTag("img").Attr("src");
+                        }
+                        else
+                        {
+                            item["meat"] = currentAns.GetElementsByClass("op-item-meat").Text;
+
+                        }
+
+
+                        opArray.Add(item);
+                    }
+                    obj["option"] = opArray;
+                }
+
+
+
+                obj["type"] = li.GetElementsByClass("exam-new").Text;
 
                 var type = li.GetElementsByClass("exam-head-left")[0].GetElementsByTag("span");
 
@@ -197,28 +246,7 @@ namespace Grabzujuan
                 obj["tixing"] = type[0].Text();
                 obj["tilei"] = type[1].Text();
                 obj["nanyidu"] = type[2].Text();
-                var answers = li.GetElementsByClass("op-item");
-                var opArray = new JArray();
-                foreach (var ans in answers)
-                {
-                    var item = new JObject();
-                    item["out"] = ans.GetElementsByClass("op-item-nut").Text;
-                    if (ans.GetElementsByTag("img").Count > 0)
-                    {
-                        item["meat"] = HttpUtility.UrlDecode(ans.GetElementsByClass("mathml").Attr("src")); ;
-                    }
-                    else
-                    {
-                        item["meat"] = ans.GetElementsByClass("op-item-meat").Text;
 
-                    }
-
-
-                    opArray.Add(item);
-                }
-
-
-                obj["option"] = opArray;
 
                 //var qelist = li.GetElementsByClass("exam-qlist");
                 //var qArray = new JArray();
@@ -237,6 +265,37 @@ namespace Grabzujuan
             return jArray;
         }
 
+
+        public static Element ProcessHtmlImageElement(Element element)
+        {
+            if (element.GetElementsByAttribute("data-cke-saved-src").Count > 0)
+            {
+                //连接性的图片
+                foreach (var math in element.GetElementsByAttribute("data-cke-saved-src"))
+                {
+                    var imgUrl = math.Attr("src");
+                    var base64 = ConvertHttpImageToBase64(imgUrl);
+                    var newImageUrl = "data:image/png;base64," + base64;
+
+                    math.Attr("src", newImageUrl.Trim(new char[] { '"' }));
+
+
+                }
+
+            }
+
+            //if (element.GetElementsByClass("mathml").Count > 0)
+            //{
+            //    foreach (var math in element.GetElementsByClass("mathml"))
+            //    {
+
+            //        math.Attr("src", HttpUtility.UrlDecode(math.Attr("src")));
+
+
+            //    };
+            //}
+            return element;
+        }
 
         public static string ConvertHttpImageToBase64(string imgUrl)
         {
@@ -263,7 +322,7 @@ namespace Grabzujuan
         /// </summary>
         /// <param name="img">Img格式数据</param>
         /// <returns>byte[]格式数据</returns>
-        public static  byte[] convertByte(Image img)
+        public static byte[] convertByte(Image img)
         {
             MemoryStream ms = new MemoryStream();
             img.Save(ms, img.RawFormat);
