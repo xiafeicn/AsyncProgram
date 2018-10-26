@@ -142,8 +142,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="HttpClientHolder.cs" />
+    <Compile Include="HttpUnitHelper.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="QuestionParser.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
