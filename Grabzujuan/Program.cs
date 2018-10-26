@@ -40,6 +40,7 @@ namespace Grabzujuan
             new HttpUnitHelper().Login("18068085648","8213297");
             
             var html = new HttpUnitHelper().GetRealHtmlTrice("https://www.zujuan.com/question?chid=2&xd=1&tree_type=knowledge");
+            //var html = new HttpUnitHelper().GetRealHtmlTrice("https://www.zujuan.com/question?chid=3&xd=2&tree_type=knowledge");
             var str = JsonConvert.SerializeObject(new QuestionParser().ParseMath(html));
         }
 

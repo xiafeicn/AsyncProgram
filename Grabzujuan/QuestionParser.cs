@@ -40,7 +40,7 @@ namespace Grabzujuan
                 var exam_q = li.GetElementsByClass("exam-q")[0];
                 if (exam_q.GetElementsByTag("img").Count > 0)
                 {
-                    exam_q = ProcessHtmlImageElement(exam_q);
+                    exam_q = exam_q.ProcessHtmlImageElement();
 
 
                 }
@@ -53,7 +53,7 @@ namespace Grabzujuan
                 var qArray = new JArray();
                 foreach (var q in qList.GetElementsByClass("exam-q"))
                 {
-                    var cq = ProcessHtmlImageElement(q);
+                    var cq = q.ProcessHtmlImageElement();
                     var item = new JObject();
                     item["question_item"] = cq.Html();
 
@@ -71,7 +71,7 @@ namespace Grabzujuan
                 {
                     var item = new JObject();
                     item["out"] = ans.GetElementsByClass("op-item-nut").Text;
-                    var currentAns = ProcessHtmlImageElement(ans);
+                    var currentAns = ans.ProcessHtmlImageElement();
                     if (ans.GetElementsByTag("img").Count > 0)
                     {
                         item["meat"] = currentAns.GetElementsByTag("img").Attr("src");
@@ -106,24 +106,54 @@ namespace Grabzujuan
 
         public JObject ParseAnswer(string questionId)
         {
+            //questionId = "8630746";
+            JObject answer = new JObject();
             string url = string.Format("https://www.zujuan.com/question/detail-{0}.shtml", questionId);
             var html = new HttpUnitHelper().GetRealHtmlOnce(url);
-            var qlist = NSoupClient.Parse(html).GetElementById("J_QuestionList");
 
-            JObject answer = new JObject();
-            answer["kaodian"] = ProcessHtmlImageElement(qlist.GetElementsByClass("analyticbox")[0].GetElementsByTag("div")[0]).Html();
-            answer["daan"] = ProcessHtmlImageElement(qlist.GetElementsByClass("analyticbox")[1].GetElementsByTag("div")[0]).Html();
-            answer["jiexi"] = ProcessHtmlImageElement(qlist.GetElementsByClass("analyticbox")[2].GetElementsByTag("div")[0]).Html();
+            if (
+                NSoupClient.Parse(html).GetElementById("J_QuestionList").GetElementsByClass("exam-con")[0]
+                    .GetElementsByClass("exam-qlist").Count > 0)
+            {
+                var qlist = NSoupClient.Parse(html).GetElementById("J_QuestionList").GetElementsByClass("exam-con")[0].GetElementsByClass("exam-qlist")[0];
+
+                var exam_cons = qlist.GetElementsByClass("exam-con");
+                var analyticboxs = qlist.GetElementsByClass("analyticbox");
+
+                JArray answer_list = new JArray();
+                for (int i = 0; i < exam_cons.Count; i++)
+                {
+                    JObject result = new JObject();
+                    result["question"] = exam_cons[i].GetElementsByClass("analyticbox")[0].ProcessHtmlImageElement().Html();
+                    result["answer"] = analyticboxs[i].ProcessHtmlImageElement().Html();
+                    answer_list.Add(result);
+                }
+                answer["answer_list"] = answer_list;
+            }
+          
+
+            var analyticbox_brick = NSoupClient.Parse(html).GetElementById("J_QuestionList").GetElementsByClass("analyticbox-brick")[0];
+
+
+            answer["kaodian"] = analyticbox_brick.Children[0].ProcessHtmlImageElement().Html();// ProcessHtmlImageElement(qlist.GetElementsByClass("analyticbox")[0].GetElementsByTag("div")[0]).Html();
+            answer["jiexi"] = analyticbox_brick.Children[1].ProcessHtmlImageElement().Html();
 
             return answer;
         }
 
 
-        public Element ProcessHtmlImageElement(Element element)
+      
+    }
+
+
+    public static class Base64Helper
+    {
+
+        public static Element ProcessHtmlImageElement(this Element element)
         {
             var mathImages = element.GetElementsByClass("mathml");
 
-            var allImages= element.GetElementsByTag("img").Except(mathImages);
+            var allImages = element.GetElementsByTag("img").Except(mathImages);
 
             if (mathImages.Count > 0)
             {
@@ -178,9 +208,9 @@ namespace Grabzujuan
             return element;
         }
 
-        public string ConvertHttpImageToBase64(string imgUrl)
+        public static string ConvertHttpImageToBase64(string imgUrl)
         {
-            Image _image = Image.FromStream(System.Net.WebRequest.Create(imgUrl).GetResponse().GetResponseStream() ?? throw new InvalidOperationException());
+            Image _image = Image.FromStream(System.Net.WebRequest.Create(imgUrl).GetResponse().GetResponseStream()/* ?? throw new InvalidOperationException()*/);
             return ImgToBase64String(_image);
         }
 
@@ -189,7 +219,7 @@ namespace Grabzujuan
         /// </summary>
         /// <param name="bmp">待转的Bitmap</param>
         /// <returns>转换后的base64字符串</returns>
-        public String ImgToBase64String(Image bmp)
+        public static String ImgToBase64String(Image bmp)
         {
             String strbaser64 = String.Empty;
             var btarr = convertByte(bmp);
@@ -203,7 +233,7 @@ namespace Grabzujuan
         /// </summary>
         /// <param name="img">Img格式数据</param>
         /// <returns>byte[]格式数据</returns>
-        public byte[] convertByte(Image img)
+        public static byte[] convertByte(Image img)
         {
             MemoryStream ms = new MemoryStream();
             img.Save(ms, img.RawFormat);
