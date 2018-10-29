@@ -130,6 +130,7 @@
       <HintPath>..\packages\NSoup.0.8.0\lib\net40\NSoup.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Web" />
@@ -141,6 +142,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CategoryCrawler.cs" />
+    <Compile Include="Common\ChildEnum.cs" />
+    <Compile Include="Common\EnumExtensions.cs" />
     <Compile Include="HttpClientHolder.cs" />
     <Compile Include="HttpUnitHelper.cs" />
     <Compile Include="Program.cs" />
