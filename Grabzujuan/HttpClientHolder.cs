@@ -42,7 +42,24 @@ namespace Grabzujuan
 
             }
         }
-
+        public static string GetRequest(string url, string cookie)
+        {
+            var result = string.Empty;
+            try
+            {
+                WebClient webClient = new WebClient();
+                webClient.Headers.Add(HttpRequestHeader.Cookie, cookie);
+                Stream stream = webClient.OpenRead(url);
+                StreamReader sr = new StreamReader(stream);
+                result = sr.ReadToEnd();
+                Debug.WriteLine(url);
+                return result;
+            }
+            catch (WebException ex)
+            {
+                return "";
+            }
+        }
         public static string Post(string url, string postData)
         {
             byte[] bs = Encoding.ASCII.GetBytes(postData);

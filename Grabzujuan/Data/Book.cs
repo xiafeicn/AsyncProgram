@@ -12,7 +12,7 @@ namespace Grabzujuan.Data
     using System;
     using System.Collections.Generic;
     
-    public partial class BookVersion
+    public partial class Book
     {
         public int Id { get; set; }
         public int BookVersionId { get; set; }

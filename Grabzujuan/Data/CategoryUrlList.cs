@@ -12,13 +12,13 @@ namespace Grabzujuan.Data
     using System;
     using System.Collections.Generic;
     
-    public partial class Category
+    public partial class CategoryUrlList
     {
         public int Id { get; set; }
-        public int CategoryId { get; set; }
-        public string CategoryName { get; set; }
-        public int BookId { get; set; }
         public string GrabUrl { get; set; }
-        public int Total { get; set; }
+        public int CategoryId { get; set; }
+        public int PageNum { get; set; }
+        public string ApiUrl { get; set; }
+        public string ApiJson { get; set; }
     }
 }

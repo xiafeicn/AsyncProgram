@@ -25,7 +25,7 @@ namespace Grabzujuan.Data
             throw new UnintentionalCodeFirstException();
         }
     
-        public virtual DbSet<BookVersion> BookVersion { get; set; }
+        public virtual DbSet<Book> Book { get; set; }
         public virtual DbSet<Category> Category { get; set; }
         public virtual DbSet<difficult_index> difficult_index { get; set; }
         public virtual DbSet<exam_type> exam_type { get; set; }
@@ -34,5 +34,7 @@ namespace Grabzujuan.Data
         public virtual DbSet<Subject> Subject { get; set; }
         public virtual DbSet<kid_num> kid_num { get; set; }
         public virtual DbSet<Question> Question { get; set; }
+        public virtual DbSet<V_AllCategory> V_AllCategory { get; set; }
+        public virtual DbSet<CategoryUrlList> CategoryUrlList { get; set; }
     }
 }

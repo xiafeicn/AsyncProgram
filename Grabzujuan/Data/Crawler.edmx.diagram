@@ -5,15 +5,17 @@
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
       <Diagram DiagramId="40411492ca334c489681af5eeb9e1b4a" Name="Diagram1">
-        <EntityTypeShape EntityType="CrawlerModel.BookVersion" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="CrawlerModel.Category" Width="1.5" PointX="2.75" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="CrawlerModel.difficult_index" Width="1.5" PointX="0.75" PointY="3.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="CrawlerModel.exam_type" Width="1.5" PointX="2.75" PointY="3.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="CrawlerModel.Paper" Width="1.5" PointX="4.75" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="CrawlerModel.question_channel_type" Width="1.5" PointX="4.75" PointY="3.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="CrawlerModel.Subject" Width="1.5" PointX="6.75" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="CrawlerModel.kid_num" Width="1.5" PointX="0.75" PointY="6.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="CrawlerModel.Question" Width="1.5" PointX="2.75" PointY="6.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="CrawlerModel.Book" Width="1.5" PointX="0.75" PointY="0.75" />
+        <EntityTypeShape EntityType="CrawlerModel.Category" Width="1.5" PointX="2.75" PointY="0.75" />
+        <EntityTypeShape EntityType="CrawlerModel.difficult_index" Width="1.5" PointX="0.75" PointY="3.75" />
+        <EntityTypeShape EntityType="CrawlerModel.exam_type" Width="1.5" PointX="2.75" PointY="3.75" />
+        <EntityTypeShape EntityType="CrawlerModel.Paper" Width="1.5" PointX="4.75" PointY="0.75" />
+        <EntityTypeShape EntityType="CrawlerModel.question_channel_type" Width="1.5" PointX="4.75" PointY="3.75" />
+        <EntityTypeShape EntityType="CrawlerModel.Subject" Width="1.5" PointX="6.75" PointY="0.75" />
+        <EntityTypeShape EntityType="CrawlerModel.kid_num" Width="1.5" PointX="0.75" PointY="6.75" />
+        <EntityTypeShape EntityType="CrawlerModel.Question" Width="1.5" PointX="2.75" PointY="6.75" />
+        <EntityTypeShape EntityType="CrawlerModel.V_AllCategory" Width="1.5" PointX="5.375" PointY="6.75" />
+        <EntityTypeShape EntityType="CrawlerModel.CategoryUrlList" Width="1.5" PointX="7.375" PointY="3.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
