@@ -22,7 +22,7 @@ namespace Grabzujuan
 
             var jArray = new JArray();
 
-
+            //<input type="hidden" name="categories" value="106064">
             foreach (var li in lis)
             {
                 jArray.Add(ParseQuestion(li));
