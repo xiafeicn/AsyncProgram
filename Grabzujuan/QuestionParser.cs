@@ -21,6 +21,8 @@ namespace Grabzujuan
             var lis = qlist.GetElementsByTag("li");
 
             var jArray = new JArray();
+
+
             foreach (var li in lis)
             {
                 jArray.Add(ParseQuestion(li));
@@ -106,7 +108,7 @@ namespace Grabzujuan
 
         public JObject ParseAnswer(string questionId)
         {
-            //questionId = "8630746";
+           // questionId = "8630746";
             JObject answer = new JObject();
             string url = string.Format("https://www.zujuan.com/question/detail-{0}.shtml", questionId);
             var html = new HttpUnitHelper().GetRealHtmlOnce(url);
@@ -118,14 +120,15 @@ namespace Grabzujuan
                 var qlist = NSoupClient.Parse(html).GetElementById("J_QuestionList").GetElementsByClass("exam-con")[0].GetElementsByClass("exam-qlist")[0];
 
                 var exam_cons = qlist.GetElementsByClass("exam-con");
-                var analyticboxs = qlist.GetElementsByClass("analyticbox");
 
+                var exam_cons_answers = qlist.Select("div.analyticbox.replace_anawer");
+                
                 JArray answer_list = new JArray();
                 for (int i = 0; i < exam_cons.Count; i++)
                 {
                     JObject result = new JObject();
                     result["question"] = exam_cons[i].GetElementsByClass("analyticbox")[0].ProcessHtmlImageElement().Html();
-                    result["answer"] = analyticboxs[i].ProcessHtmlImageElement().Html();
+                    result["answer"] = exam_cons_answers[i].ProcessHtmlImageElement().Html();
                     answer_list.Add(result);
                 }
                 answer["answer_list"] = answer_list;

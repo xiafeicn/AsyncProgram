@@ -37,11 +37,18 @@ namespace Grabzujuan
             //            var html = GetRealHtmlTrice("https://www.zujuan.com/question/index?chid=3&xd=1&tree_type=knowledge&page=2&per-page=10");
             //var html = HttpUnitHelper.GetRealHtmlTrice("https://www.zujuan.com/question?chid=3&xd=2&tree_type=knowledge");
 
-            new HttpUnitHelper().Login("18068085648","8213297");
-            
-            var html = new HttpUnitHelper().GetRealHtmlTrice("https://www.zujuan.com/question?chid=2&xd=1&tree_type=knowledge");
-            //var html = new HttpUnitHelper().GetRealHtmlTrice("https://www.zujuan.com/question?chid=3&xd=2&tree_type=knowledge");
+            new HttpUnitHelper().Login("18068085648", "8213297");
+
+            //第一级菜单
+            // var html = new HttpUnitHelper().GetRealHtmlTrice("https://www.zujuan.com/question?chid=2&xd=1&tree_type=knowledge");
+
+            //var total = NSoupClient.Parse(html).GetElementsByClass(".total")[0].GetElementsByTag("b")[0].Text().NullToInt();
+
+            //https://www.zujuan.com/question/index?chid=2&xd=1&tree_type=knowledge&page=2&per-page=10
+            var html = new HttpUnitHelper().GetRealHtmlTrice("https://www.zujuan.com/question?chid=3&xd=2&tree_type=knowledge");
             var str = JsonConvert.SerializeObject(new QuestionParser().ParseMath(html));
+
+            //var aa=new QuestionParser().ParseAnswer("");
         }
 
 

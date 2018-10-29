@@ -61,6 +61,7 @@ namespace Grabzujuan
         public string GetRealHtmlOnce(string url)
         {
             var page = webClient.GetHtmlPage(url);
+            webClient.WaitForBackgroundJavaScript(1000);
             var html = page.AsXml();
             webClient.Close();
             return html;
