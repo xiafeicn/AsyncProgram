@@ -126,12 +126,13 @@ namespace Grabzujuan
 
                 var url = $"https://www.zujuan.com/question?categories={category.CategoryId}&bookversion={category.BookVersionId}&nianji={category.CategoryId}&chid={category.Child}&xd={category.Degree}";
                 var html = new HttpUnitHelper().GetRealHtmlOnceNotWaitJs(url);
+                var questionCount = NSoupClient.Parse(html).GetElementById("J_QuestionList").GetElementsByTag("li").Count;
 
                 long start = 1000000000000;
                 long end = 1540849999999;
                 long randomId = 1540840000000 + new Random().Next(0000000, 9999999);
                 //todo 题型筛选
-               
+
                 var cookies = new HttpUnitHelper().webClient.GetCookies(new URL("https://www.zujuan.com/"));
                 var headerCookie = string.Empty;
                 foreach (var cookie in cookies)
@@ -139,17 +140,17 @@ namespace Grabzujuan
                     headerCookie += $"{cookie.Name}={cookie.Value};";
                 }
 
-                var json = HttpClientHolder.GetRequest(api, headerCookie);
+                var json = HttpClientHolder.Execute(api, headerCookie);
 
                 var total = JObject.Parse(json);
                 var totalCount = total["total"].NullToInt();
-
+                if (totalCount <= 0) continue;
                 var pageNum = totalCount / 10 + 1;
                 Parallel.For(1, pageNum, (i) =>
                 {
                     var currentApi =
            $"https://www.zujuan.com/question/list?categories={category.CategoryId}&sortField=time&page={i}&_={randomId}";
-                    var currentJson = HttpClientHolder.GetRequest(currentApi, headerCookie);
+                    var currentJson = HttpClientHolder.Execute(currentApi, headerCookie);
                     var grabUrl = "";
                     if (i > 1)
                     {
@@ -160,8 +161,11 @@ namespace Grabzujuan
                     {
                         grabUrl = url;
                     }
-
-                    DataService.AddCateUrl(grabUrl, category.CategoryId, i, currentApi, currentJson);
+                    Action actoin = () =>
+                    {
+                        DataService.AddCateUrl(grabUrl, category.CategoryId, i, currentApi, currentJson);
+                    };
+                    actoin.BeginInvoke(null, null);
                 });
 
                 sw.Stop();
