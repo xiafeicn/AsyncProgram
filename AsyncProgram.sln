@@ -71,6 +71,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CTRLC", "WindowsFormsApp1\C
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CtrlCV", "CtrlCV\CtrlCV.csproj", "{90A5B042-683F-4E0E-93C0-77395304A17C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OCR", "OCR\OCR.csproj", "{8EB9EF17-A2B3-496B-A528-1254E62FE23E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OcrLibrary", "OcrLibrary\OcrLibrary.csproj", "{C58FA8B3-784E-4091-A1E4-90FDE4807D98}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -213,6 +217,14 @@ Global
 		{90A5B042-683F-4E0E-93C0-77395304A17C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{90A5B042-683F-4E0E-93C0-77395304A17C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{90A5B042-683F-4E0E-93C0-77395304A17C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8EB9EF17-A2B3-496B-A528-1254E62FE23E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8EB9EF17-A2B3-496B-A528-1254E62FE23E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8EB9EF17-A2B3-496B-A528-1254E62FE23E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8EB9EF17-A2B3-496B-A528-1254E62FE23E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C58FA8B3-784E-4091-A1E4-90FDE4807D98}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C58FA8B3-784E-4091-A1E4-90FDE4807D98}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C58FA8B3-784E-4091-A1E4-90FDE4807D98}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C58FA8B3-784E-4091-A1E4-90FDE4807D98}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
