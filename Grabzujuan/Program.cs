@@ -37,13 +37,17 @@ namespace Grabzujuan
             //            var html = GetRealHtmlTrice("https://www.zujuan.com/question/index?chid=3&xd=1&tree_type=knowledge&page=2&per-page=10");
             //var html = HttpUnitHelper.GetRealHtmlTrice("https://www.zujuan.com/question?chid=3&xd=2&tree_type=knowledge");
 
+<<<<<<< HEAD
             //new HttpUnitHelper().Login("13661614607", "123456");
+=======
+>>>>>>> e564b2d2419e8d66ea84707e18b5cc172f860be6
 
-            //第一级菜单
-            // var html = new HttpUnitHelper().GetRealHtmlTrice("https://www.zujuan.com/question?chid=2&xd=1&tree_type=knowledge");
+            ////new HttpUnitHelper().Login("13661614607", "123456");
 
-            //var total = NSoupClient.Parse(html).GetElementsByClass(".total")[0].GetElementsByTag("b")[0].Text().NullToInt();
+            //////第一级菜单
+            ////// var html = new HttpUnitHelper().GetRealHtmlTrice("https://www.zujuan.com/question?chid=2&xd=1&tree_type=knowledge");
 
+<<<<<<< HEAD
             //https://www.zujuan.com/question/index?chid=2&xd=1&tree_type=knowledge&page=2&per-page=10
             //var html = new HttpUnitHelper().GetRealHtmlTrice("https://www.zujuan.com/question?chid=3&xd=2&tree_type=knowledge");
             //var str = JsonConvert.SerializeObject(new QuestionParser().ParseMath(html));
@@ -52,7 +56,21 @@ namespace Grabzujuan
             var j2 = new QuestionParser().ParseAnswer("8764862");
             //var aa=new QuestionParser().ParseAnswer("");
         }
+=======
+            //////var total = NSoupClient.Parse(html).GetElementsByClass(".total")[0].GetElementsByTag("b")[0].Text().NullToInt();
 
+            //////https://www.zujuan.com/question/index?chid=2&xd=1&tree_type=knowledge&page=2&per-page=10
+            ////var html = new HttpUnitHelper().GetRealHtmlTrice("https://www.zujuan.com/question?chid=3&xd=2&tree_type=knowledge");
+            ////var str = JsonConvert.SerializeObject(new QuestionParser().ParseMath(html));
+
+            //////var aa=new QuestionParser().ParseAnswer("");
+            /// 
+            new CategoryCrawler().InitCatePageUrl();
+>>>>>>> e564b2d2419e8d66ea84707e18b5cc172f860be6
+
+        }
+        //new CategoryCrawler().InitBook();
+        //new CategoryCrawler().InitCategory();
 
 
 

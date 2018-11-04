@@ -9,38 +9,18 @@ using NHtmlUnit.Html;
 
 namespace Grabzujuan
 {
-    public class HttpUnitHelper
+    public class HttpUnitHelperNosingleton
     {
 
-        static HttpUnitHelper()
-        {
-            wc.CssEnabled = true;
-            wc.JavaScriptEnabled = true;
-        }
-        public static WebClient wc = new WebClient(BrowserVersion.CHROME);
 
         public WebClient webClient
         {
             get
             {
+                WebClient wc = new WebClient(BrowserVersion.CHROME);
+                wc.JavaScriptEnabled = true;
                 return wc;
             }
-        }
-
-        public void Login(string user, string password)
-        {
-            var page = wc.GetPage("https://passport.zujuan.com/login") as HtmlPage;
-            //登录
-
-            HtmlInput ln = page.GetHtmlElementById("user-name") as HtmlInput;
-            HtmlInput pwd = page.GetHtmlElementById("user-pwd") as HtmlInput;
-            HtmlButton btn = page.GetFirstByXPath("/html/body/div[1]/div[1]/form/div[1]/div[3]/button") as HtmlButton;
-            ln.SetAttribute("value", user);
-            pwd.SetAttribute("value", password);
-
-            HtmlPage page2 = btn.Click() as HtmlPage;
-            //todo check login status
-            //登录完成，现在可以爬取任意你想要的页面了。
         }
 
         /// <summary>
@@ -62,15 +42,6 @@ namespace Grabzujuan
         {
             var page = webClient.GetHtmlPage(url);
             webClient.WaitForBackgroundJavaScript(1000);
-            var html = page.AsXml();
-            webClient.Close();
-            return html;
-        }
-
-        public string GetRealHtmlOnceNotWaitJs(string url)
-        {
-            webClient.ThrowExceptionOnScriptError = false;
-            var page = webClient.GetHtmlPage(url);
             var html = page.AsXml();
             webClient.Close();
             return html;

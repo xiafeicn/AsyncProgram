@@ -20,6 +20,8 @@ namespace OCR
             client.Timeout = 60000;  // 修改超时时间
 
             GeneralBasicUrlDemo();
+
+            Console.ReadKey();
         }
 
         static public void GeneralBasicDemo()

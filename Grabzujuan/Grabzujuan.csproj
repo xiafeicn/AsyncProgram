@@ -33,6 +33,14 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="HtmlUnit, Version=2.19.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\NHtmlUnit.2.19.0\lib\net45\HtmlUnit.dll</HintPath>
     </Reference>
@@ -130,8 +138,11 @@
       <HintPath>..\packages\NSoup.0.8.0\lib\net40\NSoup.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
     <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -141,7 +152,60 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CategoryCrawler.cs" />
+    <Compile Include="Common\ChildEnum.cs" />
+    <Compile Include="Common\DataService.cs" />
+    <Compile Include="Common\EnumExtensions.cs" />
+    <Compile Include="Data\Book.cs">
+      <DependentUpon>Crawler.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\Category.cs">
+      <DependentUpon>Crawler.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\CategoryUrlList.cs">
+      <DependentUpon>Crawler.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\Crawler.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Crawler.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\Crawler.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Crawler.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\Crawler.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Crawler.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="Data\difficult_index.cs">
+      <DependentUpon>Crawler.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\exam_type.cs">
+      <DependentUpon>Crawler.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\kid_num.cs">
+      <DependentUpon>Crawler.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\Paper.cs">
+      <DependentUpon>Crawler.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\Question.cs">
+      <DependentUpon>Crawler.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\question_channel_type.cs">
+      <DependentUpon>Crawler.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\Subject.cs">
+      <DependentUpon>Crawler.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\V_AllCategory.cs">
+      <DependentUpon>Crawler.tt</DependentUpon>
+    </Compile>
     <Compile Include="HttpClientHolder.cs" />
+    <Compile Include="HttpUnitHelperNosingleton.cs" />
     <Compile Include="HttpUnitHelper.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -150,7 +214,29 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <EntityDeploy Include="Data\Crawler.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>Crawler.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <None Include="Data\Crawler.edmx.diagram">
+      <DependentUpon>Crawler.edmx</DependentUpon>
+    </None>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Data\Crawler.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>Crawler.edmx</DependentUpon>
+      <LastGenOutput>Crawler.Context.cs</LastGenOutput>
+    </Content>
+    <Content Include="Data\Crawler.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>Crawler.edmx</DependentUpon>
+      <LastGenOutput>Crawler.cs</LastGenOutput>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Text;
+using System.Threading.Tasks;
 using System.Web;
 
 namespace Grabzujuan
@@ -43,6 +45,42 @@ namespace Grabzujuan
             }
         }
 
+        public static string Execute(string url, string cookie)
+        {
+            List<Exception> e = new List<Exception>();
+            int retry = 5;
+            for (var i = 0; i < retry; i++)
+            {
+                bool hasException = false;
+                try
+                {
+                    return GetRequest(url, cookie);
+                }
+                catch (Exception ex)
+                {
+                    e.Add(ex);
+                    hasException = true;
+                }
+                if (hasException)
+                {
+                    Task.Delay(1000);
+                }
+            }
+            throw new AggregateException(e);
+
+        }
+        public static string GetRequest(string url, string cookie)
+        {
+            var result = string.Empty;
+            WebClient webClient = new WebClient();
+
+            webClient.Headers.Add(HttpRequestHeader.Cookie, cookie);
+            Stream stream = webClient.OpenRead(url);
+            StreamReader sr = new StreamReader(stream);
+            result = sr.ReadToEnd();
+            Debug.WriteLine(url);
+            return result;
+        }
         public static string Post(string url, string postData)
         {
             byte[] bs = Encoding.ASCII.GetBytes(postData);
