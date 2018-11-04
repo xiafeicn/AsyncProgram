@@ -1,0 +1,877 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="CrawlerModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Book">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="BookVersionId" Type="int" Nullable="false" />
+          <Property Name="BookName" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Child" Type="int" Nullable="false" />
+          <Property Name="Degree" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Category">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CategoryId" Type="int" Nullable="false" />
+          <Property Name="CategoryName" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="BookId" Type="int" Nullable="false" />
+          <Property Name="GrabUrl" Type="nvarchar" MaxLength="500" />
+          <Property Name="Total" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="CategoryTree">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CategoryId" Type="int" Nullable="false" />
+          <Property Name="TreeId" Type="int" Nullable="false" />
+          <Property Name="ParentTreeId" Type="int" Nullable="false" />
+          <Property Name="TreeName" Type="nvarchar" MaxLength="100" />
+          <Property Name="Tempid" Type="int" />
+        </EntityType>
+        <EntityType Name="CategoryUrlList">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="GrabUrl" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="CategoryId" Type="int" Nullable="false" />
+          <Property Name="PageNum" Type="int" Nullable="false" />
+          <Property Name="ApiUrl" Type="nvarchar" MaxLength="500" />
+          <Property Name="ApiJson" Type="text" />
+          <Property Name="Status" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="CookieState">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Chid" Type="int" Nullable="false" />
+          <Property Name="Xd" Type="int" Nullable="false" />
+          <Property Name="Cookie" Type="nvarchar(max)" Nullable="false" />
+        </EntityType>
+        <EntityType Name="difficult_index">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Type" Type="int" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="exam_type">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+        </EntityType>
+        <!--生成过程中发现错误:
+警告 6002: 表/视图“Crawler.dbo.kid_num”未定义主键。已推断出该键，并将定义创建为只读的表/视图。-->
+        <EntityType Name="kid_num">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Paper">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="OriginUrl" Type="nvarchar(max)" />
+          <Property Name="Body" Type="text" />
+        </EntityType>
+        <EntityType Name="Proxy">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Ip" Type="nvarchar" MaxLength="50" />
+          <Property Name="Port" Type="nvarchar" MaxLength="50" />
+          <Property Name="LastGrabTime" Type="datetime" />
+          <Property Name="LastDisableTime" Type="datetime" />
+          <Property Name="Disable" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Question">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Question_Id" Type="int" Nullable="false" />
+          <Property Name="QuestionText" Type="text" Nullable="false" />
+          <Property Name="QuestionHtml" Type="text" />
+          <Property Name="CategoryId" Type="int" Nullable="false" />
+          <Property Name="BookId" Type="int" Nullable="false" />
+          <Property Name="Child" Type="int" Nullable="false" />
+          <Property Name="Degree" Type="int" Nullable="false" />
+          <Property Name="question_channel_type" Type="int" Nullable="false" />
+          <Property Name="difficult_index" Type="int" Nullable="false" />
+          <Property Name="exam_type" Type="int" Nullable="false" />
+          <Property Name="kid_num" Type="int" Nullable="false" />
+          <Property Name="grade_id" Type="int" Nullable="false" />
+          <Property Name="answer" Type="text" />
+          <Property Name="PaperId" Type="int" />
+          <Property Name="PaperUrl" Type="nvarchar" MaxLength="200" />
+          <Property Name="CrawlerUrl" Type="nvarchar" MaxLength="200" />
+          <Property Name="CategoryUrlListId" Type="int" Nullable="false" />
+          <Property Name="ApiJson" Type="text" />
+          <Property Name="AnswerJson" Type="text" />
+          <Property Name="Knowledge" Type="text" />
+          <Property Name="QuestionFrom" Type="nvarchar" MaxLength="500" />
+          <Property Name="QuestionSource" Type="nvarchar" MaxLength="500" />
+          <Property Name="Score" Type="text" />
+          <Property Name="IsGrabAns" Type="bit" Nullable="false" />
+          <Property Name="IsRemoteDelete" Type="bit" Nullable="false" />
+          <Property Name="QuestionList" Type="nvarchar(max)" />
+          <Property Name="Options" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="QuestionAll">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="QuestionId" Type="int" Nullable="false" />
+          <Property Name="IsDelete" Type="bit" />
+          <Property Name="AnswerJson" Type="nvarchar(max)" />
+          <Property Name="ApiJson" Type="nvarchar(max)" />
+          <Property Name="CrawlerUrl" Type="nvarchar" MaxLength="500" />
+          <Property Name="CrawlerApiUrl" Type="nvarchar" MaxLength="500" />
+          <Property Name="xd" Type="int" />
+          <Property Name="child" Type="int" />
+          <Property Name="CreateTime" Type="datetime" />
+          <Property Name="IsGrabAns" Type="bit" Nullable="false" />
+          <Property Name="IsRemoteDelete" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Subject">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Child" Type="int" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <!--生成过程中发现错误:
+警告 6002: 表/视图“Crawler.dbo.V_ALL_CategoryUrlList”未定义主键。已推断出该键，并将定义创建为只读的表/视图。-->
+        <EntityType Name="V_ALL_CategoryUrlList">
+          <Key>
+            <PropertyRef Name="Id" />
+            <PropertyRef Name="GrabUrl" />
+            <PropertyRef Name="CategoryId" />
+            <PropertyRef Name="PageNum" />
+            <PropertyRef Name="Status" />
+            <PropertyRef Name="BookVersionId" />
+            <PropertyRef Name="BookName" />
+            <PropertyRef Name="Degree" />
+            <PropertyRef Name="Child" />
+            <PropertyRef Name="BookId" />
+            <PropertyRef Name="CategoryName" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="GrabUrl" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="CategoryId" Type="int" Nullable="false" />
+          <Property Name="PageNum" Type="int" Nullable="false" />
+          <Property Name="ApiUrl" Type="nvarchar" MaxLength="500" />
+          <Property Name="ApiJson" Type="text" />
+          <Property Name="Status" Type="bit" Nullable="false" />
+          <Property Name="BookVersionId" Type="int" Nullable="false" />
+          <Property Name="BookName" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Degree" Type="int" Nullable="false" />
+          <Property Name="Child" Type="int" Nullable="false" />
+          <Property Name="BookId" Type="int" Nullable="false" />
+          <Property Name="CategoryName" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <!--生成过程中发现错误:
+警告 6002: 表/视图“Crawler.dbo.V_ALL_CrawlerQuestion”未定义主键。已推断出该键，并将定义创建为只读的表/视图。-->
+        <EntityType Name="V_ALL_CrawlerQuestion">
+          <Key>
+            <PropertyRef Name="BookName" />
+            <PropertyRef Name="CategoryName" />
+            <PropertyRef Name="Id" />
+            <PropertyRef Name="Question_Id" />
+            <PropertyRef Name="QuestionText" />
+            <PropertyRef Name="CategoryId" />
+            <PropertyRef Name="question_channel_type" />
+            <PropertyRef Name="difficult_index" />
+            <PropertyRef Name="exam_type" />
+            <PropertyRef Name="kid_num" />
+            <PropertyRef Name="grade_id" />
+            <PropertyRef Name="IsGrabAns" />
+            <PropertyRef Name="CategoryUrlListId" />
+          </Key>
+          <Property Name="BookName" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="CategoryName" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="Question_Id" Type="int" Nullable="false" />
+          <Property Name="QuestionText" Type="text" Nullable="false" />
+          <Property Name="QuestionHtml" Type="text" />
+          <Property Name="CategoryId" Type="int" Nullable="false" />
+          <Property Name="question_channel_type" Type="int" Nullable="false" />
+          <Property Name="difficult_index" Type="int" Nullable="false" />
+          <Property Name="exam_type" Type="int" Nullable="false" />
+          <Property Name="kid_num" Type="int" Nullable="false" />
+          <Property Name="grade_id" Type="int" Nullable="false" />
+          <Property Name="answer" Type="text" />
+          <Property Name="PaperId" Type="int" />
+          <Property Name="CrawlerUrl" Type="nvarchar" MaxLength="200" />
+          <Property Name="ApiJson" Type="text" />
+          <Property Name="Knowledge" Type="text" />
+          <Property Name="QuestionFrom" Type="nvarchar" MaxLength="500" />
+          <Property Name="QuestionSource" Type="nvarchar" MaxLength="500" />
+          <Property Name="Score" Type="text" />
+          <Property Name="IsGrabAns" Type="bit" Nullable="false" />
+          <Property Name="CategoryUrlListId" Type="int" Nullable="false" />
+        </EntityType>
+        <!--生成过程中发现错误:
+警告 6002: 表/视图“Crawler.dbo.V_AllCategory”未定义主键。已推断出该键，并将定义创建为只读的表/视图。-->
+        <EntityType Name="V_AllCategory">
+          <Key>
+            <PropertyRef Name="BookVersionId" />
+            <PropertyRef Name="BookName" />
+            <PropertyRef Name="Child" />
+            <PropertyRef Name="Degree" />
+            <PropertyRef Name="CategoryName" />
+            <PropertyRef Name="CategoryId" />
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="BookVersionId" Type="int" Nullable="false" />
+          <Property Name="BookName" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Child" Type="int" Nullable="false" />
+          <Property Name="Degree" Type="int" Nullable="false" />
+          <Property Name="CategoryName" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="CategoryId" Type="int" Nullable="false" />
+          <Property Name="Id" Type="int" Nullable="false" />
+        </EntityType>
+        <!--生成过程中发现错误:
+警告 6002: 表/视图“Crawler.dbo.V_CategoryTree”未定义主键。已推断出该键，并将定义创建为只读的表/视图。-->
+        <EntityType Name="V_CategoryTree">
+          <Key>
+            <PropertyRef Name="BookName" />
+            <PropertyRef Name="CategoryName" />
+          </Key>
+          <Property Name="BookName" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="CategoryName" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="TreeName" Type="nvarchar" MaxLength="100" />
+        </EntityType>
+        <!--生成过程中发现错误:
+警告 6013: 表/视图“Crawler.dbo.V_Tree”未定义主键，并且无法推断有效的主键。已排除了此表/视图。若要使用实体，将需要检查您的架构、添加正确的键并取消对实体的注释。
+        <EntityType Name="V_Tree">
+          <Property Name="TreeId" Type="int" />
+          <Property Name="ParentTreeId" Type="int" />
+          <Property Name="TreeName" Type="nvarchar" MaxLength="100" />
+        </EntityType>-->
+        <EntityContainer Name="CrawlerModelStoreContainer">
+          <EntitySet Name="Book" EntityType="Self.Book" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Category" EntityType="Self.Category" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CategoryTree" EntityType="Self.CategoryTree" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CategoryUrlList" EntityType="Self.CategoryUrlList" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CookieState" EntityType="Self.CookieState" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="difficult_index" EntityType="Self.difficult_index" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="exam_type" EntityType="Self.exam_type" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Paper" EntityType="Self.Paper" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Proxy" EntityType="Self.Proxy" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Question" EntityType="Self.Question" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="QuestionAll" EntityType="Self.QuestionAll" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Subject" EntityType="Self.Subject" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="kid_num" EntityType="Self.kid_num" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [kid_num].[Id] AS [Id]
+    FROM [dbo].[kid_num] AS [kid_num]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="V_ALL_CategoryUrlList" EntityType="Self.V_ALL_CategoryUrlList" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [V_ALL_CategoryUrlList].[Id] AS [Id], 
+    [V_ALL_CategoryUrlList].[GrabUrl] AS [GrabUrl], 
+    [V_ALL_CategoryUrlList].[CategoryId] AS [CategoryId], 
+    [V_ALL_CategoryUrlList].[PageNum] AS [PageNum], 
+    [V_ALL_CategoryUrlList].[ApiUrl] AS [ApiUrl], 
+    [V_ALL_CategoryUrlList].[ApiJson] AS [ApiJson], 
+    [V_ALL_CategoryUrlList].[Status] AS [Status], 
+    [V_ALL_CategoryUrlList].[BookVersionId] AS [BookVersionId], 
+    [V_ALL_CategoryUrlList].[BookName] AS [BookName], 
+    [V_ALL_CategoryUrlList].[Degree] AS [Degree], 
+    [V_ALL_CategoryUrlList].[Child] AS [Child], 
+    [V_ALL_CategoryUrlList].[BookId] AS [BookId], 
+    [V_ALL_CategoryUrlList].[CategoryName] AS [CategoryName]
+    FROM [dbo].[V_ALL_CategoryUrlList] AS [V_ALL_CategoryUrlList]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="V_ALL_CrawlerQuestion" EntityType="Self.V_ALL_CrawlerQuestion" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [V_ALL_CrawlerQuestion].[BookName] AS [BookName], 
+    [V_ALL_CrawlerQuestion].[CategoryName] AS [CategoryName], 
+    [V_ALL_CrawlerQuestion].[Id] AS [Id], 
+    [V_ALL_CrawlerQuestion].[Question_Id] AS [Question_Id], 
+    [V_ALL_CrawlerQuestion].[QuestionText] AS [QuestionText], 
+    [V_ALL_CrawlerQuestion].[QuestionHtml] AS [QuestionHtml], 
+    [V_ALL_CrawlerQuestion].[CategoryId] AS [CategoryId], 
+    [V_ALL_CrawlerQuestion].[question_channel_type] AS [question_channel_type], 
+    [V_ALL_CrawlerQuestion].[difficult_index] AS [difficult_index], 
+    [V_ALL_CrawlerQuestion].[exam_type] AS [exam_type], 
+    [V_ALL_CrawlerQuestion].[kid_num] AS [kid_num], 
+    [V_ALL_CrawlerQuestion].[grade_id] AS [grade_id], 
+    [V_ALL_CrawlerQuestion].[answer] AS [answer], 
+    [V_ALL_CrawlerQuestion].[PaperId] AS [PaperId], 
+    [V_ALL_CrawlerQuestion].[CrawlerUrl] AS [CrawlerUrl], 
+    [V_ALL_CrawlerQuestion].[ApiJson] AS [ApiJson], 
+    [V_ALL_CrawlerQuestion].[Knowledge] AS [Knowledge], 
+    [V_ALL_CrawlerQuestion].[QuestionFrom] AS [QuestionFrom], 
+    [V_ALL_CrawlerQuestion].[QuestionSource] AS [QuestionSource], 
+    [V_ALL_CrawlerQuestion].[Score] AS [Score], 
+    [V_ALL_CrawlerQuestion].[IsGrabAns] AS [IsGrabAns], 
+    [V_ALL_CrawlerQuestion].[CategoryUrlListId] AS [CategoryUrlListId]
+    FROM [dbo].[V_ALL_CrawlerQuestion] AS [V_ALL_CrawlerQuestion]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="V_AllCategory" EntityType="Self.V_AllCategory" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [V_AllCategory].[BookVersionId] AS [BookVersionId], 
+    [V_AllCategory].[BookName] AS [BookName], 
+    [V_AllCategory].[Child] AS [Child], 
+    [V_AllCategory].[Degree] AS [Degree], 
+    [V_AllCategory].[CategoryName] AS [CategoryName], 
+    [V_AllCategory].[CategoryId] AS [CategoryId], 
+    [V_AllCategory].[Id] AS [Id]
+    FROM [dbo].[V_AllCategory] AS [V_AllCategory]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="V_CategoryTree" EntityType="Self.V_CategoryTree" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [V_CategoryTree].[BookName] AS [BookName], 
+    [V_CategoryTree].[CategoryName] AS [CategoryName], 
+    [V_CategoryTree].[TreeName] AS [TreeName]
+    FROM [dbo].[V_CategoryTree] AS [V_CategoryTree]</DefiningQuery>
+          </EntitySet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="CrawlerModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityContainer Name="CrawlerEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Book" EntityType="CrawlerModel.Book" />
+          <EntitySet Name="Category" EntityType="CrawlerModel.Category" />
+          <EntitySet Name="CategoryTree" EntityType="CrawlerModel.CategoryTree" />
+          <EntitySet Name="CategoryUrlList" EntityType="CrawlerModel.CategoryUrlList" />
+          <EntitySet Name="CookieState" EntityType="CrawlerModel.CookieState" />
+          <EntitySet Name="difficult_index" EntityType="CrawlerModel.difficult_index" />
+          <EntitySet Name="exam_type" EntityType="CrawlerModel.exam_type" />
+          <EntitySet Name="Paper" EntityType="CrawlerModel.Paper" />
+          <EntitySet Name="Proxy" EntityType="CrawlerModel.Proxy" />
+          <EntitySet Name="Question" EntityType="CrawlerModel.Question" />
+          <EntitySet Name="QuestionAll" EntityType="CrawlerModel.QuestionAll" />
+          <EntitySet Name="Subject" EntityType="CrawlerModel.Subject" />
+          <EntitySet Name="kid_num" EntityType="CrawlerModel.kid_num" />
+          <EntitySet Name="V_ALL_CategoryUrlList" EntityType="CrawlerModel.V_ALL_CategoryUrlList" />
+          <EntitySet Name="V_ALL_CrawlerQuestion" EntityType="CrawlerModel.V_ALL_CrawlerQuestion" />
+          <EntitySet Name="V_AllCategory" EntityType="CrawlerModel.V_AllCategory" />
+          <EntitySet Name="V_CategoryTree" EntityType="CrawlerModel.V_CategoryTree" />
+        </EntityContainer>
+        <EntityType Name="Book">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="BookVersionId" Type="Int32" Nullable="false" />
+          <Property Name="BookName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Child" Type="Int32" Nullable="false" />
+          <Property Name="Degree" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Category">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CategoryId" Type="Int32" Nullable="false" />
+          <Property Name="CategoryName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="BookId" Type="Int32" Nullable="false" />
+          <Property Name="GrabUrl" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="Total" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="CategoryTree">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CategoryId" Type="Int32" Nullable="false" />
+          <Property Name="TreeId" Type="Int32" Nullable="false" />
+          <Property Name="ParentTreeId" Type="Int32" Nullable="false" />
+          <Property Name="TreeName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Tempid" Type="Int32" />
+        </EntityType>
+        <EntityType Name="CategoryUrlList">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="GrabUrl" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="CategoryId" Type="Int32" Nullable="false" />
+          <Property Name="PageNum" Type="Int32" Nullable="false" />
+          <Property Name="ApiUrl" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="ApiJson" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Status" Type="Boolean" Nullable="false" />
+        </EntityType>
+        <EntityType Name="CookieState">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Chid" Type="Int32" Nullable="false" />
+          <Property Name="Xd" Type="Int32" Nullable="false" />
+          <Property Name="Cookie" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="difficult_index">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Type" Type="Int32" Nullable="false" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="exam_type">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Paper">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="OriginUrl" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Body" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="Proxy">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Ip" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Port" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="LastGrabTime" Type="DateTime" Precision="3" />
+          <Property Name="LastDisableTime" Type="DateTime" Precision="3" />
+          <Property Name="Disable" Type="Boolean" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Question">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Question_Id" Type="Int32" Nullable="false" />
+          <Property Name="QuestionText" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="QuestionHtml" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="CategoryId" Type="Int32" Nullable="false" />
+          <Property Name="BookId" Type="Int32" Nullable="false" />
+          <Property Name="Child" Type="Int32" Nullable="false" />
+          <Property Name="Degree" Type="Int32" Nullable="false" />
+          <Property Name="question_channel_type" Type="Int32" Nullable="false" />
+          <Property Name="difficult_index" Type="Int32" Nullable="false" />
+          <Property Name="exam_type" Type="Int32" Nullable="false" />
+          <Property Name="kid_num" Type="Int32" Nullable="false" />
+          <Property Name="grade_id" Type="Int32" Nullable="false" />
+          <Property Name="answer" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="PaperId" Type="Int32" />
+          <Property Name="PaperUrl" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="CrawlerUrl" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="CategoryUrlListId" Type="Int32" Nullable="false" />
+          <Property Name="ApiJson" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="AnswerJson" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Knowledge" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="QuestionFrom" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="QuestionSource" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="Score" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="IsGrabAns" Type="Boolean" Nullable="false" />
+          <Property Name="IsRemoteDelete" Type="Boolean" Nullable="false" />
+          <Property Name="QuestionList" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Options" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="QuestionAll">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="QuestionId" Type="Int32" Nullable="false" />
+          <Property Name="IsDelete" Type="Boolean" />
+          <Property Name="AnswerJson" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ApiJson" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="CrawlerUrl" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="CrawlerApiUrl" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="xd" Type="Int32" />
+          <Property Name="child" Type="Int32" />
+          <Property Name="CreateTime" Type="DateTime" Precision="3" />
+          <Property Name="IsGrabAns" Type="Boolean" Nullable="false" />
+          <Property Name="IsRemoteDelete" Type="Boolean" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Subject">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Child" Type="Int32" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="kid_num">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="V_ALL_CategoryUrlList">
+          <Key>
+            <PropertyRef Name="Id" />
+            <PropertyRef Name="GrabUrl" />
+            <PropertyRef Name="CategoryId" />
+            <PropertyRef Name="PageNum" />
+            <PropertyRef Name="Status" />
+            <PropertyRef Name="BookVersionId" />
+            <PropertyRef Name="BookName" />
+            <PropertyRef Name="Degree" />
+            <PropertyRef Name="Child" />
+            <PropertyRef Name="BookId" />
+            <PropertyRef Name="CategoryName" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="GrabUrl" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="CategoryId" Type="Int32" Nullable="false" />
+          <Property Name="PageNum" Type="Int32" Nullable="false" />
+          <Property Name="ApiUrl" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="ApiJson" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Status" Type="Boolean" Nullable="false" />
+          <Property Name="BookVersionId" Type="Int32" Nullable="false" />
+          <Property Name="BookName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Degree" Type="Int32" Nullable="false" />
+          <Property Name="Child" Type="Int32" Nullable="false" />
+          <Property Name="BookId" Type="Int32" Nullable="false" />
+          <Property Name="CategoryName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="V_ALL_CrawlerQuestion">
+          <Key>
+            <PropertyRef Name="BookName" />
+            <PropertyRef Name="CategoryName" />
+            <PropertyRef Name="Id" />
+            <PropertyRef Name="Question_Id" />
+            <PropertyRef Name="QuestionText" />
+            <PropertyRef Name="CategoryId" />
+            <PropertyRef Name="question_channel_type" />
+            <PropertyRef Name="difficult_index" />
+            <PropertyRef Name="exam_type" />
+            <PropertyRef Name="kid_num" />
+            <PropertyRef Name="grade_id" />
+            <PropertyRef Name="IsGrabAns" />
+            <PropertyRef Name="CategoryUrlListId" />
+          </Key>
+          <Property Name="BookName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CategoryName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="Question_Id" Type="Int32" Nullable="false" />
+          <Property Name="QuestionText" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="QuestionHtml" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="CategoryId" Type="Int32" Nullable="false" />
+          <Property Name="question_channel_type" Type="Int32" Nullable="false" />
+          <Property Name="difficult_index" Type="Int32" Nullable="false" />
+          <Property Name="exam_type" Type="Int32" Nullable="false" />
+          <Property Name="kid_num" Type="Int32" Nullable="false" />
+          <Property Name="grade_id" Type="Int32" Nullable="false" />
+          <Property Name="answer" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="PaperId" Type="Int32" />
+          <Property Name="CrawlerUrl" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="ApiJson" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Knowledge" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="QuestionFrom" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="QuestionSource" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="Score" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="IsGrabAns" Type="Boolean" Nullable="false" />
+          <Property Name="CategoryUrlListId" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="V_AllCategory">
+          <Key>
+            <PropertyRef Name="BookVersionId" />
+            <PropertyRef Name="BookName" />
+            <PropertyRef Name="Child" />
+            <PropertyRef Name="Degree" />
+            <PropertyRef Name="CategoryName" />
+            <PropertyRef Name="CategoryId" />
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="BookVersionId" Type="Int32" Nullable="false" />
+          <Property Name="BookName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Child" Type="Int32" Nullable="false" />
+          <Property Name="Degree" Type="Int32" Nullable="false" />
+          <Property Name="CategoryName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CategoryId" Type="Int32" Nullable="false" />
+          <Property Name="Id" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="V_CategoryTree">
+          <Key>
+            <PropertyRef Name="BookName" />
+            <PropertyRef Name="CategoryName" />
+          </Key>
+          <Property Name="BookName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CategoryName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="TreeName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+        </EntityType>
+        </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="CrawlerModelStoreContainer" CdmEntityContainer="CrawlerEntities">
+          <EntitySetMapping Name="Book">
+            <EntityTypeMapping TypeName="CrawlerModel.Book">
+              <MappingFragment StoreEntitySet="Book">
+                <ScalarProperty Name="Degree" ColumnName="Degree" />
+                <ScalarProperty Name="Child" ColumnName="Child" />
+                <ScalarProperty Name="BookName" ColumnName="BookName" />
+                <ScalarProperty Name="BookVersionId" ColumnName="BookVersionId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Category">
+            <EntityTypeMapping TypeName="CrawlerModel.Category">
+              <MappingFragment StoreEntitySet="Category">
+                <ScalarProperty Name="Total" ColumnName="Total" />
+                <ScalarProperty Name="GrabUrl" ColumnName="GrabUrl" />
+                <ScalarProperty Name="BookId" ColumnName="BookId" />
+                <ScalarProperty Name="CategoryName" ColumnName="CategoryName" />
+                <ScalarProperty Name="CategoryId" ColumnName="CategoryId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CategoryTree">
+            <EntityTypeMapping TypeName="CrawlerModel.CategoryTree">
+              <MappingFragment StoreEntitySet="CategoryTree">
+                <ScalarProperty Name="Tempid" ColumnName="Tempid" />
+                <ScalarProperty Name="TreeName" ColumnName="TreeName" />
+                <ScalarProperty Name="ParentTreeId" ColumnName="ParentTreeId" />
+                <ScalarProperty Name="TreeId" ColumnName="TreeId" />
+                <ScalarProperty Name="CategoryId" ColumnName="CategoryId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CategoryUrlList">
+            <EntityTypeMapping TypeName="CrawlerModel.CategoryUrlList">
+              <MappingFragment StoreEntitySet="CategoryUrlList">
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="ApiJson" ColumnName="ApiJson" />
+                <ScalarProperty Name="ApiUrl" ColumnName="ApiUrl" />
+                <ScalarProperty Name="PageNum" ColumnName="PageNum" />
+                <ScalarProperty Name="CategoryId" ColumnName="CategoryId" />
+                <ScalarProperty Name="GrabUrl" ColumnName="GrabUrl" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CookieState">
+            <EntityTypeMapping TypeName="CrawlerModel.CookieState">
+              <MappingFragment StoreEntitySet="CookieState">
+                <ScalarProperty Name="Cookie" ColumnName="Cookie" />
+                <ScalarProperty Name="Xd" ColumnName="Xd" />
+                <ScalarProperty Name="Chid" ColumnName="Chid" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="difficult_index">
+            <EntityTypeMapping TypeName="CrawlerModel.difficult_index">
+              <MappingFragment StoreEntitySet="difficult_index">
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Type" ColumnName="Type" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="exam_type">
+            <EntityTypeMapping TypeName="CrawlerModel.exam_type">
+              <MappingFragment StoreEntitySet="exam_type">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Paper">
+            <EntityTypeMapping TypeName="CrawlerModel.Paper">
+              <MappingFragment StoreEntitySet="Paper">
+                <ScalarProperty Name="Body" ColumnName="Body" />
+                <ScalarProperty Name="OriginUrl" ColumnName="OriginUrl" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Proxy">
+            <EntityTypeMapping TypeName="CrawlerModel.Proxy">
+              <MappingFragment StoreEntitySet="Proxy">
+                <ScalarProperty Name="Disable" ColumnName="Disable" />
+                <ScalarProperty Name="LastDisableTime" ColumnName="LastDisableTime" />
+                <ScalarProperty Name="LastGrabTime" ColumnName="LastGrabTime" />
+                <ScalarProperty Name="Port" ColumnName="Port" />
+                <ScalarProperty Name="Ip" ColumnName="Ip" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Question">
+            <EntityTypeMapping TypeName="CrawlerModel.Question">
+              <MappingFragment StoreEntitySet="Question">
+                <ScalarProperty Name="Options" ColumnName="Options" />
+                <ScalarProperty Name="QuestionList" ColumnName="QuestionList" />
+                <ScalarProperty Name="IsRemoteDelete" ColumnName="IsRemoteDelete" />
+                <ScalarProperty Name="IsGrabAns" ColumnName="IsGrabAns" />
+                <ScalarProperty Name="Score" ColumnName="Score" />
+                <ScalarProperty Name="QuestionSource" ColumnName="QuestionSource" />
+                <ScalarProperty Name="QuestionFrom" ColumnName="QuestionFrom" />
+                <ScalarProperty Name="Knowledge" ColumnName="Knowledge" />
+                <ScalarProperty Name="AnswerJson" ColumnName="AnswerJson" />
+                <ScalarProperty Name="ApiJson" ColumnName="ApiJson" />
+                <ScalarProperty Name="CategoryUrlListId" ColumnName="CategoryUrlListId" />
+                <ScalarProperty Name="CrawlerUrl" ColumnName="CrawlerUrl" />
+                <ScalarProperty Name="PaperUrl" ColumnName="PaperUrl" />
+                <ScalarProperty Name="PaperId" ColumnName="PaperId" />
+                <ScalarProperty Name="answer" ColumnName="answer" />
+                <ScalarProperty Name="grade_id" ColumnName="grade_id" />
+                <ScalarProperty Name="kid_num" ColumnName="kid_num" />
+                <ScalarProperty Name="exam_type" ColumnName="exam_type" />
+                <ScalarProperty Name="difficult_index" ColumnName="difficult_index" />
+                <ScalarProperty Name="question_channel_type" ColumnName="question_channel_type" />
+                <ScalarProperty Name="Degree" ColumnName="Degree" />
+                <ScalarProperty Name="Child" ColumnName="Child" />
+                <ScalarProperty Name="BookId" ColumnName="BookId" />
+                <ScalarProperty Name="CategoryId" ColumnName="CategoryId" />
+                <ScalarProperty Name="QuestionHtml" ColumnName="QuestionHtml" />
+                <ScalarProperty Name="QuestionText" ColumnName="QuestionText" />
+                <ScalarProperty Name="Question_Id" ColumnName="Question_Id" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="QuestionAll">
+            <EntityTypeMapping TypeName="CrawlerModel.QuestionAll">
+              <MappingFragment StoreEntitySet="QuestionAll">
+                <ScalarProperty Name="IsRemoteDelete" ColumnName="IsRemoteDelete" />
+                <ScalarProperty Name="IsGrabAns" ColumnName="IsGrabAns" />
+                <ScalarProperty Name="CreateTime" ColumnName="CreateTime" />
+                <ScalarProperty Name="child" ColumnName="child" />
+                <ScalarProperty Name="xd" ColumnName="xd" />
+                <ScalarProperty Name="CrawlerApiUrl" ColumnName="CrawlerApiUrl" />
+                <ScalarProperty Name="CrawlerUrl" ColumnName="CrawlerUrl" />
+                <ScalarProperty Name="ApiJson" ColumnName="ApiJson" />
+                <ScalarProperty Name="AnswerJson" ColumnName="AnswerJson" />
+                <ScalarProperty Name="IsDelete" ColumnName="IsDelete" />
+                <ScalarProperty Name="QuestionId" ColumnName="QuestionId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Subject">
+            <EntityTypeMapping TypeName="CrawlerModel.Subject">
+              <MappingFragment StoreEntitySet="Subject">
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Child" ColumnName="Child" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="kid_num">
+            <EntityTypeMapping TypeName="CrawlerModel.kid_num">
+              <MappingFragment StoreEntitySet="kid_num">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="V_ALL_CategoryUrlList">
+            <EntityTypeMapping TypeName="CrawlerModel.V_ALL_CategoryUrlList">
+              <MappingFragment StoreEntitySet="V_ALL_CategoryUrlList">
+                <ScalarProperty Name="CategoryName" ColumnName="CategoryName" />
+                <ScalarProperty Name="BookId" ColumnName="BookId" />
+                <ScalarProperty Name="Child" ColumnName="Child" />
+                <ScalarProperty Name="Degree" ColumnName="Degree" />
+                <ScalarProperty Name="BookName" ColumnName="BookName" />
+                <ScalarProperty Name="BookVersionId" ColumnName="BookVersionId" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="ApiJson" ColumnName="ApiJson" />
+                <ScalarProperty Name="ApiUrl" ColumnName="ApiUrl" />
+                <ScalarProperty Name="PageNum" ColumnName="PageNum" />
+                <ScalarProperty Name="CategoryId" ColumnName="CategoryId" />
+                <ScalarProperty Name="GrabUrl" ColumnName="GrabUrl" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="V_ALL_CrawlerQuestion">
+            <EntityTypeMapping TypeName="CrawlerModel.V_ALL_CrawlerQuestion">
+              <MappingFragment StoreEntitySet="V_ALL_CrawlerQuestion">
+                <ScalarProperty Name="CategoryUrlListId" ColumnName="CategoryUrlListId" />
+                <ScalarProperty Name="IsGrabAns" ColumnName="IsGrabAns" />
+                <ScalarProperty Name="Score" ColumnName="Score" />
+                <ScalarProperty Name="QuestionSource" ColumnName="QuestionSource" />
+                <ScalarProperty Name="QuestionFrom" ColumnName="QuestionFrom" />
+                <ScalarProperty Name="Knowledge" ColumnName="Knowledge" />
+                <ScalarProperty Name="ApiJson" ColumnName="ApiJson" />
+                <ScalarProperty Name="CrawlerUrl" ColumnName="CrawlerUrl" />
+                <ScalarProperty Name="PaperId" ColumnName="PaperId" />
+                <ScalarProperty Name="answer" ColumnName="answer" />
+                <ScalarProperty Name="grade_id" ColumnName="grade_id" />
+                <ScalarProperty Name="kid_num" ColumnName="kid_num" />
+                <ScalarProperty Name="exam_type" ColumnName="exam_type" />
+                <ScalarProperty Name="difficult_index" ColumnName="difficult_index" />
+                <ScalarProperty Name="question_channel_type" ColumnName="question_channel_type" />
+                <ScalarProperty Name="CategoryId" ColumnName="CategoryId" />
+                <ScalarProperty Name="QuestionHtml" ColumnName="QuestionHtml" />
+                <ScalarProperty Name="QuestionText" ColumnName="QuestionText" />
+                <ScalarProperty Name="Question_Id" ColumnName="Question_Id" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="CategoryName" ColumnName="CategoryName" />
+                <ScalarProperty Name="BookName" ColumnName="BookName" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="V_AllCategory">
+            <EntityTypeMapping TypeName="CrawlerModel.V_AllCategory">
+              <MappingFragment StoreEntitySet="V_AllCategory">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="CategoryId" ColumnName="CategoryId" />
+                <ScalarProperty Name="CategoryName" ColumnName="CategoryName" />
+                <ScalarProperty Name="Degree" ColumnName="Degree" />
+                <ScalarProperty Name="Child" ColumnName="Child" />
+                <ScalarProperty Name="BookName" ColumnName="BookName" />
+                <ScalarProperty Name="BookVersionId" ColumnName="BookVersionId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="V_CategoryTree">
+            <EntityTypeMapping TypeName="CrawlerModel.V_CategoryTree">
+              <MappingFragment StoreEntitySet="V_CategoryTree">
+                <ScalarProperty Name="TreeName" ColumnName="TreeName" />
+                <ScalarProperty Name="CategoryName" ColumnName="CategoryName" />
+                <ScalarProperty Name="BookName" ColumnName="BookName" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="无" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
