@@ -326,6 +326,7 @@ select* from Question where ID in (select Rowid from @Rowid);
                     if (entity != null)
                     {
                         entity.IsRemoteDelete = true;
+                        entity.IsGrabAns = true;
                         db.SaveChanges();
                     }
                 }

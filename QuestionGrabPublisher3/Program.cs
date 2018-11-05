@@ -14,108 +14,38 @@ namespace QuestionGrabPublisher
     {
         static void Main(string[] args)
         {
-            try
+            while (true)
             {
-                var proxys =GetProxyListFromBy();
-                var listQuestion = GrabAnswers.GetTopQuestion();
-                Parallel.ForEach(listQuestion, (q) =>
+                if (AllCount() > 10000)
                 {
-                    GrabAnswers.CrawlerAnswer(q, proxys);
-                });
-            }
-            catch (Exception)
-            {
-            }
-            //while (GetTopQuestion().Count > 0)
-            //{
+                    Console.WriteLine("更新！！！");
+                    Update();
+                }
 
-            //}
-            finally
-            {
-                System.Windows.Forms.Application.Restart();
+                System.Threading.Thread.Sleep(1 * 60 * 1000);
             }
+            Console.ReadKey();
         }
-        public static List<string> GetProxyListFromBy()
+
+
+        static int AllCount()
         {
-            var res = HttpClientHolder.GetRequest("http://ip.yixrp.cn/vip.php?key=61089451273&sl=500");
-
-            return res.Split(Environment.NewLine.ToCharArray(), StringSplitOptions.RemoveEmptyEntries).ToList();
-
+            using (var db = new CrawlerEntities())
+            {
+                return
+                    db.Database.SqlQuery<int>(
+                        "select isnull(count(1),0) from question where AnswerJson is  null and  IsGrabAns=1 and IsRemoteDelete=0").FirstOrDefault();
+            }
         }
-        //        public static void StartCrawler()
-        //        {
-        //            try
-        //            {
-        //                var proxys = GrabAnswer.GetProxyListFromBy();
-        //                var question = GetTopQuestion();
 
-        //                List<Action> ll = new List<Action>();
-        //                foreach (var q in question)
-        //                {
-        //                    Action a = new Action(() =>
-        //                    {
-        //                        GrabAnswer.CrawlerAnswer(q, proxys);
-        //                    });
-        //                    ll.Add(a);
-        //                }
+        static void Update()
+        {
+            using (var db = new CrawlerEntities())
+            {
 
-        //                Parallel.Invoke(ll.ToArray());
-        //            }
-        //            catch (Exception)
-        //            {
-
-
-        //            }
-        //            finally
-        //            {
-        //                System.Windows.Forms.Application.Restart();
-        //            }
-        //            //while (GrabAnswer.GetTopQuestion().Count > 0)
-        //            //{
-        //            //    var listQuestion = GrabAnswer.GetTopQuestion();
-        //            //    CacheManager.RPush("QUESTION", listQuestion);
-        //            //    foreach (var q in listQuestion)
-        //            //    {
-        //            //        DataService.UpdateQuestionQueueStatus(q.Question_Id);
-        //            //    }
-        //            //}
-
-
-        //            //List<Question> listQuestion;
-        //            //do
-        //            //{
-        //            //    listQuestion = GetTopQuestion();
-        //            //    var proxys = GrabAnswer.GetProxyListFromBy();
-        //            //    Parallel.ForEach(listQuestion, (q) =>
-        //            //    {
-        //            //        GrabAnswer.CrawlerAnswer(q, proxys);
-        //            //    });
-        //            //} while (listQuestion.Count > 0);
-        //            //while (GetTopQuestion().Count > 0)
-        //            //{
-        //            //    var listQuestion = GetTopQuestion();
-        //            //    Parallel.ForEach(listQuestion, (q) =>
-        //            //    {
-        //            //        GrabAnswer.CrawlerAnswer(q);
-        //            //    });
-        //            //}
-
-        //        }
-
-
-        //        public static List<QuestionAll> GetTopQuestion()
-        //        {
-        //            using (var db = new CrawlerEntities())
-        //            {
-        //                return db.Database.SqlQuery<QuestionAll>(@"
-        //update [Question] set [IsGrabAns]=1 where  AnswerJson not like '' and [IsGrabAns]=0
-        //select  top 100 * into #temp from  QuestionAll where IsGrabAns =0 and IsRemoteDelete=0
-        //update QuestionAll set IsGrabAns=1 where id in (select id from #temp)
-
-        //select * from #temp
-        //").ToList();
-        //                //return db.Question.Where(t => t.IsGrabAns == false && t.IsRemoteDelete == false).Take(500).ToList();
-        //            }
-        //        }
+                db.Database.ExecuteSqlCommand(
+                    "update  question set IsGrabAns=0 where AnswerJson is  null and  IsGrabAns=1 and IsRemoteDelete=0");
+            }
+        }
     }
 }

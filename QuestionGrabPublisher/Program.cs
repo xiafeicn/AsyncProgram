@@ -71,7 +71,7 @@ namespace QuestionGrabPublisher
             //}
             finally
             {
-                System.Windows.Forms.Application.Restart();
+                //System.Windows.Forms.Application.Restart();
             }
         }
 

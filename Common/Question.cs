@@ -7,6 +7,8 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
+using Newtonsoft.Json;
+
 namespace Common
 {
     using System;
@@ -32,7 +34,9 @@ namespace Common
         public string PaperUrl { get; set; }
         public string CrawlerUrl { get; set; }
         public int CategoryUrlListId { get; set; }
+        [JsonIgnore]
         public string ApiJson { get; set; }
+        [JsonIgnore]
         public string AnswerJson { get; set; }
         public string Knowledge { get; set; }
         public string QuestionFrom { get; set; }

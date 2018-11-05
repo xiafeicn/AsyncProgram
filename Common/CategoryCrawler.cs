@@ -78,7 +78,7 @@ namespace Grabzujuan
 
         /// <summary>
         /// 整站采集，如果整体数据过一遍，需要重新生成这些category下每页的URL、
-        /// </summary>
+        /// </summary>58
         public void InitCatePageUrl()
         {
             var listCategory = DataService.GetCategorylist();
@@ -89,6 +89,11 @@ namespace Grabzujuan
 
             //Parallel.ForEach(listCategory, new ParallelOptions() { MaxDegreeOfParallelism = 10 }, (category) =>
             {
+                if (listCategory.IndexOf(category) <= 234
+                    )
+                {
+                    continue;
+                }
                 Debug.WriteLine($"start index {listCategory.IndexOf(category)}   total:{listCategory.Count}");
                 Console.WriteLine($"start index {listCategory.IndexOf(category)}   total:{listCategory.Count}");
                 //if (hasCateID.Any(t => t == category.CategoryId))
@@ -102,8 +107,8 @@ namespace Grabzujuan
 
                 var url = $"https://www.zujuan.com/question?categories={category.CategoryId}&bookversion={category.BookVersionId}&nianji={category.CategoryId}&chid={category.Child}&xd={category.Degree}";
                 var html = new HttpUnitHelper().GetRealHtmlOnceNotWaitJs(url);
-                //var questionCount = NSoupClient.Parse(html).GetElementById("J_QuestionList").GetElementsByTag("li").Count;
-
+                var questionCount = NSoupClient.Parse(html).GetElementById("J_QuestionList").GetElementsByTag("li").Count;
+                if (questionCount <= 0) continue;
                 long start = 1000000000000;
                 long end = 1540849999999;
                 long randomId = 1540840000000 + new Random().Next(0000000, 9999999);
@@ -121,7 +126,7 @@ namespace Grabzujuan
 
                 var total = JObject.Parse(json);
                 var totalCount = total["total"].NullToInt();
-                if (totalCount <= 0) return;
+                if (totalCount <= 0) throw new Exception("wronng!");
                 var pageNum = totalCount / 10 + 1;
                 Parallel.For(1, pageNum, (i) =>
                 {

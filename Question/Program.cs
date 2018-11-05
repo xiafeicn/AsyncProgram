@@ -30,35 +30,50 @@ namespace Grabzujuan
         static Dictionary<int, List<string>> dicQuestion = new Dictionary<int, List<string>>();
         static void Main(string[] args)
         {
-
-            var res = HttpClientHolder.GetRequest("https://www.zujuan.com/question?chid=2&xd=1&tree_type=knowledge");
-            var doc = NSoupClient.Parse(res).GetElementsByClass("item-list")[0].GetElementsByTag("a");
-
-            foreach (var href in doc)
+            var list = Export();
+            foreach (var item in list)
             {
-                var url = "https://www.zujuan.com"+ href.Attr("href");
-
-                new HttpUnitHelper().GetRealHtmlTrice(url);
-
-                var cooks = new HttpUnitHelper().webClient.GetCookies(new URL("https://www.zujuan.com"));
-                var xd = cooks.Where(t => t.Name == "xd").FirstOrDefault().Value;
-                var chid = cooks.Where(t => t.Name == "chid").FirstOrDefault().Value;
-                //var aa = HttpClientHolder.GetResponseCookie("https://www.zujuan.com" + url);
-                //var a = HttpClientHolder.GetResponseCookie("https://www.zujuan.com" + url);
-                //var xd = GrabAnswers.GetValue(a, "xd=", "path=/;");
-                //var chid = GrabAnswers.GetValue(a, "chid=", "path=/;");
-
-                using (var db = new CrawlerEntities())
+                var obj = JArray.Parse(item.AnswerJson)[0]["questions"][0];
+                if (!string.IsNullOrWhiteSpace(obj["list"].NullToString()))
                 {
-                    var table = new CookieState();
-                    table.Xd = StringExtensions.GetQueryString("xd", url).NullToInt();
-                    table.Chid = StringExtensions.GetQueryString("chid", url).NullToInt();
-                    table.Cookie =
-                        $"xd={xd} chid={chid} ";
-                    db.CookieState.Add(table);
-                    db.SaveChanges();
+                    item.QuestionList = obj["list"].NullToString();
+                }
+                if (!string.IsNullOrWhiteSpace(obj["options"].NullToString()))
+                {
+                    item.Options = obj["options"].NullToString();
                 }
             }
+            var str = JsonConvert.SerializeObject(list);
+
+            File.AppendAllText("D:\\1.txt",str);
+            //var res = HttpClientHolder.GetRequest("https://www.zujuan.com/question?chid=2&xd=1&tree_type=knowledge");
+            //var doc = NSoupClient.Parse(res).GetElementsByClass("item-list")[0].GetElementsByTag("a");
+
+            //foreach (var href in doc)
+            //{
+            //    var url = "https://www.zujuan.com" + href.Attr("href");
+
+            //    new HttpUnitHelper().GetRealHtmlTrice(url);
+
+            //    var cooks = new HttpUnitHelper().webClient.GetCookies(new URL("https://www.zujuan.com"));
+            //    var xd = cooks.Where(t => t.Name == "xd").FirstOrDefault().Value;
+            //    var chid = cooks.Where(t => t.Name == "chid").FirstOrDefault().Value;
+            //    var aa = HttpClientHolder.GetResponseCookie("https://www.zujuan.com" + url);
+            //    var a = HttpClientHolder.GetResponseCookie("https://www.zujuan.com" + url);
+            //    var xd = GrabAnswers.GetValue(a, "xd=", "path=/;");
+            //    var chid = GrabAnswers.GetValue(a, "chid=", "path=/;");
+
+            //    using (var db = new CrawlerEntities())
+            //    {
+            //        var table = new CookieState();
+            //        table.Xd = StringExtensions.GetQueryString("xd", url).NullToInt();
+            //        table.Chid = StringExtensions.GetQueryString("chid", url).NullToInt();
+            //        table.Cookie =
+            //            $"xd={xd} chid={chid} ";
+            //        db.CookieState.Add(table);
+            //        db.SaveChanges();
+            //    }
+            //}
 
             // //
             // //var a = ques.Take(100).Select(t => JObject.Parse(t.ApiJson)).SelectMany(t => t["data"]).SelectMany(t => t["questions"]).Select(t => t["question_id"].ToString());
@@ -88,7 +103,13 @@ namespace Grabzujuan
 
 
 
-
+        public static List<Question> Export()
+        {
+            using (var db = new CrawlerEntities())
+            {
+                return db.Question.Take(1000).ToList();
+            }
+        }
     }
 }
 
