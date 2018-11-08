@@ -11,7 +11,7 @@ namespace Grabzujuan
 {
     public class WebClientEx : WebClient
     {
-        public int Timeout { get; set; } = 10000;
+        public int Timeout { get; set; } = 20000;
 
         protected override WebRequest GetWebRequest(Uri address)
         {
@@ -72,7 +72,64 @@ namespace Grabzujuan
 
             }
         }
+        public static string Proxy_GetRequest2(string url)
+        {
+            try
+            {
+                WebClientEx webClient = new WebClientEx();
 
+                webClient.Encoding = Encoding.GetEncoding("gb2312");
+                if (true)
+                {
+                    //IP: 帐号: tets1106密码: tets1106开通成功！http端口：808
+                    //创建 代理服务器设置对象 的实例
+                    System.Net.WebProxy wp = new System.Net.WebProxy("123.249.2.2:888");
+                    //代理服务器需要验证
+                    wp.BypassProxyOnLocal = false;
+                    //用户名密码
+                    wp.Credentials = new NetworkCredential("te1107", "te1107");
+                    ////将代理服务器设置对象赋予全局设定
+                    //System.Net.GlobalProxySelection.Select = wp;
+
+
+                   
+                    webClient.Proxy = wp;
+                }
+
+                Stream stream = webClient.OpenRead(url);
+
+                StreamReader sr = new StreamReader(stream);
+                var result = sr.ReadToEnd();
+
+                Debug.WriteLine(url);
+                return result;
+            }
+            catch (IOException ioException)
+            {
+                throw;
+            }
+            catch (WebException ex)
+            {
+                if (ex.Response != null)
+                {
+                    switch (((System.Net.HttpWebResponse)(ex.Response)).StatusCode)
+                    {
+                        case HttpStatusCode.Unauthorized:
+                            throw new UnauthorizedAccessException("UnauthorizedAccess", ex);
+                        default:
+                            throw;
+                    }
+                }
+                else
+                {
+                    throw;
+                }
+            }
+            finally
+            {
+
+            }
+        }
         public static string Proxy_GetRequestAbyyun(string url)
         {
             try

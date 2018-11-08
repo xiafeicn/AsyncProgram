@@ -12,10 +12,11 @@ namespace Common
     using System;
     using System.Collections.Generic;
     
-    public partial class Subject
+    public partial class CategoryUrlListQuestion
     {
         public int Id { get; set; }
-        public int Child { get; set; }
-        public string Name { get; set; }
+        public int CategoryUrlListId { get; set; }
+        public int Question_Id { get; set; }
+        public System.DateTime CreateTime { get; set; }
     }
 }

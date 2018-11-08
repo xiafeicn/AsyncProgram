@@ -7,13 +7,17 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Common
+namespace DataSqlserver
 {
     using System;
     using System.Collections.Generic;
     
-    public partial class exam_type
+    public partial class Book
     {
         public int Id { get; set; }
+        public int BookVersionId { get; set; }
+        public string BookName { get; set; }
+        public int Child { get; set; }
+        public int Degree { get; set; }
     }
 }

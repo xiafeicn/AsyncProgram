@@ -7,24 +7,19 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Common
+namespace DataSqlserver
 {
     using System;
     using System.Collections.Generic;
     
-    public partial class QuestionAll
+    public partial class CategoryUrlList
     {
         public int Id { get; set; }
-        public int QuestionId { get; set; }
-        public Nullable<bool> IsDelete { get; set; }
-        public string AnswerJson { get; set; }
+        public string GrabUrl { get; set; }
+        public int CategoryId { get; set; }
+        public int PageNum { get; set; }
+        public string ApiUrl { get; set; }
         public string ApiJson { get; set; }
-        public string CrawlerUrl { get; set; }
-        public string CrawlerApiUrl { get; set; }
-        public Nullable<int> xd { get; set; }
-        public Nullable<int> child { get; set; }
-        public Nullable<System.DateTime> CreateTime { get; set; }
-        public bool IsGrabAns { get; set; }
-        public bool IsRemoteDelete { get; set; }
+        public byte Status { get; set; }
     }
 }

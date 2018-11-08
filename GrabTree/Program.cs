@@ -18,6 +18,9 @@ namespace GrabTree
     {
         static void Main(string[] args)
         {
+            GrabTopCate();
+
+
             var listCategory = GetTopTreeList();
 
             foreach (var cate in listCategory)
@@ -94,6 +97,8 @@ namespace GrabTree
 
             using (var db = new CrawlerEntities())
             {
+
+
                 CategoryTree entity = new CategoryTree();
                 entity.CategoryId = categoryId;
                 entity.TreeName = name;

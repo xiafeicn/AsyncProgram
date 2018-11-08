@@ -30,22 +30,22 @@ namespace Grabzujuan
         static Dictionary<int, List<string>> dicQuestion = new Dictionary<int, List<string>>();
         static void Main(string[] args)
         {
-            var list = Export();
-            foreach (var item in list)
-            {
-                var obj = JArray.Parse(item.AnswerJson)[0]["questions"][0];
-                if (!string.IsNullOrWhiteSpace(obj["list"].NullToString()))
-                {
-                    item.QuestionList = obj["list"].NullToString();
-                }
-                if (!string.IsNullOrWhiteSpace(obj["options"].NullToString()))
-                {
-                    item.Options = obj["options"].NullToString();
-                }
-            }
-            var str = JsonConvert.SerializeObject(list);
+            //var list = Export();
+            //foreach (var item in list)
+            //{
+            //    var obj = JArray.Parse(item.AnswerJson)[0]["questions"][0];
+            //    if (!string.IsNullOrWhiteSpace(obj["list"].NullToString()))
+            //    {
+            //        item.QuestionList = obj["list"].NullToString();
+            //    }
+            //    if (!string.IsNullOrWhiteSpace(obj["options"].NullToString()))
+            //    {
+            //        item.Options = obj["options"].NullToString();
+            //    }
+            //}
+            //var str = JsonConvert.SerializeObject(list);
 
-            File.AppendAllText("D:\\1.txt",str);
+            //File.AppendAllText("D:\\1.txt",str);
             //var res = HttpClientHolder.GetRequest("https://www.zujuan.com/question?chid=2&xd=1&tree_type=knowledge");
             //var doc = NSoupClient.Parse(res).GetElementsByClass("item-list")[0].GetElementsByTag("a");
 
@@ -96,7 +96,7 @@ namespace Grabzujuan
 
 
             //// GrabAnswer.GetProxyListFromBy();
-            //  GrabAnswers.StartSync();
+            GrabAnswers.StartSync();
             // System.Windows.Forms.Application.Restart();
         }
         //new CategoryCrawler().InitBook();

@@ -29,15 +29,8 @@ namespace Common
         public virtual DbSet<Category> Category { get; set; }
         public virtual DbSet<CategoryTree> CategoryTree { get; set; }
         public virtual DbSet<CategoryUrlList> CategoryUrlList { get; set; }
-        public virtual DbSet<CookieState> CookieState { get; set; }
-        public virtual DbSet<difficult_index> difficult_index { get; set; }
-        public virtual DbSet<exam_type> exam_type { get; set; }
-        public virtual DbSet<Paper> Paper { get; set; }
-        public virtual DbSet<Proxy> Proxy { get; set; }
+        public virtual DbSet<CategoryUrlListQuestion> CategoryUrlListQuestion { get; set; }
         public virtual DbSet<Question> Question { get; set; }
-        public virtual DbSet<QuestionAll> QuestionAll { get; set; }
-        public virtual DbSet<Subject> Subject { get; set; }
-        public virtual DbSet<kid_num> kid_num { get; set; }
         public virtual DbSet<V_ALL_CategoryUrlList> V_ALL_CategoryUrlList { get; set; }
         public virtual DbSet<V_ALL_CrawlerQuestion> V_ALL_CrawlerQuestion { get; set; }
         public virtual DbSet<V_AllCategory> V_AllCategory { get; set; }

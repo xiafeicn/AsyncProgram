@@ -7,16 +7,18 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Common
+namespace DataSqlserver
 {
     using System;
     using System.Collections.Generic;
     
-    public partial class CookieState
+    public partial class CategoryTree
     {
         public int Id { get; set; }
-        public int Chid { get; set; }
-        public int Xd { get; set; }
-        public string Cookie { get; set; }
+        public int CategoryId { get; set; }
+        public int TreeId { get; set; }
+        public int ParentTreeId { get; set; }
+        public string TreeName { get; set; }
+        public Nullable<int> Tempid { get; set; }
     }
 }

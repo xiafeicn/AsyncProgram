@@ -169,6 +169,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Runtime.Caching" />
@@ -197,12 +198,12 @@
     <Compile Include="CategoryUrlList.cs">
       <DependentUpon>Crawler.tt</DependentUpon>
     </Compile>
+    <Compile Include="CategoryUrlListQuestion.cs">
+      <DependentUpon>Crawler.tt</DependentUpon>
+    </Compile>
     <Compile Include="Common\ChildEnum.cs" />
     <Compile Include="Common\DataService.cs" />
     <Compile Include="Common\EnumExtensions.cs" />
-    <Compile Include="CookieState.cs">
-      <DependentUpon>Crawler.tt</DependentUpon>
-    </Compile>
     <Compile Include="Crawler.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -218,40 +219,19 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Crawler.edmx</DependentUpon>
     </Compile>
-    <Compile Include="difficult_index.cs">
-      <DependentUpon>Crawler.tt</DependentUpon>
-    </Compile>
-    <Compile Include="exam_type.cs">
-      <DependentUpon>Crawler.tt</DependentUpon>
-    </Compile>
     <Compile Include="GrabAnswers.cs" />
     <Compile Include="HttpClientHolder.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="HttpUnitHelper.cs" />
     <Compile Include="HttpUnitHelperNosingleton.cs" />
-    <Compile Include="kid_num.cs">
-      <DependentUpon>Crawler.tt</DependentUpon>
-    </Compile>
     <Compile Include="MemoryCache.cs" />
-    <Compile Include="Paper.cs">
-      <DependentUpon>Crawler.tt</DependentUpon>
-    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Proxy.cs">
-      <DependentUpon>Crawler.tt</DependentUpon>
-    </Compile>
     <Compile Include="Question.cs">
-      <DependentUpon>Crawler.tt</DependentUpon>
-    </Compile>
-    <Compile Include="QuestionAll.cs">
       <DependentUpon>Crawler.tt</DependentUpon>
     </Compile>
     <Compile Include="QuestionParser.cs" />
     <Compile Include="StringExtensions.cs" />
-    <Compile Include="Subject.cs">
-      <DependentUpon>Crawler.tt</DependentUpon>
-    </Compile>
     <Compile Include="V_AllCategory.cs">
       <DependentUpon>Crawler.tt</DependentUpon>
     </Compile>

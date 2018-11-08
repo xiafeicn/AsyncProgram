@@ -117,7 +117,7 @@ namespace Grabzujuan.Common
                         msg += string.Format("Property: {0} Error: {1}", error.PropertyName, error.ErrorMessage);
 
                 var fail = new Exception(msg);
-
+                throw fail;
             }
         }
 
@@ -140,23 +140,6 @@ namespace Grabzujuan.Common
         }
 
 
-        public static string GetCookieState(int chid, int xd)
-        {
-            using (var db = new CrawlerEntities())
-            {
-                var entity = db.CookieState.FirstOrDefault(t => t.Chid == chid && t.Xd == xd);
-                return entity.Cookie;
-            }
-        }
-
-        public static List<Book> GetBooklist()
-        {
-            using (var db = new CrawlerEntities())
-            {
-                return db.Book.ToList();
-            }
-        }
-
         public static List<V_AllCategory> GetCategorylist()
         {
             using (var db = new CrawlerEntities())
@@ -164,6 +147,19 @@ namespace Grabzujuan.Common
                 return db.V_AllCategory.ToList();
             }
         }
+
+        public static void UpdateCategoryTotalCount(int categoryId,int count)
+        {
+            using (var db = new CrawlerEntities())
+            {
+                var entity = db.Category.FirstOrDefault(t => t.CategoryId == categoryId);
+                entity.Total = count;
+                db.SaveChanges();
+            }
+        }
+
+
+
         public static List<int> GetCrawleredCatelist()
         {
             using (var db = new CrawlerEntities())
@@ -191,7 +187,7 @@ namespace Grabzujuan.Common
             }
         }
 
-        public static void AddCateUrl(string url, int categoryId, int pageNum, string apiUrl, string apiJson)
+        public static void AddCateUrl(string url, int categoryId, int pageNum, string apiUrl, string apiJson,int index)
         {
             using (var db = new CrawlerEntities())
             {
@@ -204,6 +200,7 @@ namespace Grabzujuan.Common
                 entity.PageNum = pageNum;
                 entity.ApiJson = apiJson;
                 entity.ApiUrl = apiUrl;
+                entity.IndexOfTask = index;
                 db.CategoryUrlList.Add(entity);
                 db.SaveChanges();
             }

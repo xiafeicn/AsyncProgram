@@ -7,18 +7,17 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Common
+namespace DataMySql
 {
     using System;
     using System.Collections.Generic;
     
-    public partial class Proxy
+    public partial class book
     {
         public int Id { get; set; }
-        public string Ip { get; set; }
-        public string Port { get; set; }
-        public Nullable<System.DateTime> LastGrabTime { get; set; }
-        public Nullable<System.DateTime> LastDisableTime { get; set; }
-        public bool Disable { get; set; }
+        public Nullable<int> BookVersionId { get; set; }
+        public string BookName { get; set; }
+        public Nullable<int> Child { get; set; }
+        public Nullable<int> Degree { get; set; }
     }
 }

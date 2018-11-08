@@ -48,56 +48,16 @@
           <Property Name="ApiUrl" Type="nvarchar" MaxLength="500" />
           <Property Name="ApiJson" Type="text" />
           <Property Name="Status" Type="bit" Nullable="false" />
+          <Property Name="IndexOfTask" Type="int" Nullable="false" />
         </EntityType>
-        <EntityType Name="CookieState">
+        <EntityType Name="CategoryUrlListQuestion">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="Chid" Type="int" Nullable="false" />
-          <Property Name="Xd" Type="int" Nullable="false" />
-          <Property Name="Cookie" Type="nvarchar(max)" Nullable="false" />
-        </EntityType>
-        <EntityType Name="difficult_index">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="Type" Type="int" Nullable="false" />
-          <Property Name="Name" Type="nvarchar" MaxLength="50" Nullable="false" />
-        </EntityType>
-        <EntityType Name="exam_type">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="int" Nullable="false" />
-        </EntityType>
-        <!--生成过程中发现错误:
-警告 6002: 表/视图“Crawler.dbo.kid_num”未定义主键。已推断出该键，并将定义创建为只读的表/视图。-->
-        <EntityType Name="kid_num">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="int" Nullable="false" />
-        </EntityType>
-        <EntityType Name="Paper">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="int" Nullable="false" />
-          <Property Name="OriginUrl" Type="nvarchar(max)" />
-          <Property Name="Body" Type="text" />
-        </EntityType>
-        <EntityType Name="Proxy">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="Ip" Type="nvarchar" MaxLength="50" />
-          <Property Name="Port" Type="nvarchar" MaxLength="50" />
-          <Property Name="LastGrabTime" Type="datetime" />
-          <Property Name="LastDisableTime" Type="datetime" />
-          <Property Name="Disable" Type="bit" Nullable="false" />
+          <Property Name="CategoryUrlListId" Type="int" Nullable="false" />
+          <Property Name="Question_Id" Type="int" Nullable="false" />
+          <Property Name="CreateTime" Type="datetime" Nullable="false" />
         </EntityType>
         <EntityType Name="Question">
           <Key>
@@ -105,7 +65,7 @@
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Question_Id" Type="int" Nullable="false" />
-          <Property Name="QuestionText" Type="text" Nullable="false" />
+          <Property Name="QuestionText" Type="text" />
           <Property Name="QuestionHtml" Type="text" />
           <Property Name="CategoryId" Type="int" Nullable="false" />
           <Property Name="BookId" Type="int" Nullable="false" />
@@ -129,33 +89,8 @@
           <Property Name="Score" Type="text" />
           <Property Name="IsGrabAns" Type="bit" Nullable="false" />
           <Property Name="IsRemoteDelete" Type="bit" Nullable="false" />
-          <Property Name="QuestionList" Type="nvarchar(max)" />
-          <Property Name="Options" Type="nvarchar(max)" />
-        </EntityType>
-        <EntityType Name="QuestionAll">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="QuestionId" Type="int" Nullable="false" />
-          <Property Name="IsDelete" Type="bit" />
-          <Property Name="AnswerJson" Type="nvarchar(max)" />
-          <Property Name="ApiJson" Type="nvarchar(max)" />
-          <Property Name="CrawlerUrl" Type="nvarchar" MaxLength="500" />
-          <Property Name="CrawlerApiUrl" Type="nvarchar" MaxLength="500" />
-          <Property Name="xd" Type="int" />
-          <Property Name="child" Type="int" />
-          <Property Name="CreateTime" Type="datetime" />
-          <Property Name="IsGrabAns" Type="bit" Nullable="false" />
-          <Property Name="IsRemoteDelete" Type="bit" Nullable="false" />
-        </EntityType>
-        <EntityType Name="Subject">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="Child" Type="int" Nullable="false" />
-          <Property Name="Name" Type="nvarchar" MaxLength="50" />
+          <Property Name="QuestionList" Type="text" />
+          <Property Name="Options" Type="text" />
         </EntityType>
         <!--生成过程中发现错误:
 警告 6002: 表/视图“Crawler.dbo.V_ALL_CategoryUrlList”未定义主键。已推断出该键，并将定义创建为只读的表/视图。-->
@@ -271,19 +206,8 @@
           <EntitySet Name="Category" EntityType="Self.Category" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CategoryTree" EntityType="Self.CategoryTree" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CategoryUrlList" EntityType="Self.CategoryUrlList" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="CookieState" EntityType="Self.CookieState" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="difficult_index" EntityType="Self.difficult_index" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="exam_type" EntityType="Self.exam_type" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Paper" EntityType="Self.Paper" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Proxy" EntityType="Self.Proxy" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CategoryUrlListQuestion" EntityType="Self.CategoryUrlListQuestion" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Question" EntityType="Self.Question" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="QuestionAll" EntityType="Self.QuestionAll" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Subject" EntityType="Self.Subject" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="kid_num" EntityType="Self.kid_num" store:Type="Tables" store:Schema="dbo">
-            <DefiningQuery>SELECT 
-    [kid_num].[Id] AS [Id]
-    FROM [dbo].[kid_num] AS [kid_num]</DefiningQuery>
-          </EntitySet>
           <EntitySet Name="V_ALL_CategoryUrlList" EntityType="Self.V_ALL_CategoryUrlList" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
     [V_ALL_CategoryUrlList].[Id] AS [Id], 
@@ -355,15 +279,8 @@
           <EntitySet Name="Category" EntityType="CrawlerModel.Category" />
           <EntitySet Name="CategoryTree" EntityType="CrawlerModel.CategoryTree" />
           <EntitySet Name="CategoryUrlList" EntityType="CrawlerModel.CategoryUrlList" />
-          <EntitySet Name="CookieState" EntityType="CrawlerModel.CookieState" />
-          <EntitySet Name="difficult_index" EntityType="CrawlerModel.difficult_index" />
-          <EntitySet Name="exam_type" EntityType="CrawlerModel.exam_type" />
-          <EntitySet Name="Paper" EntityType="CrawlerModel.Paper" />
-          <EntitySet Name="Proxy" EntityType="CrawlerModel.Proxy" />
+          <EntitySet Name="CategoryUrlListQuestion" EntityType="CrawlerModel.CategoryUrlListQuestion" />
           <EntitySet Name="Question" EntityType="CrawlerModel.Question" />
-          <EntitySet Name="QuestionAll" EntityType="CrawlerModel.QuestionAll" />
-          <EntitySet Name="Subject" EntityType="CrawlerModel.Subject" />
-          <EntitySet Name="kid_num" EntityType="CrawlerModel.kid_num" />
           <EntitySet Name="V_ALL_CategoryUrlList" EntityType="CrawlerModel.V_ALL_CategoryUrlList" />
           <EntitySet Name="V_ALL_CrawlerQuestion" EntityType="CrawlerModel.V_ALL_CrawlerQuestion" />
           <EntitySet Name="V_AllCategory" EntityType="CrawlerModel.V_AllCategory" />
@@ -412,48 +329,16 @@
           <Property Name="ApiUrl" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="ApiJson" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="Status" Type="Boolean" Nullable="false" />
+          <Property Name="IndexOfTask" Type="Int32" Nullable="false" />
         </EntityType>
-        <EntityType Name="CookieState">
+        <EntityType Name="CategoryUrlListQuestion">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Chid" Type="Int32" Nullable="false" />
-          <Property Name="Xd" Type="Int32" Nullable="false" />
-          <Property Name="Cookie" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
-        </EntityType>
-        <EntityType Name="difficult_index">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Type" Type="Int32" Nullable="false" />
-          <Property Name="Name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-        </EntityType>
-        <EntityType Name="exam_type">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" />
-        </EntityType>
-        <EntityType Name="Paper">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" />
-          <Property Name="OriginUrl" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="Body" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-        </EntityType>
-        <EntityType Name="Proxy">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Ip" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="Port" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="LastGrabTime" Type="DateTime" Precision="3" />
-          <Property Name="LastDisableTime" Type="DateTime" Precision="3" />
-          <Property Name="Disable" Type="Boolean" Nullable="false" />
+          <Property Name="CategoryUrlListId" Type="Int32" Nullable="false" />
+          <Property Name="Question_Id" Type="Int32" Nullable="false" />
+          <Property Name="CreateTime" Type="DateTime" Nullable="false" Precision="3" />
         </EntityType>
         <EntityType Name="Question">
           <Key>
@@ -461,7 +346,7 @@
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Question_Id" Type="Int32" Nullable="false" />
-          <Property Name="QuestionText" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="QuestionText" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="QuestionHtml" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="CategoryId" Type="Int32" Nullable="false" />
           <Property Name="BookId" Type="Int32" Nullable="false" />
@@ -485,39 +370,8 @@
           <Property Name="Score" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="IsGrabAns" Type="Boolean" Nullable="false" />
           <Property Name="IsRemoteDelete" Type="Boolean" Nullable="false" />
-          <Property Name="QuestionList" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="Options" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-        </EntityType>
-        <EntityType Name="QuestionAll">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="QuestionId" Type="Int32" Nullable="false" />
-          <Property Name="IsDelete" Type="Boolean" />
-          <Property Name="AnswerJson" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="ApiJson" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="CrawlerUrl" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
-          <Property Name="CrawlerApiUrl" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
-          <Property Name="xd" Type="Int32" />
-          <Property Name="child" Type="Int32" />
-          <Property Name="CreateTime" Type="DateTime" Precision="3" />
-          <Property Name="IsGrabAns" Type="Boolean" Nullable="false" />
-          <Property Name="IsRemoteDelete" Type="Boolean" Nullable="false" />
-        </EntityType>
-        <EntityType Name="Subject">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Child" Type="Int32" Nullable="false" />
-          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-        </EntityType>
-        <EntityType Name="kid_num">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="QuestionList" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Options" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="V_ALL_CategoryUrlList">
           <Key>
@@ -657,6 +511,7 @@
           <EntitySetMapping Name="CategoryUrlList">
             <EntityTypeMapping TypeName="CrawlerModel.CategoryUrlList">
               <MappingFragment StoreEntitySet="CategoryUrlList">
+                <ScalarProperty Name="IndexOfTask" ColumnName="IndexOfTask" />
                 <ScalarProperty Name="Status" ColumnName="Status" />
                 <ScalarProperty Name="ApiJson" ColumnName="ApiJson" />
                 <ScalarProperty Name="ApiUrl" ColumnName="ApiUrl" />
@@ -667,49 +522,12 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="CookieState">
-            <EntityTypeMapping TypeName="CrawlerModel.CookieState">
-              <MappingFragment StoreEntitySet="CookieState">
-                <ScalarProperty Name="Cookie" ColumnName="Cookie" />
-                <ScalarProperty Name="Xd" ColumnName="Xd" />
-                <ScalarProperty Name="Chid" ColumnName="Chid" />
-                <ScalarProperty Name="Id" ColumnName="Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="difficult_index">
-            <EntityTypeMapping TypeName="CrawlerModel.difficult_index">
-              <MappingFragment StoreEntitySet="difficult_index">
-                <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="Type" ColumnName="Type" />
-                <ScalarProperty Name="Id" ColumnName="Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="exam_type">
-            <EntityTypeMapping TypeName="CrawlerModel.exam_type">
-              <MappingFragment StoreEntitySet="exam_type">
-                <ScalarProperty Name="Id" ColumnName="Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Paper">
-            <EntityTypeMapping TypeName="CrawlerModel.Paper">
-              <MappingFragment StoreEntitySet="Paper">
-                <ScalarProperty Name="Body" ColumnName="Body" />
-                <ScalarProperty Name="OriginUrl" ColumnName="OriginUrl" />
-                <ScalarProperty Name="Id" ColumnName="Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Proxy">
-            <EntityTypeMapping TypeName="CrawlerModel.Proxy">
-              <MappingFragment StoreEntitySet="Proxy">
-                <ScalarProperty Name="Disable" ColumnName="Disable" />
-                <ScalarProperty Name="LastDisableTime" ColumnName="LastDisableTime" />
-                <ScalarProperty Name="LastGrabTime" ColumnName="LastGrabTime" />
-                <ScalarProperty Name="Port" ColumnName="Port" />
-                <ScalarProperty Name="Ip" ColumnName="Ip" />
+          <EntitySetMapping Name="CategoryUrlListQuestion">
+            <EntityTypeMapping TypeName="CrawlerModel.CategoryUrlListQuestion">
+              <MappingFragment StoreEntitySet="CategoryUrlListQuestion">
+                <ScalarProperty Name="CreateTime" ColumnName="CreateTime" />
+                <ScalarProperty Name="Question_Id" ColumnName="Question_Id" />
+                <ScalarProperty Name="CategoryUrlListId" ColumnName="CategoryUrlListId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -744,40 +562,6 @@
                 <ScalarProperty Name="QuestionHtml" ColumnName="QuestionHtml" />
                 <ScalarProperty Name="QuestionText" ColumnName="QuestionText" />
                 <ScalarProperty Name="Question_Id" ColumnName="Question_Id" />
-                <ScalarProperty Name="Id" ColumnName="Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="QuestionAll">
-            <EntityTypeMapping TypeName="CrawlerModel.QuestionAll">
-              <MappingFragment StoreEntitySet="QuestionAll">
-                <ScalarProperty Name="IsRemoteDelete" ColumnName="IsRemoteDelete" />
-                <ScalarProperty Name="IsGrabAns" ColumnName="IsGrabAns" />
-                <ScalarProperty Name="CreateTime" ColumnName="CreateTime" />
-                <ScalarProperty Name="child" ColumnName="child" />
-                <ScalarProperty Name="xd" ColumnName="xd" />
-                <ScalarProperty Name="CrawlerApiUrl" ColumnName="CrawlerApiUrl" />
-                <ScalarProperty Name="CrawlerUrl" ColumnName="CrawlerUrl" />
-                <ScalarProperty Name="ApiJson" ColumnName="ApiJson" />
-                <ScalarProperty Name="AnswerJson" ColumnName="AnswerJson" />
-                <ScalarProperty Name="IsDelete" ColumnName="IsDelete" />
-                <ScalarProperty Name="QuestionId" ColumnName="QuestionId" />
-                <ScalarProperty Name="Id" ColumnName="Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Subject">
-            <EntityTypeMapping TypeName="CrawlerModel.Subject">
-              <MappingFragment StoreEntitySet="Subject">
-                <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="Child" ColumnName="Child" />
-                <ScalarProperty Name="Id" ColumnName="Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="kid_num">
-            <EntityTypeMapping TypeName="CrawlerModel.kid_num">
-              <MappingFragment StoreEntitySet="kid_num">
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>

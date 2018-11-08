@@ -37,42 +37,12 @@ namespace Grabzujuan
 
         }
 
-        public static Proxy GetProxyList()
-        {
-            using (var db = new CrawlerEntities())
-            {
-                var limitTime = DateTime.Now.AddMinutes(-5);
-                if (db.Proxy.Any(t => (t.LastGrabTime == null || t.LastGrabTime <= limitTime) && t.Disable == false))
-                    return db.Proxy.FirstOrDefault(t => (t.LastGrabTime == null || t.LastGrabTime <= limitTime) && t.Disable == false);
-
-                throw new Exception("there is no userful proxy for grab!");
-            }
-        }
-
-        public static void UpdateProxGrabyime(int proxyId)
-        {
-            using (var db = new CrawlerEntities())
-            {
-                var proxy = db.Proxy.FirstOrDefault(t => t.Id == proxyId);
-                proxy.LastGrabTime = DateTime.Now;
-                db.SaveChanges();
-            }
-        }
-        public static void SetProxyDisable(int proxyId)
-        {
-            using (var db = new CrawlerEntities())
-            {
-                var proxy = db.Proxy.FirstOrDefault(t => t.Id == proxyId);
-                proxy.Disable = true;
-                db.SaveChanges();
-            }
-        }
 
         public static List<V_ALL_CategoryUrlList> GetCatePageList()
         {
             using (var db = new CrawlerEntities())
             {
-                return db.V_ALL_CategoryUrlList.Where(t => t.Status == false).Take(100).ToList();
+                return db.V_ALL_CategoryUrlList.Where(t => t.Status == false).Take(300).ToList();
                 //                return db.Database.SqlQuery<V_ALL_CategoryUrlList>(@"select top 1000 * from [dbo].[V_ALL_CategoryUrlList] where id not in (select distinct CategoryUrlListId from [dbo].[Question])
                 //").ToList();
                 //return db.V_ALL_CategoryUrlList.Where(t => t.Id == 19154).ToList();
@@ -88,7 +58,7 @@ namespace Grabzujuan
                 var data = db.Database.SqlQuery<Question>(@"
 declare @Rowid table(rowid int);
 BEGIN
-set rowcount 1000; --一次读取的行数
+set rowcount 600; --一次读取的行数
 --先将要读取的记录状态更新
 update Question set[IsGrabAns] = 1 output deleted.ID into @Rowid Where[IsGrabAns] = 0 and IsRemoteDelete = 0;
 
@@ -101,21 +71,35 @@ select* from Question where ID in (select Rowid from @Rowid);
             }
         }
 
+        public static void UpdateUnGrabQuestionStatus()
+        {
+            using (var db = new CrawlerEntities())
+            {
+                db.Database.ExecuteSqlCommand(
+                    "update  question set IsGrabAns=0 where AnswerJson is  null and IsRemoteDelete=0");
+            }
+        }
+
         public static void StartSync()
         {
             while (GetCatePageList().Count > 0)
             {
                 var question = GetCatePageList();
 
-                List<Action> ll = new List<Action>();
-                foreach (var q in question)
+                //List<Action> ll = new List<Action>();
+                //foreach (var q in question)
+                //{
+                //    Console.WriteLine($"{q.CategoryName}    {q.PageNum}");
+                //    ProcessPageQuestion(q);
+                //    DataService.UpdateQuestionStatus(q.Id);
+                //}
+                Parallel.ForEach(question, (q) =>
                 {
                     Console.WriteLine($"{q.CategoryName}    {q.PageNum}");
                     ProcessPageQuestion(q);
                     DataService.UpdateQuestionStatus(q.Id);
-                }
-
-                Parallel.Invoke(ll.ToArray());
+                });
+                //Parallel.Invoke(ll.ToArray());
             }
         }
 
@@ -178,8 +162,10 @@ select* from Question where ID in (select Rowid from @Rowid);
                     entity.Degree = que.Degree;
                     entity.QuestionText = q["question_text"].ToString();
                     entity.CrawlerUrl = string.Format("https://www.zujuan.com/question/detail-{0}.shtml", entity.Question_Id);
-                    entity.ApiJson = que.ApiJson;
-                    entity.Score = q["score"].ToString();
+                    entity.ApiJson = q.NullToString();
+                    entity.QuestionList = q["list"].NullToString();
+                    entity.Options = q["options"].NullToString();
+                    entity.Score = q["score"].NullToString();
                     listEntity.Add(entity);
                 }
 
@@ -213,9 +199,10 @@ select* from Question where ID in (select Rowid from @Rowid);
                         entity.Degree = que.Degree;
                         entity.QuestionText = q["question_text"].ToString();
                         entity.CrawlerUrl = string.Format("https://www.zujuan.com/question/detail-{0}.shtml", entity.Question_Id);
-                        entity.ApiJson = que.ApiJson;
-                        entity.Score = q["score"].ToString();
-
+                        entity.ApiJson = q.NullToString();
+                        entity.Score = q["score"].NullToString();
+                        entity.QuestionList = q["list"].NullToString();
+                        entity.Options = q["options"].NullToString();
 
                         listEntity.Add(entity);
                         //var sss = k["question_id"];
@@ -225,6 +212,25 @@ select* from Question where ID in (select Rowid from @Rowid);
             }
             try
             {
+                //var listItem = new List<CategoryUrlListQuestion>();
+                //if (listEntity.Count < 9)
+                //{
+
+                //}
+                //foreach (var item in listEntity)
+                //{
+                //    var e = new CategoryUrlListQuestion();
+                //    e.CategoryUrlListId = item.CategoryUrlListId;
+                //    e.Question_Id = item.Question_Id;
+                //    e.CreateTime=DateTime.Now;
+                //    listItem.Add(e);
+                //}
+                //using (var db = new CrawlerEntities())
+                //{
+                //    db.CategoryUrlListQuestion.AddRange(listItem);
+                //    db.SaveChanges();
+
+                //}
 
                 if (listEntity.Any())
                 {
@@ -239,11 +245,11 @@ select* from Question where ID in (select Rowid from @Rowid);
         }
 
 
-        public static void CrawlerAnswer(Question item, List<string> proxys)
+        public static void CrawlerAnswer(Question item)
         {
 
             //var answer = new QuestionParser().ParseAnswer(item.QuestionId.ToString());
-            var answerHttpClient = CrawlerSingleQuestion(item.Question_Id.ToString(), proxys);
+            var answerHttpClient = CrawlerSingleQuestion(item.Question_Id.ToString());
             if (answerHttpClient == null || string.IsNullOrWhiteSpace(answerHttpClient.ToString()))
             {
                 return;
@@ -260,13 +266,18 @@ select* from Question where ID in (select Rowid from @Rowid);
                  );
         }
 
-        public static JArray CrawlerSingleQuestion(string questionId, List<string> proxys)
+        public static JArray CrawlerSingleQuestion(string questionId)
         {
-            var proxy = proxys[new Random().Next(0, proxys.Count - 1)];
+            //var proxy = proxys[new Random().Next(0, proxys.Count - 1)];
             try
             {
 #if DEBUG
-                var a = HttpClientHolder.Proxy_GetRequest($"https://www.zujuan.com/question/detail-{questionId}.shtml", proxy);
+                //var a = HttpClientHolder.Proxy_GetRequest($"https://www.zujuan.com/question/detail-{questionId}.shtml", proxy);
+
+                //var ip = System.Configuration.ConfigurationManager.AppSettings["PROXY"].NullToString();
+                //var user = System.Configuration.ConfigurationManager.AppSettings["USER"].NullToString();
+                //var pwd = System.Configuration.ConfigurationManager.AppSettings["PWD"].NullToString();
+                var a = HttpClientHolder.Proxy_GetRequest2($"https://www.zujuan.com/question/detail-{questionId}.shtml");
 #else
                 var a = HttpClientHolder.Proxy_GetRequestAbyyun($"https://www.zujuan.com/question/detail-{questionId}.shtml");
 #endif
@@ -302,7 +313,7 @@ select* from Question where ID in (select Rowid from @Rowid);
                     }
                     return null;
                 }
-                Console.WriteLine($"start crawler https://www.zujuan.com/question/detail-{questionId}.shtml  {proxy}");
+                Console.WriteLine($"start crawler https://www.zujuan.com/question/detail-{questionId}.shtml ");
                 //例如我想提取记录中的NAME值
                 string value = GetValue(a, "var MockDataTestPaper =", "OT2.renderQList").TrimEnd(new char[] { ';' });
                 value = value.Trim().TrimEnd(new char[] { ';' }).Trim();
@@ -314,8 +325,18 @@ select* from Question where ID in (select Rowid from @Rowid);
             }
             catch (IOException io)
             {
-                if (!UnusefulProxy.Any(t => t.Equals(proxy)))
-                    UnusefulProxy.Add(proxy);
+                using (var db = new CrawlerEntities())
+                {
+                    var id = questionId.NullToInt();
+                    var entity = db.Question.FirstOrDefault(t => t.Question_Id == id);
+                    if (entity != null)
+                    {
+                        entity.IsRemoteDelete = true;
+                        entity.IsGrabAns = true;
+                        db.SaveChanges();
+                    }
+                }
+              
             }
             catch (JsonReaderException je)
             {
@@ -333,30 +354,29 @@ select* from Question where ID in (select Rowid from @Rowid);
             }
             catch (WebException we)
             {
-                //using (var db = new CrawlerEntities())
-                //{
-                //    var id = questionId.NullToInt();
-                //    var entity = db.Question.FirstOrDefault(t => t.Question_Id == id);
-                //    if (entity != null)
-                //    {
-                //        entity.IsGrabAns = false;
-                //        db.SaveChanges();
-                //    }
-                //}
+                using (var db = new CrawlerEntities())
+                {
+                    var id = questionId.NullToInt();
+                    var entity = db.Question.FirstOrDefault(t => t.Question_Id == id);
+                    if (entity != null)
+                    {
+                        entity.IsGrabAns = false;
+                        db.SaveChanges();
+                    }
+                }
                 //if (we.Status == WebExceptionStatus.ConnectFailure || we.Status == WebExceptionStatus.ProtocolError)
                 //{
-                if (!UnusefulProxy.Any(t => t.Equals(proxy)))
-                    UnusefulProxy.Add(proxy);
                 //SetProxyDisable(proxy.Id);
 
                 //}
+                Console.WriteLine("error web request!");
             }
             catch (Exception e)
             {
                 using (var db = new CrawlerEntities())
                 {
                     var id = questionId.NullToInt();
-                    var entity = db.QuestionAll.FirstOrDefault(t => t.QuestionId == id);
+                    var entity = db.Question.FirstOrDefault(t => t.Question_Id == id);
                     if (entity != null)
                     {
                         entity.IsGrabAns = false;

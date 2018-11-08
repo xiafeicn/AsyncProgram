@@ -7,15 +7,19 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Common
+namespace DataSqlserver
 {
     using System;
     using System.Collections.Generic;
     
-    public partial class Paper
+    public partial class V_AllCategory
     {
+        public int BookVersionId { get; set; }
+        public string BookName { get; set; }
+        public int Child { get; set; }
+        public int Degree { get; set; }
+        public string CategoryName { get; set; }
+        public int CategoryId { get; set; }
         public int Id { get; set; }
-        public string OriginUrl { get; set; }
-        public string Body { get; set; }
     }
 }

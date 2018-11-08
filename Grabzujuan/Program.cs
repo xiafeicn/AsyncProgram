@@ -36,8 +36,7 @@ namespace Grabzujuan
             //var str = JsonConvert.SerializeObject(yuwen(html));
             //            var html = GetRealHtmlTrice("https://www.zujuan.com/question/index?chid=3&xd=1&tree_type=knowledge&page=2&per-page=10");
             //var html = HttpUnitHelper.GetRealHtmlTrice("https://www.zujuan.com/question?chid=3&xd=2&tree_type=knowledge");
-            new CategoryCrawler().InitCatePageUrl();
-
+            //new CategoryCrawler().InitCatePageUrl();
         }
         //new CategoryCrawler().InitBook();
         //new CategoryCrawler().InitCategory();

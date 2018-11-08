@@ -7,13 +7,18 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Common
+namespace DataSqlserver
 {
     using System;
     using System.Collections.Generic;
     
-    public partial class kid_num
+    public partial class Category
     {
         public int Id { get; set; }
+        public int CategoryId { get; set; }
+        public string CategoryName { get; set; }
+        public int BookId { get; set; }
+        public string GrabUrl { get; set; }
+        public int Total { get; set; }
     }
 }

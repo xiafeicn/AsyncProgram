@@ -7,15 +7,15 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Common
+namespace DataSqlserver
 {
     using System;
     using System.Collections.Generic;
     
-    public partial class difficult_index
+    public partial class V_CategoryTree
     {
-        public int Id { get; set; }
-        public int Type { get; set; }
-        public string Name { get; set; }
+        public string BookName { get; set; }
+        public string CategoryName { get; set; }
+        public string TreeName { get; set; }
     }
 }

@@ -19,51 +19,21 @@ namespace QuestionGrabPublisher
 
                 var listQuestion = GrabAnswers.GetTopQuestion();
 
-                Action action1 = () =>
+                if (listQuestion.Count <= 0)
                 {
-                    var proxys = GrabAnswers.GetProxyListFromBy();
-                    Parallel.ForEach(listQuestion.Skip(0).Take(200), (q) =>
+                    return;
+                }
+                //var proxys = GrabAnswers.GetProxyListFromBy();
+                Parallel.ForEach(listQuestion, (q) =>
                     {
-                        GrabAnswers.CrawlerAnswer(q, proxys);
+                        GrabAnswers.CrawlerAnswer(q);
                     });
-                };
-                Action action2 = () =>
-                {
-                    var proxys = GrabAnswers.GetProxyListFromBy();
-                    Parallel.ForEach(listQuestion.Skip(0).Take(200), (q) =>
-                    {
-                        GrabAnswers.CrawlerAnswer(q, proxys);
-                    });
-                };
-                Action action3 = () =>
-                {
-                    var proxys = GrabAnswers.GetProxyListFromBy();
-                    Parallel.ForEach(listQuestion.Skip(400).Take(200), (q) =>
-                    {
-                        GrabAnswers.CrawlerAnswer(q, proxys);
-                    });
-                };
-                Action action4 = () =>
-                {
-                    var proxys = GrabAnswers.GetProxyListFromBy();
-                    Parallel.ForEach(listQuestion.Skip(600).Take(200), (q) =>
-                    {
-                        GrabAnswers.CrawlerAnswer(q, proxys);
-                    });
-                };
-                Action action5 = () =>
-                {
-                    var proxys = GrabAnswers.GetProxyListFromBy();
-                    Parallel.ForEach(listQuestion.Skip(800).Take(200), (q) =>
-                    {
-                        GrabAnswers.CrawlerAnswer(q, proxys);
-                    });
-                };
-                Parallel.Invoke(action1, action2, action3, action4, action5);
             }
             catch (Exception e)
             {
                 Console.WriteLine(e.ToString());
+                GrabAnswers.UpdateUnGrabQuestionStatus();
+               
             }
             //while (GetTopQuestion().Count > 0)
             //{
@@ -71,7 +41,17 @@ namespace QuestionGrabPublisher
             //}
             finally
             {
-                //System.Windows.Forms.Application.Restart();
+
+                var listQuestion = GrabAnswers.GetTopQuestion();
+                if (listQuestion.Count <= 0)
+                {
+                    System.Windows.Forms.Application.Exit();
+                }
+                if (listQuestion.Count > 0)
+                {
+                    System.Windows.Forms.Application.Restart();
+                }
+
             }
         }
 

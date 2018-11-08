@@ -21,5 +21,6 @@ namespace Common
         public string ApiUrl { get; set; }
         public string ApiJson { get; set; }
         public bool Status { get; set; }
+        public int IndexOfTask { get; set; }
     }
 }
