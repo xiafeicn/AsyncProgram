@@ -148,15 +148,15 @@ namespace Grabzujuan.Common
             }
         }
 
-        public static void UpdateCategoryTotalCount(int categoryId,int count)
-        {
-            using (var db = new CrawlerEntities())
-            {
-                var entity = db.Category.FirstOrDefault(t => t.CategoryId == categoryId);
-                entity.Total = count;
-                db.SaveChanges();
-            }
-        }
+        //public static void UpdateCategoryTotalCount(int categoryId,int count)
+        //{
+        //    using (var db = new CrawlerEntities())
+        //    {
+        //        var entity = db.Category.FirstOrDefault(t => t.CategoryId == categoryId);
+        //        entity.Total = count;
+        //        db.SaveChanges();
+        //    }
+        //}
 
 
 
@@ -167,18 +167,18 @@ namespace Grabzujuan.Common
                 return db.CategoryUrlList.Select(t => t.CategoryId).Distinct().ToList();
             }
         }
-        public static void UpdateCategoryCount(int id, int count)
-        {
-            using (var db = new CrawlerEntities())
-            {
-                var entity = db.Category.FirstOrDefault(t => t.Id == id);
-                if (entity != null)
-                {
-                    entity.Total = count;
-                    db.SaveChanges();
-                }
-            }
-        }
+        //public static void UpdateCategoryCount(int id, int count)
+        //{
+        //    using (var db = new CrawlerEntities())
+        //    {
+        //        var entity = db.Category.FirstOrDefault(t => t.Id == id);
+        //        if (entity != null)
+        //        {
+        //            entity.Total = count;
+        //            db.SaveChanges();
+        //        }
+        //    }
+        //}
         public static bool IsCateUrlGrabed(int categoryId, int page)
         {
             using (var db = new CrawlerEntities())
@@ -206,22 +206,22 @@ namespace Grabzujuan.Common
             }
         }
 
-        public static void AddCategory(int bookId, int categoryId, string categoryName, int total)
-        {
-            using (var db = new CrawlerEntities())
-            {
-                if (db.Category.Any(t => t.CategoryId == categoryId))
-                    return;
-                var entity = new Category();
-                ;
-                entity.BookId = bookId;
-                entity.CategoryId = categoryId;
-                entity.CategoryName = categoryName;
-                entity.GrabUrl = "";
-                entity.Total = total;
-                db.Category.Add(entity);
-                db.SaveChanges();
-            }
-        }
+        //public static void AddCategory(int bookId, int categoryId, string categoryName, int total)
+        //{
+        //    using (var db = new CrawlerEntities())
+        //    {
+        //        if (db.Category.Any(t => t.CategoryId == categoryId))
+        //            return;
+        //        var entity = new Category();
+        //        ;
+        //        entity.BookId = bookId;
+        //        entity.CategoryId = categoryId;
+        //        entity.CategoryName = categoryName;
+        //        entity.GrabUrl = "";
+        //        entity.Total = total;
+        //        db.Category.Add(entity);
+        //        db.SaveChanges();
+        //    }
+        //}
     }
 }

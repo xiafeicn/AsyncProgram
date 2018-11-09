@@ -12,11 +12,10 @@ namespace Common
     using System;
     using System.Collections.Generic;
     
-    public partial class Category
+    public partial class Grade
     {
         public int Id { get; set; }
-        public int CategoryId { get; set; }
-        public string CategoryName { get; set; }
-        public int SubjectId { get; set; }
+        public int GradeId { get; set; }
+        public string GradeName { get; set; }
     }
 }

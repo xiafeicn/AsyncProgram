@@ -12,11 +12,12 @@ namespace Common
     using System;
     using System.Collections.Generic;
     
-    public partial class Category
+    public partial class JiaoCai
     {
         public int Id { get; set; }
         public int CategoryId { get; set; }
-        public string CategoryName { get; set; }
-        public int SubjectId { get; set; }
+        public string JCName { get; set; }
+        public int JiaoCaiId { get; set; }
+        public string JiaoCaiUrl { get; set; }
     }
 }
