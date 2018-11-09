@@ -4,16 +4,18 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{25E67706-292A-457E-85CD-434B9AE28C0E}</ProjectGuid>
-    <OutputType>Library</OutputType>
+    <ProjectGuid>{A814FF9D-ABFD-4C38-9FD4-E1AC586EC0BD}</ProjectGuid>
+    <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Common</RootNamespace>
-    <AssemblyName>Common</AssemblyName>
+    <RootNamespace>KnowledgeTree</RootNamespace>
+    <AssemblyName>KnowledgeTree</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -23,6 +25,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -32,12 +35,11 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
-      <Private>True</Private>
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\AsyncProgramV2\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
     </Reference>
-    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="EntityFramework.SqlServer">
+      <HintPath>..\..\AsyncProgramV2\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
     <Reference Include="HtmlUnit, Version=2.19.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\NHtmlUnit.2.19.0\lib\net45\HtmlUnit.dll</HintPath>
@@ -168,15 +170,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="System.ComponentModel.DataAnnotations" />
-    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Runtime.Caching" />
-    <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="System.Security" />
-    <Reference Include="System.Web" />
-    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -185,102 +179,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Book.cs">
-      <DependentUpon>Crawler.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Category.cs">
-      <DependentUpon>Crawler.tt</DependentUpon>
-    </Compile>
-    <Compile Include="CategoryCrawler.cs" />
-    <Compile Include="CategoryTree.cs">
-      <DependentUpon>Crawler.tt</DependentUpon>
-    </Compile>
-    <Compile Include="CategoryUrlList.cs">
-      <DependentUpon>Crawler.tt</DependentUpon>
-    </Compile>
-    <Compile Include="CategoryUrlListQuestion.cs">
-      <DependentUpon>Crawler.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Common\ChildEnum.cs" />
-    <Compile Include="Common\DataService.cs" />
-    <Compile Include="Common\EnumExtensions.cs" />
-    <Compile Include="Crawler.Context.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Crawler.Context.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Crawler.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Crawler.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Crawler.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Crawler.edmx</DependentUpon>
-    </Compile>
-    <Compile Include="GrabAnswers.cs" />
-    <Compile Include="HttpClientHolder.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="HttpUnitHelper.cs" />
-    <Compile Include="HttpUnitHelperNosingleton.cs" />
-    <Compile Include="KnowledgeTree.cs">
-      <DependentUpon>Crawler.tt</DependentUpon>
-    </Compile>
-    <Compile Include="MemoryCache.cs" />
+    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Question.cs">
-      <DependentUpon>Crawler.tt</DependentUpon>
-    </Compile>
-    <Compile Include="QuestionParser.cs" />
-    <Compile Include="StringExtensions.cs" />
-    <Compile Include="V_AllCategory.cs">
-      <DependentUpon>Crawler.tt</DependentUpon>
-    </Compile>
-    <Compile Include="V_ALL_CategoryUrlList.cs">
-      <DependentUpon>Crawler.tt</DependentUpon>
-    </Compile>
-    <Compile Include="V_ALL_CrawlerQuestion.cs">
-      <DependentUpon>Crawler.tt</DependentUpon>
-    </Compile>
-    <Compile Include="V_Category.cs">
-      <DependentUpon>Crawler.tt</DependentUpon>
-    </Compile>
-    <Compile Include="V_CategoryTree.cs">
-      <DependentUpon>Crawler.tt</DependentUpon>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <EntityDeploy Include="Crawler.edmx">
-      <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>Crawler.Designer.cs</LastGenOutput>
-    </EntityDeploy>
-    <None Include="Crawler.edmx.diagram">
-      <DependentUpon>Crawler.edmx</DependentUpon>
-    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Crawler.Context.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>Crawler.edmx</DependentUpon>
-      <LastGenOutput>Crawler.Context.cs</LastGenOutput>
-    </Content>
-    <Content Include="Crawler.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>Crawler.edmx</DependentUpon>
-      <LastGenOutput>Crawler.cs</LastGenOutput>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\YGJJ.Core.Cache\YGJJ.Core.Cache.csproj">
-      <Project>{b86624b5-ce4d-48cd-ad0e-c1b127e4841f}</Project>
-      <Name>YGJJ.Core.Cache</Name>
+    <ProjectReference Include="..\Common\Common.csproj">
+      <Project>{25e67706-292a-457e-85cd-434b9ae28c0e}</Project>
+      <Name>Common</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

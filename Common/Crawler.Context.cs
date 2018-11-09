@@ -35,5 +35,7 @@ namespace Common
         public virtual DbSet<V_ALL_CrawlerQuestion> V_ALL_CrawlerQuestion { get; set; }
         public virtual DbSet<V_AllCategory> V_AllCategory { get; set; }
         public virtual DbSet<V_CategoryTree> V_CategoryTree { get; set; }
+        public virtual DbSet<V_Category> V_Category { get; set; }
+        public virtual DbSet<KnowledgeTree> KnowledgeTree { get; set; }
     }
 }

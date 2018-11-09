@@ -16,7 +16,7 @@ namespace QuestionGrabPublisher
         {
             while (true)
             {
-                if (AllCount() > 10000)
+                if (AllCount() > 1000)
                 {
                     Console.WriteLine("更新！！！");
                     Update();

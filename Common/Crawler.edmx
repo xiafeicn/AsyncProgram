@@ -59,6 +59,16 @@
           <Property Name="Question_Id" Type="int" Nullable="false" />
           <Property Name="CreateTime" Type="datetime" Nullable="false" />
         </EntityType>
+        <EntityType Name="KnowledgeTree">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="TreeId" Type="int" Nullable="false" />
+          <Property Name="ParentTreeId" Type="int" Nullable="false" />
+          <Property Name="TreeName" Type="nvarchar" MaxLength="100" />
+          <Property Name="Url" Type="nvarchar" MaxLength="500" />
+        </EntityType>
         <EntityType Name="Question">
           <Key>
             <PropertyRef Name="Id" />
@@ -184,6 +194,27 @@
           <Property Name="Id" Type="int" Nullable="false" />
         </EntityType>
         <!--生成过程中发现错误:
+警告 6002: 表/视图“Crawler.dbo.V_Category”未定义主键。已推断出该键，并将定义创建为只读的表/视图。-->
+        <EntityType Name="V_Category">
+          <Key>
+            <PropertyRef Name="BookVersionId" />
+            <PropertyRef Name="BookName" />
+            <PropertyRef Name="Child" />
+            <PropertyRef Name="Degree" />
+            <PropertyRef Name="CategoryName" />
+            <PropertyRef Name="CategoryId" />
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="BookVersionId" Type="int" Nullable="false" />
+          <Property Name="BookName" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Child" Type="int" Nullable="false" />
+          <Property Name="Degree" Type="int" Nullable="false" />
+          <Property Name="CategoryName" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="CategoryId" Type="int" Nullable="false" />
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="menuurl" Type="varchar" MaxLength="174" />
+        </EntityType>
+        <!--生成过程中发现错误:
 警告 6002: 表/视图“Crawler.dbo.V_CategoryTree”未定义主键。已推断出该键，并将定义创建为只读的表/视图。-->
         <EntityType Name="V_CategoryTree">
           <Key>
@@ -194,19 +225,13 @@
           <Property Name="CategoryName" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="TreeName" Type="nvarchar" MaxLength="100" />
         </EntityType>
-        <!--生成过程中发现错误:
-警告 6013: 表/视图“Crawler.dbo.V_Tree”未定义主键，并且无法推断有效的主键。已排除了此表/视图。若要使用实体，将需要检查您的架构、添加正确的键并取消对实体的注释。
-        <EntityType Name="V_Tree">
-          <Property Name="TreeId" Type="int" />
-          <Property Name="ParentTreeId" Type="int" />
-          <Property Name="TreeName" Type="nvarchar" MaxLength="100" />
-        </EntityType>-->
         <EntityContainer Name="CrawlerModelStoreContainer">
           <EntitySet Name="Book" EntityType="Self.Book" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Category" EntityType="Self.Category" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CategoryTree" EntityType="Self.CategoryTree" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CategoryUrlList" EntityType="Self.CategoryUrlList" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CategoryUrlListQuestion" EntityType="Self.CategoryUrlListQuestion" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="KnowledgeTree" EntityType="Self.KnowledgeTree" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Question" EntityType="Self.Question" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="V_ALL_CategoryUrlList" EntityType="Self.V_ALL_CategoryUrlList" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
@@ -262,6 +287,18 @@
     [V_AllCategory].[Id] AS [Id]
     FROM [dbo].[V_AllCategory] AS [V_AllCategory]</DefiningQuery>
           </EntitySet>
+          <EntitySet Name="V_Category" EntityType="Self.V_Category" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [V_Category].[BookVersionId] AS [BookVersionId], 
+    [V_Category].[BookName] AS [BookName], 
+    [V_Category].[Child] AS [Child], 
+    [V_Category].[Degree] AS [Degree], 
+    [V_Category].[CategoryName] AS [CategoryName], 
+    [V_Category].[CategoryId] AS [CategoryId], 
+    [V_Category].[Id] AS [Id], 
+    [V_Category].[menuurl] AS [menuurl]
+    FROM [dbo].[V_Category] AS [V_Category]</DefiningQuery>
+          </EntitySet>
           <EntitySet Name="V_CategoryTree" EntityType="Self.V_CategoryTree" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
     [V_CategoryTree].[BookName] AS [BookName], 
@@ -285,6 +322,8 @@
           <EntitySet Name="V_ALL_CrawlerQuestion" EntityType="CrawlerModel.V_ALL_CrawlerQuestion" />
           <EntitySet Name="V_AllCategory" EntityType="CrawlerModel.V_AllCategory" />
           <EntitySet Name="V_CategoryTree" EntityType="CrawlerModel.V_CategoryTree" />
+          <EntitySet Name="V_Category" EntityType="CrawlerModel.V_Category" />
+          <EntitySet Name="KnowledgeTree" EntityType="CrawlerModel.KnowledgeTree" />
         </EntityContainer>
         <EntityType Name="Book">
           <Key>
@@ -467,6 +506,35 @@
           <Property Name="CategoryName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="TreeName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
         </EntityType>
+        <EntityType Name="V_Category">
+          <Key>
+            <PropertyRef Name="BookVersionId" />
+            <PropertyRef Name="BookName" />
+            <PropertyRef Name="Child" />
+            <PropertyRef Name="Degree" />
+            <PropertyRef Name="CategoryName" />
+            <PropertyRef Name="CategoryId" />
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="BookVersionId" Type="Int32" Nullable="false" />
+          <Property Name="BookName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Child" Type="Int32" Nullable="false" />
+          <Property Name="Degree" Type="Int32" Nullable="false" />
+          <Property Name="CategoryName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CategoryId" Type="Int32" Nullable="false" />
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="menuurl" Type="String" MaxLength="174" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="KnowledgeTree">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="TreeId" Type="Int32" Nullable="false" />
+          <Property Name="ParentTreeId" Type="Int32" Nullable="false" />
+          <Property Name="TreeName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Url" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+        </EntityType>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -632,6 +700,31 @@
                 <ScalarProperty Name="TreeName" ColumnName="TreeName" />
                 <ScalarProperty Name="CategoryName" ColumnName="CategoryName" />
                 <ScalarProperty Name="BookName" ColumnName="BookName" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="V_Category">
+            <EntityTypeMapping TypeName="CrawlerModel.V_Category">
+              <MappingFragment StoreEntitySet="V_Category">
+                <ScalarProperty Name="menuurl" ColumnName="menuurl" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="CategoryId" ColumnName="CategoryId" />
+                <ScalarProperty Name="CategoryName" ColumnName="CategoryName" />
+                <ScalarProperty Name="Degree" ColumnName="Degree" />
+                <ScalarProperty Name="Child" ColumnName="Child" />
+                <ScalarProperty Name="BookName" ColumnName="BookName" />
+                <ScalarProperty Name="BookVersionId" ColumnName="BookVersionId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="KnowledgeTree">
+            <EntityTypeMapping TypeName="CrawlerModel.KnowledgeTree">
+              <MappingFragment StoreEntitySet="KnowledgeTree">
+                <ScalarProperty Name="Url" ColumnName="Url" />
+                <ScalarProperty Name="TreeName" ColumnName="TreeName" />
+                <ScalarProperty Name="ParentTreeId" ColumnName="ParentTreeId" />
+                <ScalarProperty Name="TreeId" ColumnName="TreeId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

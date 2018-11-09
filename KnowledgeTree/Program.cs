@@ -12,48 +12,52 @@ using NHtmlUnit.Html;
 using NHtmlUnit.Javascript.Host.Html;
 using NSoup;
 
-namespace GrabTree
+namespace KnowledgeTree
 {
     class Program
     {
         static void Main(string[] args)
         {
-            //GrabTopCate();
+            //GrabTopKnowledge();
 
 
-            var listCategory = GetTopTreeList();
+            var listKnowledge = GetTopTreeList();
 
-            foreach (var cate in listCategory)
+            foreach (var cate in listKnowledge)
             {
-                Recrusion(cate.CategoryId, cate.TreeId);
+                Recrusion( cate.TreeId);
             }
         }
 
 
-        public static void GrabTopCate()
+        public static void GrabTopKnowledge()
         {
-            var listCategory = DataService.GetCategorylist();
-            foreach (var cate in listCategory)
+            foreach (var chid in typeof(ChildEnum).GetEnumSource())
             {
-                //if (CateExist(cate.CategoryId))
-                //    continue;
-                var url =
-                    $"https://www.zujuan.com/question?categories={cate.CategoryId}&bookversion={cate.BookVersionId}&nianji={cate.CategoryId}&chid={cate.Child}&xd={cate.Degree}";
-                //var result = HttpClientHolder.GetRequest(url);
-                var res = new HttpUnitHelper().GetRealHtmlTrice(url);
-                var doc = NSoupClient.Parse(res);
-
-                var topItems = doc.Select("#J_Tree ul li");
-
-                foreach (var item in topItems)
+                foreach (var xd in typeof(DegreeEnum).GetEnumSource())
                 {
-                    var id =item.Attr("data-treeid").NullToInt();
-                    var name = item.GetElementsByTag("em")[0].Text();
-                    var pid = cate.CategoryId;
+                    //if (CateExist(cate.CategoryId))
+                    //    continue;
+                    var url =
+                        $"https://www.zujuan.com/question?chid={chid.Item1}&xd={xd.Item1}&tree_type=knowledge";
+                    //var result = HttpClientHolder.GetRequest(url);
+                    var res = new HttpUnitHelper().GetRealHtmlTrice(url);
+                    var doc = NSoupClient.Parse(res);
 
-                    AddTree(cate.CategoryId, name, pid, id);
+                    var topItems = doc.Select("#J_Tree ul li");
+
+                    foreach (var item in topItems)
+                    {
+                        var id = item.Attr("data-treeid").NullToInt();
+                        var name = item.GetElementsByTag("em")[0].Text();
+                        var pid = 0;
+
+                        AddTree(name, pid, id, url);
+                    }
                 }
+
             }
+
 
         }
 
@@ -84,39 +88,34 @@ namespace GrabTree
                 return db.CategoryTree.Any(t => t.CategoryId == categoryId);
             }
         }
-        public static List<CategoryTree> GetTopTreeList()
+        public static List<Common.KnowledgeTree> GetTopTreeList()
         {
             using (var db = new CrawlerEntities())
             {
-                return db.CategoryTree.ToList();
+                return db.KnowledgeTree.ToList();
             }
         }
-        public static void AddTree(int categoryId, string name, int pid, int id)
+        public static void AddTree(string name, int pid, int id, string url)
         {
 
             using (var db = new CrawlerEntities())
             {
-                if (db.CategoryTree.Any(t => t.ParentTreeId == pid && t.TreeId == id))
-                {
-                    return;
-                }
+                Common.KnowledgeTree entity = new Common.KnowledgeTree();
 
-                CategoryTree entity = new CategoryTree();
-                entity.CategoryId = categoryId;
+
                 entity.TreeName = name;
                 entity.ParentTreeId = pid;
                 entity.TreeId = id;
-
-                db.CategoryTree.Add(entity);
+                entity.Url = url;
+                db.KnowledgeTree.Add(entity);
                 db.SaveChanges();
             }
         }
 
 
-        public static void Recrusion(int categoryid, int pid)
+        public static void Recrusion(int pid)
         {
-
-            var api = $"https://www.zujuan.com/question/tree?id={pid}&type=category";
+            var api = $"https://www.zujuan.com/question/tree?id={pid}&type=knowledge";
             var res = HttpClientHolder.GetRequest(api);
             JArray array = JArray.Parse(res);
             foreach (var item in array)
@@ -124,11 +123,11 @@ namespace GrabTree
                 var id = item["id"].NullToInt();
                 var name = item["title"].ToString();
 
-                AddTree(categoryid, name, pid, id);
+                AddTree(name, pid, id, api);
 
                 if (item["hasChild"].ToString().ToBool() == true)
                 {
-                    Recrusion(categoryid, id);
+                    Recrusion( id);
                 }
             }
         }
