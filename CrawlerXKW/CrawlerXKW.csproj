@@ -64,9 +64,6 @@
   <ItemGroup>
     <Compile Include="CrawlerJiaocai.cs" />
     <Compile Include="CrawlerSubject.cs" />
-    <Compile Include="HttpClientHolder.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

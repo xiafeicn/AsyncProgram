@@ -206,6 +206,15 @@ namespace Grabzujuan
             try
             {
                 WebClient webClient = new WebClient();
+                //webClient.Headers.Add("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8");
+
+                //webClient.Headers.Add("Accept-Encoding", "gzip,deflate,sdch");
+                //webClient.Headers.Add("Accept-Language", "zh-CN,zh;q=0.8,en;q=0.6");
+                //webClient.Headers.Add("Cache-Control", "max-age=0");
+                //webClient.Headers.Add("Connection", "keep-alive");
+                //webClient.Headers.Add("Host", "movie.douban.com");
+                webClient.Headers.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36");
+
                 Stream stream = webClient.OpenRead(url);
                 StreamReader sr = new StreamReader(stream);
                 var result = sr.ReadToEnd();
