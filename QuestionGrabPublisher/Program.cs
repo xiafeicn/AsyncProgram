@@ -23,11 +23,11 @@ namespace QuestionGrabPublisher
                 {
                     return;
                 }
-                //var proxys = GrabAnswers.GetProxyListFromBy();
-                Parallel.ForEach(listQuestion, (q) =>
-                    {
-                        GrabAnswers.CrawlerAnswer(q);
-                    });
+                var proxys = GrabAnswers.GetProxyListFromBy();
+                Parallel.ForEach(listQuestion, new ParallelOptions() { MaxDegreeOfParallelism = 1 }, (q) =>
+                       {
+                           GrabAnswers.CrawlerAnswer(q);
+                       });
             }
             catch (Exception e)
             {

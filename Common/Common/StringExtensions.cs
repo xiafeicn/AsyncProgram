@@ -7,7 +7,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 
-namespace Grabzujuan
+namespace Common
 {
     public static class StringExtensions
     {
@@ -34,6 +34,30 @@ namespace Grabzujuan
                 }
             }
             return "";
+        }
+        public static bool IsMatch(this string str, string op)
+        {
+            if (str.Equals(String.Empty) || str == null) return false;
+            var re = new Regex(op, RegexOptions.IgnoreCase);
+            return re.IsMatch(str);
+        }
+
+        public static bool IsIP(this string input)
+        {
+            return input.IsMatch(@"^((2[0-4]\d|25[0-5]|[01]?\d\d?)\.){3}(2[0-4]\d|25[0-5]|[01]?\d\d?)$");
+            //@"^(([01]?[\d]{1,2})|(2[0-4][\d])|(25[0-5]))(\.(([01]?[\d]{1,2})|(2[0-4][\d])|(25[0-5]))){3}$";
+        }
+        /// <summary>
+        /// 获得字符串中开始和结束字符串中间得值
+        /// </summary>
+        /// <param name="str">字符串</param>
+        /// <param name="s">开始</param>
+        /// <param name="e">结束</param>
+        /// <returns></returns> 
+        public static string GetValue(string str, string s, string e)
+        {
+            Regex rg = new Regex("(?<=(" + s + "))[.\\s\\S]*?(?=(" + e + "))", RegexOptions.Multiline | RegexOptions.Singleline);
+            return rg.Match(str).Value;
         }
         public static List<KeyValuePair<string, List<string>>> JsonStringToListKeyValuePair(this string str)
         {

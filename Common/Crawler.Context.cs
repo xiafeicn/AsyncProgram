@@ -30,12 +30,12 @@ namespace Common
         public virtual DbSet<CategoryTree> CategoryTree { get; set; }
         public virtual DbSet<CategoryUrlList> CategoryUrlList { get; set; }
         public virtual DbSet<CategoryUrlListQuestion> CategoryUrlListQuestion { get; set; }
+        public virtual DbSet<KnowledgeTree> KnowledgeTree { get; set; }
         public virtual DbSet<Question> Question { get; set; }
         public virtual DbSet<V_ALL_CategoryUrlList> V_ALL_CategoryUrlList { get; set; }
         public virtual DbSet<V_ALL_CrawlerQuestion> V_ALL_CrawlerQuestion { get; set; }
         public virtual DbSet<V_AllCategory> V_AllCategory { get; set; }
-        public virtual DbSet<V_CategoryTree> V_CategoryTree { get; set; }
         public virtual DbSet<V_Category> V_Category { get; set; }
-        public virtual DbSet<KnowledgeTree> KnowledgeTree { get; set; }
+        public virtual DbSet<V_CategoryTree> V_CategoryTree { get; set; }
     }
 }

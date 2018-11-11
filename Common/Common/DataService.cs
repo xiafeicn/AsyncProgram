@@ -148,7 +148,7 @@ namespace Grabzujuan.Common
             }
         }
 
-        public static void UpdateCategoryTotalCount(int categoryId,int count)
+        public static void UpdateCategoryTotalCount(int categoryId, int count)
         {
             using (var db = new CrawlerEntities())
             {

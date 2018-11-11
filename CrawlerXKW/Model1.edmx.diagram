@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="31f118e009354a96be1f4b8e3251551c" Name="Diagram1">
+        <EntityTypeShape EntityType="XKWModel.Area" Width="1.5" PointX="0.75" PointY="0.75" />
+        <EntityTypeShape EntityType="XKWModel.Degree" Width="1.5" PointX="2.75" PointY="0.75" />
+        <EntityTypeShape EntityType="XKWModel.Grade" Width="1.5" PointX="0.75" PointY="3.75" />
+        <EntityTypeShape EntityType="XKWModel.JiaoCai" Width="1.5" PointX="2.75" PointY="3.75" />
+        <EntityTypeShape EntityType="XKWModel.JiaocaiDetail" Width="1.5" PointX="4.75" PointY="0.75" />
+        <EntityTypeShape EntityType="XKWModel.QuestionJiaoCaiSource" Width="1.5" PointX="4.75" PointY="4.75" />
+        <EntityTypeShape EntityType="XKWModel.QuestionJiaocaiSourceResult" Width="1.5" PointX="6.75" PointY="0.75" />
+        <EntityTypeShape EntityType="XKWModel.QuestionPageAreaSource" Width="1.5" PointX="0.75" PointY="6.75" />
+        <EntityTypeShape EntityType="XKWModel.QuestionPageList" Width="1.5" PointX="6.75" PointY="4.75" />
+        <EntityTypeShape EntityType="XKWModel.QuestionPageSource" Width="1.5" PointX="2.75" PointY="7.75" />
+        <EntityTypeShape EntityType="XKWModel.QuestionXkw" Width="1.5" PointX="8.75" PointY="0.75" />
+        <EntityTypeShape EntityType="XKWModel.Subject" Width="1.5" PointX="4.75" PointY="8.75" />
+        <EntityTypeShape EntityType="XKWModel.SubjectCategory" Width="1.5" PointX="8.75" PointY="6.75" />
+        <EntityTypeShape EntityType="XKWModel.SubjectGrade" Width="1.5" PointX="6.75" PointY="9.75" />
+        <EntityTypeShape EntityType="XKWModel.Test" Width="1.5" PointX="8.75" PointY="9.75" />
+        <EntityTypeShape EntityType="XKWModel.V_Jiaocai" Width="1.5" PointX="10.75" PointY="0.75" />
+        <EntityTypeShape EntityType="XKWModel.V_JiaocaiDetail" Width="1.5" PointX="0.75" PointY="10.75" />
+        <EntityTypeShape EntityType="XKWModel.V_JiaocaiDetailYSY" Width="1.5" PointX="10.75" PointY="4.75" />
+        <EntityTypeShape EntityType="XKWModel.V_QuestionJiaoCaiSource" Width="1.5" PointX="10.75" PointY="9.75" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

@@ -225,6 +225,20 @@
           <Property Name="CategoryName" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="TreeName" Type="nvarchar" MaxLength="100" />
         </EntityType>
+        <!--生成过程中发现错误:
+警告 6013: 表/视图“Crawler.dbo.V_KnowledgeTree”未定义主键，并且无法推断有效的主键。已排除了此表/视图。若要使用实体，将需要检查您的架构、添加正确的键并取消对实体的注释。
+        <EntityType Name="V_KnowledgeTree">
+          <Property Name="TreeId" Type="int" />
+          <Property Name="ParentTreeId" Type="int" />
+          <Property Name="TreeName" Type="nvarchar" MaxLength="100" />
+        </EntityType>-->
+        <!--生成过程中发现错误:
+警告 6013: 表/视图“Crawler.dbo.V_Tree”未定义主键，并且无法推断有效的主键。已排除了此表/视图。若要使用实体，将需要检查您的架构、添加正确的键并取消对实体的注释。
+        <EntityType Name="V_Tree">
+          <Property Name="TreeId" Type="int" />
+          <Property Name="ParentTreeId" Type="int" />
+          <Property Name="TreeName" Type="nvarchar" MaxLength="100" />
+        </EntityType>-->
         <EntityContainer Name="CrawlerModelStoreContainer">
           <EntitySet Name="Book" EntityType="Self.Book" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Category" EntityType="Self.Category" Schema="dbo" store:Type="Tables" />
@@ -317,13 +331,13 @@
           <EntitySet Name="CategoryTree" EntityType="CrawlerModel.CategoryTree" />
           <EntitySet Name="CategoryUrlList" EntityType="CrawlerModel.CategoryUrlList" />
           <EntitySet Name="CategoryUrlListQuestion" EntityType="CrawlerModel.CategoryUrlListQuestion" />
+          <EntitySet Name="KnowledgeTree" EntityType="CrawlerModel.KnowledgeTree" />
           <EntitySet Name="Question" EntityType="CrawlerModel.Question" />
           <EntitySet Name="V_ALL_CategoryUrlList" EntityType="CrawlerModel.V_ALL_CategoryUrlList" />
           <EntitySet Name="V_ALL_CrawlerQuestion" EntityType="CrawlerModel.V_ALL_CrawlerQuestion" />
           <EntitySet Name="V_AllCategory" EntityType="CrawlerModel.V_AllCategory" />
-          <EntitySet Name="V_CategoryTree" EntityType="CrawlerModel.V_CategoryTree" />
           <EntitySet Name="V_Category" EntityType="CrawlerModel.V_Category" />
-          <EntitySet Name="KnowledgeTree" EntityType="CrawlerModel.KnowledgeTree" />
+          <EntitySet Name="V_CategoryTree" EntityType="CrawlerModel.V_CategoryTree" />
         </EntityContainer>
         <EntityType Name="Book">
           <Key>
@@ -378,6 +392,16 @@
           <Property Name="CategoryUrlListId" Type="Int32" Nullable="false" />
           <Property Name="Question_Id" Type="Int32" Nullable="false" />
           <Property Name="CreateTime" Type="DateTime" Nullable="false" Precision="3" />
+        </EntityType>
+        <EntityType Name="KnowledgeTree">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="TreeId" Type="Int32" Nullable="false" />
+          <Property Name="ParentTreeId" Type="Int32" Nullable="false" />
+          <Property Name="TreeName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Url" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="Question">
           <Key>
@@ -497,15 +521,6 @@
           <Property Name="CategoryId" Type="Int32" Nullable="false" />
           <Property Name="Id" Type="Int32" Nullable="false" />
         </EntityType>
-        <EntityType Name="V_CategoryTree">
-          <Key>
-            <PropertyRef Name="BookName" />
-            <PropertyRef Name="CategoryName" />
-          </Key>
-          <Property Name="BookName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="CategoryName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="TreeName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-        </EntityType>
         <EntityType Name="V_Category">
           <Key>
             <PropertyRef Name="BookVersionId" />
@@ -525,15 +540,14 @@
           <Property Name="Id" Type="Int32" Nullable="false" />
           <Property Name="menuurl" Type="String" MaxLength="174" FixedLength="false" Unicode="false" />
         </EntityType>
-        <EntityType Name="KnowledgeTree">
+        <EntityType Name="V_CategoryTree">
           <Key>
-            <PropertyRef Name="Id" />
+            <PropertyRef Name="BookName" />
+            <PropertyRef Name="CategoryName" />
           </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="TreeId" Type="Int32" Nullable="false" />
-          <Property Name="ParentTreeId" Type="Int32" Nullable="false" />
+          <Property Name="BookName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CategoryName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="TreeName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="Url" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
         </EntityType>
         </Schema>
     </edmx:ConceptualModels>
@@ -596,6 +610,17 @@
                 <ScalarProperty Name="CreateTime" ColumnName="CreateTime" />
                 <ScalarProperty Name="Question_Id" ColumnName="Question_Id" />
                 <ScalarProperty Name="CategoryUrlListId" ColumnName="CategoryUrlListId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="KnowledgeTree">
+            <EntityTypeMapping TypeName="CrawlerModel.KnowledgeTree">
+              <MappingFragment StoreEntitySet="KnowledgeTree">
+                <ScalarProperty Name="Url" ColumnName="Url" />
+                <ScalarProperty Name="TreeName" ColumnName="TreeName" />
+                <ScalarProperty Name="ParentTreeId" ColumnName="ParentTreeId" />
+                <ScalarProperty Name="TreeId" ColumnName="TreeId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -694,15 +719,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="V_CategoryTree">
-            <EntityTypeMapping TypeName="CrawlerModel.V_CategoryTree">
-              <MappingFragment StoreEntitySet="V_CategoryTree">
-                <ScalarProperty Name="TreeName" ColumnName="TreeName" />
-                <ScalarProperty Name="CategoryName" ColumnName="CategoryName" />
-                <ScalarProperty Name="BookName" ColumnName="BookName" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="V_Category">
             <EntityTypeMapping TypeName="CrawlerModel.V_Category">
               <MappingFragment StoreEntitySet="V_Category">
@@ -717,14 +733,12 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="KnowledgeTree">
-            <EntityTypeMapping TypeName="CrawlerModel.KnowledgeTree">
-              <MappingFragment StoreEntitySet="KnowledgeTree">
-                <ScalarProperty Name="Url" ColumnName="Url" />
+          <EntitySetMapping Name="V_CategoryTree">
+            <EntityTypeMapping TypeName="CrawlerModel.V_CategoryTree">
+              <MappingFragment StoreEntitySet="V_CategoryTree">
                 <ScalarProperty Name="TreeName" ColumnName="TreeName" />
-                <ScalarProperty Name="ParentTreeId" ColumnName="ParentTreeId" />
-                <ScalarProperty Name="TreeId" ColumnName="TreeId" />
-                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="CategoryName" ColumnName="CategoryName" />
+                <ScalarProperty Name="BookName" ColumnName="BookName" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

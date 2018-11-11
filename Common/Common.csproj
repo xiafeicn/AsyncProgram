@@ -189,7 +189,7 @@
       <DependentUpon>Crawler.tt</DependentUpon>
     </Compile>
     <Compile Include="Category.cs">
-      <DependentUpon>Crawler.tt</DependentUpon>
+      <DependentUpon>Xkw.tt</DependentUpon>
     </Compile>
     <Compile Include="CategoryCrawler.cs" />
     <Compile Include="CategoryTree.cs">
@@ -204,6 +204,17 @@
     <Compile Include="Common\ChildEnum.cs" />
     <Compile Include="Common\DataService.cs" />
     <Compile Include="Common\EnumExtensions.cs" />
+    <Compile Include="Common\HttpClientHolder.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Common\HttpHelper.cs" />
+    <Compile Include="Common\HttpProc.cs" />
+    <Compile Include="Common\HttpUnitHelper.cs" />
+    <Compile Include="Common\HttpUnitHelperNosingleton.cs" />
+    <Compile Include="Common\HttpWebCookie.cs" />
+    <Compile Include="Common\HttpWebRequestUtility.cs" />
+    <Compile Include="Common\HttpWebResponseUtility.cs" />
+    <Compile Include="Common\StringExtensions.cs" />
     <Compile Include="Crawler.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -219,12 +230,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Crawler.edmx</DependentUpon>
     </Compile>
-    <Compile Include="GrabAnswers.cs" />
-    <Compile Include="HttpClientHolder.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="HttpUnitHelper.cs" />
-    <Compile Include="HttpUnitHelperNosingleton.cs" />
     <Compile Include="KnowledgeTree.cs">
       <DependentUpon>Crawler.tt</DependentUpon>
     </Compile>
@@ -234,7 +239,6 @@
       <DependentUpon>Crawler.tt</DependentUpon>
     </Compile>
     <Compile Include="QuestionParser.cs" />
-    <Compile Include="StringExtensions.cs" />
     <Compile Include="V_AllCategory.cs">
       <DependentUpon>Crawler.tt</DependentUpon>
     </Compile>
@@ -276,12 +280,6 @@
       <DependentUpon>Crawler.edmx</DependentUpon>
       <LastGenOutput>Crawler.cs</LastGenOutput>
     </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\YGJJ.Core.Cache\YGJJ.Core.Cache.csproj">
-      <Project>{b86624b5-ce4d-48cd-ad0e-c1b127e4841f}</Project>
-      <Name>YGJJ.Core.Cache</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
