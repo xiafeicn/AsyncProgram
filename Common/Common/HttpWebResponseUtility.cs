@@ -12,6 +12,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Grabzujuan;
 using Grabzujuan.Common;
+using Newtonsoft.Json.Linq;
 
 namespace Common.Common
 {
@@ -31,6 +32,9 @@ namespace Common.Common
 
         public static string ExecuteCreateGetHttpResponseProxy(string url, int? timeout, string cookie)
         {
+            Stopwatch stopWatch = new Stopwatch();
+            stopWatch.Start(); ;
+
             List<Exception> e = new List<Exception>();
             int retry = 3;
             for (var i = 0; i < retry; i++)
@@ -62,7 +66,7 @@ namespace Common.Common
                     //}
                     request.Headers["cookie"] = cookie;
 
-                    fillProxy(request);
+                    fillProxyMogu(request);
 
                     var MyResponse = request.GetResponse() as HttpWebResponse;
 
@@ -91,12 +95,14 @@ namespace Common.Common
                         Console.WriteLine("invalid proxy");
                         throw new Exception("invalid proxy");
                     }
-                    if (strReturn.IndexOf("questioncount") < 0)
-                    {
-                        throw new Exception("invalid html result");
-                    }
+                    //if (strReturn.IndexOf("questioncount") < 0)
+                    //{
+                    //    throw new Exception("invalid html result");
+                    //}
 #if DEBUG
-
+                    stopWatch.Stop();
+                    Debug.WriteLine($"cost {stopWatch.ElapsedMilliseconds} ms,url{url}");
+                    Console.WriteLine($"cost {stopWatch.ElapsedMilliseconds} ms,url{url}");
                     Debug.WriteLine("success      " + url);
                     Console.WriteLine("success       " + url);
 #endif
@@ -114,6 +120,8 @@ namespace Common.Common
                     Task.Delay(1000);
                 }
             }
+
+          
             return String.Empty;
         }
 
@@ -200,11 +208,28 @@ namespace Common.Common
 
             request.Proxy = wp;
         }
+
+        private static void fillProxyMogu(HttpWebRequest request)
+        {
+            var proxys = GetMoguProxyListFromCache();
+            var proxy = proxys[new Random().Next(0, proxys.Count - 1)];
+            //IP: 帐号: tets1106密码: tets1106开通成功！http端口：808
+            //创建 代理服务器设置对象 的实例
+            System.Net.WebProxy wp = new System.Net.WebProxy(proxy);
+            //代理服务器需要验证
+            wp.BypassProxyOnLocal = false;
+            //用户名密码
+            //wp.Credentials = new NetworkCredential("te1107", "te1107");
+
+
+
+            request.Proxy = wp;
+        }
         public static string ExecuteCreateGetHttpResponseProxy2(string url, int? timeout, string cookie)
         {
             List<Exception> e = new List<Exception>();
             int retry = 3;
-           
+
             for (var i = 0; i < retry; i++)
             {
                 ProxyManager.HasExpire = false;
@@ -279,7 +304,7 @@ namespace Common.Common
                 }
                 catch (Exception ex)
                 {
-                  
+
                     Console.WriteLine("proxy out time");
                     throw new Exception("proxy out time");
                     e.Add(ex);
@@ -317,7 +342,27 @@ namespace Common.Common
             return fullName;
 
         }
+        public static List<string> GetMoguProxyListFromCache()
+        {
+            var fullName = MemoryCacheHelper.GetCacheItem<List<string>>("moguproxyList",
+                delegate ()
+                {
+                    var res = HttpClientHolder.GetRequest("http://piping.mogumiao.com/proxy/api/get_ip_bs?appKey=e7178154a26948f38f155af1e4f7a440&count=5&expiryDate=0&format=1&newLine=2");
 
+                    List<string> listProxy = new List<string>();
+
+                    var jarray = JObject.Parse(res)["msg"] as JArray;
+                    foreach (var jitem in jarray)
+                    {
+                        listProxy.Add($"{jitem["ip"].NullToString()}:{jitem["port"].NullToString()}");
+                    }
+
+                    return listProxy;
+                },
+               new TimeSpan(0, 0, 20));//30分钟过期
+            return fullName;
+
+        }
         public static List<string> UnusefulProxy = new List<string>();
 
         public static List<string> GetProxyListFromBuy()

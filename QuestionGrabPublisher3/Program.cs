@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using Common;
 using Grabzujuan;
 using Grabzujuan.Common;
-using YGJJ.Core.Cache;
 
 namespace QuestionGrabPublisher
 {

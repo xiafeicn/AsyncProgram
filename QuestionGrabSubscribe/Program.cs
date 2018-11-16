@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using Common;
 using Grabzujuan;
 using Newtonsoft.Json;
-using YGJJ.Core.Cache;
 
 namespace QuestionGrabSubscribe
 {

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -8,10 +9,10 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Common;
+using Common.Common;
 using Grabzujuan.Common;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using YGJJ.Core.Cache;
 
 namespace Grabzujuan
 {
@@ -56,20 +57,40 @@ namespace Grabzujuan
             using (var db = new CrawlerEntities())
             {
                 var data = db.Database.SqlQuery<Question>(@"
-declare @Rowid table(rowid int);
-BEGIN
-set rowcount 300; --一次读取的行数
---先将要读取的记录状态更新
-update Question set[IsGrabAns] = 1 output deleted.ID into @Rowid Where[IsGrabAns] = 0 and IsRemoteDelete = 0 and question_id=1604638;
+        declare @Rowid table(rowid int);
+        BEGIN
+        set rowcount 300; --一次读取的行数
+        --先将要读取的记录状态更新
+        update Question set[IsGrabAns] = 1 output deleted.ID into @Rowid Where [IsGrabAns] = 0 and IsRemoteDelete = 0;
 
 
-                --读取刚更新状态的记录
-select* from Question where ID in (select Rowid from @Rowid);
-                END").ToList();
+                        --读取刚更新状态的记录
+        select* from Question where ID in (select Rowid from @Rowid);
+                        END").ToList();
                 //return db.Question.Where(t => t.IsGrabAns == false && t.IsRemoteDelete == false).Take(200).ToList();
                 return data;
             }
         }
+        //public static List<Question> GetTopQuestion()
+        //{
+
+        //    using (var db = new CrawlerEntities())
+        //    {
+        //        var data = db.Database.SqlQuery<Question>(@"
+        //declare @Rowid table(rowid int);
+        //BEGIN
+        //set rowcount 300; --一次读取的行数
+        //--先将要读取的记录状态更新
+        //update Question set[IsGrabAns] = 1 output deleted.ID into @Rowid Where question_id=1604638;
+
+
+        //                --读取刚更新状态的记录
+        //select* from Question where ID in (select Rowid from @Rowid);
+        //                END").ToList();
+        //        //return db.Question.Where(t => t.IsGrabAns == false && t.IsRemoteDelete == false).Take(200).ToList();
+        //        return data;
+        //    }
+        //}
 
         public static void StartSync()
         {
@@ -235,7 +256,10 @@ select* from Question where ID in (select Rowid from @Rowid);
             try
             {
 #if DEBUG
-                var a = HttpClientHolder.GetRequest($"https://www.zujuan.com/question/detail-{questionId}.shtml");
+                var a =
+                    HttpWebResponseProxyMogu.ExecuteCreateGetHttpResponseProxy(
+                        $"https://www.zujuan.com/question/detail-{questionId}.shtml", 10000, null);
+                //var a = HttpClientHolder.Proxy_GetRequest2();
 #else
                 var a = HttpClientHolder.Proxy_GetRequestAbyyun($"https://www.zujuan.com/question/detail-{questionId}.shtml");
 #endif
@@ -271,10 +295,24 @@ select* from Question where ID in (select Rowid from @Rowid);
                     }
                     return null;
                 }
-                Console.WriteLine($"start crawler https://www.zujuan.com/question/detail-{questionId}.shtml ");
+               
+
+                Console.WriteLine($"start crawler https://www.zujuan.com/question/detail-{questionId}.shtml");
                 //例如我想提取记录中的NAME值
                 string value = GetValue(a, "var MockDataTestPaper =", "OT2.renderQList").TrimEnd(new char[] { ';' });
                 value = value.Trim().TrimEnd(new char[] { ';' }).Trim();
+
+                JArray jObject = JArray.Parse(value);
+
+                if (!string.IsNullOrWhiteSpace(jObject[0]["questions"][0]["list"].NullToString()))
+                {
+                    if (string.IsNullOrWhiteSpace(jObject[0]["questions"][0]["list"][0]["answer"].NullToString()))
+                    {
+                        Console.WriteLine("明细题答案抓取错误");
+                        Debug.WriteLine("明细题答案抓取错误");
+                        throw new Exception("明细题答案抓取错误");
+                    }
+                }
                 //; UpdateProxGrabyime(proxy.Id);
                 Console.WriteLine($"aleady get {questionId} return value");
                 //更新代理时间

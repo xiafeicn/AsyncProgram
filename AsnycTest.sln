@@ -9,8 +9,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Question", "Question\Questi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "Common\Common.csproj", "{25E67706-292A-457E-85CD-434B9AE28C0E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YGJJ.Core.Cache", "YGJJ.Core.Cache\YGJJ.Core.Cache.csproj", "{B86624B5-CE4D-48CD-AD0E-C1B127E4841F}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuestionGrabPublisher", "QuestionGrabPublisher\QuestionGrabPublisher.csproj", "{33515060-FA4F-4249-AA02-E90EEF14D575}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuestionGrabSubscribe", "QuestionGrabSubscribe\QuestionGrabSubscribe.csproj", "{6B821F85-ED51-40AA-8762-BE445CE612C8}"
@@ -45,10 +43,6 @@ Global
 		{25E67706-292A-457E-85CD-434B9AE28C0E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{25E67706-292A-457E-85CD-434B9AE28C0E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{25E67706-292A-457E-85CD-434B9AE28C0E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B86624B5-CE4D-48CD-AD0E-C1B127E4841F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B86624B5-CE4D-48CD-AD0E-C1B127E4841F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B86624B5-CE4D-48CD-AD0E-C1B127E4841F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B86624B5-CE4D-48CD-AD0E-C1B127E4841F}.Release|Any CPU.Build.0 = Release|Any CPU
 		{33515060-FA4F-4249-AA02-E90EEF14D575}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{33515060-FA4F-4249-AA02-E90EEF14D575}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{33515060-FA4F-4249-AA02-E90EEF14D575}.Release|Any CPU.ActiveCfg = Release|Any CPU

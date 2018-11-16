@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using Common;
 using Grabzujuan;
 using Grabzujuan.Common;
-using YGJJ.Core.Cache;
 
 namespace QuestionGrabPublisher
 {
@@ -23,7 +22,6 @@ namespace QuestionGrabPublisher
                 {
                     return;
                 }
-                var proxys = GrabAnswers.GetProxyListFromBy();
                 Parallel.ForEach(listQuestion, new ParallelOptions() { MaxDegreeOfParallelism = 1 }, (q) =>
                        {
                            GrabAnswers.CrawlerAnswer(q);
