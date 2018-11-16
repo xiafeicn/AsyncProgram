@@ -19,7 +19,7 @@ namespace OCR
         {
             client.Timeout = 60000;  // 修改超时时间
 
-            GeneralBasicDemo();
+            GeneralBasicUrlDemo();
 
             Console.ReadKey();
         }
@@ -43,7 +43,7 @@ namespace OCR
         }
         static public void GeneralBasicUrlDemo()
         {
-            var url = "http://webshot.zujuan.com/q/1f/b9/83a9ef56bc7426e073bea9c17dc6_8788506kn.png?hash=455a262d71cdd4cb843ac4c0ce480a6c&sign=dab4750850b5306ed7f0c36a05e246f9&from=2";
+            var url = "http://im.zujuan.xkw.com/Parse/7121096/11/700/14/28/7e27af2fa1a1878115058598985874ca";
 
             // 调用通用文字识别, 图片参数为远程url图片，可能会抛出网络等异常，请使用try/catch捕获
             var result = client.GeneralBasicUrl(url);

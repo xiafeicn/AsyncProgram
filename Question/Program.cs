@@ -30,7 +30,7 @@ namespace Grabzujuan
         static Dictionary<int, List<string>> dicQuestion = new Dictionary<int, List<string>>();
         static void Main(string[] args)
         {
-            //var list = Export();
+            var list = Export();
             //foreach (var item in list)
             //{
             //    var obj = JArray.Parse(item.AnswerJson)[0]["questions"][0];
@@ -43,7 +43,7 @@ namespace Grabzujuan
             //        item.Options = obj["options"].NullToString();
             //    }
             //}
-            //var str = JsonConvert.SerializeObject(list);
+            var str = JsonConvert.SerializeObject(list);
 
             //File.AppendAllText("D:\\1.txt",str);
             //var res = HttpClientHolder.GetRequest("https://www.zujuan.com/question?chid=2&xd=1&tree_type=knowledge");
@@ -96,7 +96,7 @@ namespace Grabzujuan
 
 
             //// GrabAnswer.GetProxyListFromBy();
-            GrabAnswers.StartSync();
+            //GrabAnswers.StartSync();
             // System.Windows.Forms.Application.Restart();
         }
         //new CategoryCrawler().InitBook();
@@ -107,7 +107,7 @@ namespace Grabzujuan
         {
             using (var db = new CrawlerEntities())
             {
-                return db.Question.Take(1000).ToList();
+                return db.Question.Where(t=>t.BookId==55).Take(100).ToList();
             }
         }
     }
