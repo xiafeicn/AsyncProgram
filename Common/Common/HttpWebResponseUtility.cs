@@ -20,12 +20,19 @@ namespace Common.Common
     /// </summary>  
     public class HttpWebResponseUtility
     {
+
+        private static object objlock = new object();
+
         private static readonly string DefaultUserAgent = "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.2; SV1; .NET CLR 1.1.4322; .NET CLR 2.0.50727)";
 
-        public static string ExecuteCreateGetHttpResponseProxy(string url, int? timeout, CookieCollection cookies)
+        public HttpWebResponseUtility()
+        {
+        }
+
+        public static string ExecuteCreateGetHttpResponseProxy(string url, int? timeout, string cookie)
         {
             List<Exception> e = new List<Exception>();
-            int retry = 1000;
+            int retry = 3;
             for (var i = 0; i < retry; i++)
             {
                 bool hasException = false;
@@ -48,11 +55,12 @@ namespace Common.Common
                     {
                         request.Timeout = timeout.Value;
                     }
-                    if (cookies != null)
-                    {
-                        request.CookieContainer = new CookieContainer();
-                        request.CookieContainer.Add(cookies);
-                    }
+                    //if (cookies != null)
+                    //{
+                    //    request.CookieContainer = new CookieContainer();
+                    //    request.CookieContainer.Add(cookies);
+                    //}
+                    request.Headers["cookie"] = cookie;
 
                     fillProxy(request);
 
@@ -75,10 +83,12 @@ namespace Common.Common
 
                     if (strReturn.IndexOf("拒绝访问") >= 0)
                     {
+                        Console.WriteLine("invalid proxy");
                         throw new Exception("invalid proxy");
                     }
                     if (strReturn.IndexOf("涉嫌恶意操作") >= 0)
                     {
+                        Console.WriteLine("invalid proxy");
                         throw new Exception("invalid proxy");
                     }
                     if (strReturn.IndexOf("questioncount") < 0)
@@ -94,6 +104,8 @@ namespace Common.Common
                 }
                 catch (Exception ex)
                 {
+                    Console.WriteLine("proxy out time");
+                    throw new Exception("proxy out time");
                     e.Add(ex);
                     hasException = true;
                 }
@@ -188,12 +200,120 @@ namespace Common.Common
 
             request.Proxy = wp;
         }
+        public static string ExecuteCreateGetHttpResponseProxy2(string url, int? timeout, string cookie)
+        {
+            List<Exception> e = new List<Exception>();
+            int retry = 3;
+           
+            for (var i = 0; i < retry; i++)
+            {
+                ProxyManager.HasExpire = false;
+                bool hasException = false;
+                try
+                {
+                    var userAgent = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36";
+                    //#if DEBUG
+
+                    //                    Debug.WriteLine("start" + url);
+                    //                    Console.WriteLine("start" + url);
+                    //#endif
+                    System.Net.HttpWebRequest request = WebRequest.Create(url) as System.Net.HttpWebRequest;
+                    request.Method = "GET";
+                    request.UserAgent = DefaultUserAgent;
+                    if (!string.IsNullOrEmpty(userAgent))
+                    {
+                        request.UserAgent = userAgent;
+                    }
+                    if (timeout.HasValue)
+                    {
+                        request.Timeout = timeout.Value;
+                    }
+                    //if (cookies != null)
+                    //{
+                    //    request.CookieContainer = new CookieContainer();
+                    //    request.CookieContainer.Add(cookies);
+                    //}
+                    request.Headers["cookie"] = cookie;
+
+                    fillProxy2(request);
+
+                    var MyResponse = request.GetResponse() as HttpWebResponse;
+
+                    string strReturn = string.Empty;
+                    Stream stream = MyResponse.GetResponseStream();
+
+                    var encoding = Encoding.GetEncoding("utf-8");
+                    // 如果要下载的页面经过压缩，则先解压
+                    if (MyResponse.ContentEncoding.ToLower().IndexOf("gzip") >= 0)
+                    {
+                        stream = new GZipStream(stream, CompressionMode.Decompress);
+                    }
+                    if (encoding == null)
+                    {
+                        encoding = Encoding.Default;
+                    }
+                    strReturn += new StreamReader(stream, encoding).ReadToEnd();//解决乱码：utf-8 + streamreader.readtoend
+
+                    if (strReturn.IndexOf("拒绝访问") >= 0)
+                    {
+                        ProxyManager.HasExpire = true;
+                        Console.WriteLine("invalid proxy");
+                        throw new Exception("invalid proxy");
+                    }
+                    if (strReturn.IndexOf("涉嫌恶意操作") >= 0)
+                    {
+                        ProxyManager.HasExpire = true;
+                        Console.WriteLine("invalid proxy");
+                        throw new Exception("invalid proxy");
+                    }
+                    if (strReturn.IndexOf("questioncount") < 0)
+                    {
+                        throw new Exception("invalid html result");
+                    }
+#if DEBUG
+
+                    Debug.WriteLine("success      " + url);
+                    Console.WriteLine("success       " + url);
+#endif
+                    return strReturn;
+                }
+                catch (Exception ex)
+                {
+                  
+                    Console.WriteLine("proxy out time");
+                    throw new Exception("proxy out time");
+                    e.Add(ex);
+                    hasException = true;
+                }
+                if (hasException)
+                {
+                    Task.Delay(1000);
+                }
+            }
+            return String.Empty;
+        }
+        /// <summary>
+        /// 填充代理
+        /// </summary>
+        /// <param name="proxyUri"></param>
+        private static void fillProxy2(HttpWebRequest request)
+        {
+            var proxy = ProxyManager.GetProxy();
+
+            //IP: 帐号: tets1106密码: tets1106开通成功！http端口：808
+            //创建 代理服务器设置对象 的实例
+            System.Net.WebProxy wp = new System.Net.WebProxy(proxy);
+            //代理服务器需要验证
+            wp.BypassProxyOnLocal = false;
+            Console.WriteLine(proxy);
+            request.Proxy = wp;
+        }
 
         public static List<string> GetProxyListFromCache()
         {
             var fullName = MemoryCacheHelper.GetCacheItem<List<string>>("proxyList",
                delegate () { return GetProxyListFromBuy(); },
-               new TimeSpan(0, 1, 0));//30分钟过期
+               new TimeSpan(0, 0, 30));//30分钟过期
             return fullName;
 
         }
@@ -202,7 +322,8 @@ namespace Common.Common
 
         public static List<string> GetProxyListFromBuy()
         {
-            var res = HttpClientHolder.GetRequest("http://dev.kdlapi.com/api/getproxy/?orderid=934190848762936&num=100&area=%E5%9B%BD%E5%86%85&b_pcchrome=1&b_pcie=1&b_pcff=1&protocol=1&method=2&an_an=1&an_ha=1&sp1=1&sp2=1&quality=1&sep=1");
+            //var res = HttpClientHolder.GetRequest("http://www.flnsu.com/ip.php?key=6353621586&tqsl=1000");
+            var res = HttpClientHolder.GetRequest("http://dev.kdlapi.com/api/getproxy/?orderid=934190848762936&num=500&quality=1");
 
             var listProxy = res.Split(Environment.NewLine.ToCharArray(), StringSplitOptions.RemoveEmptyEntries).ToList();
 

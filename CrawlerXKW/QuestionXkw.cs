@@ -34,5 +34,7 @@ namespace CrawlerXKW
         public string QuestionAnswer { get; set; }
         public System.DateTime CreateTime { get; set; }
         public int QuestionJiaoCaiSource { get; set; }
+        public string PageUrl { get; set; }
+        public string SourceUrl { get; set; }
     }
 }

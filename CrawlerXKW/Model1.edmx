@@ -132,6 +132,8 @@
           <Property Name="QuestionAnswer" Type="nvarchar" MaxLength="1000" />
           <Property Name="CreateTime" Type="datetime" Nullable="false" />
           <Property Name="QuestionJiaoCaiSource" Type="int" Nullable="false" />
+          <Property Name="PageUrl" Type="nvarchar" MaxLength="500" />
+          <Property Name="SourceUrl" Type="nvarchar" MaxLength="500" />
         </EntityType>
         <EntityType Name="Subject">
           <Key>
@@ -530,6 +532,8 @@
           <Property Name="QuestionAnswer" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
           <Property Name="CreateTime" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="QuestionJiaoCaiSource" Type="Int32" Nullable="false" />
+          <Property Name="PageUrl" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="SourceUrl" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="Subject">
           <Key>
@@ -798,6 +802,8 @@
           <EntitySetMapping Name="QuestionXkw">
             <EntityTypeMapping TypeName="XKWModel.QuestionXkw">
               <MappingFragment StoreEntitySet="QuestionXkw">
+                <ScalarProperty Name="SourceUrl" ColumnName="SourceUrl" />
+                <ScalarProperty Name="PageUrl" ColumnName="PageUrl" />
                 <ScalarProperty Name="QuestionJiaoCaiSource" ColumnName="QuestionJiaoCaiSource" />
                 <ScalarProperty Name="CreateTime" ColumnName="CreateTime" />
                 <ScalarProperty Name="QuestionAnswer" ColumnName="QuestionAnswer" />

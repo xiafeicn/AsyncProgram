@@ -235,6 +235,7 @@
     </Compile>
     <Compile Include="MemoryCache.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Common\ProxyManager.cs" />
     <Compile Include="Question.cs">
       <DependentUpon>Crawler.tt</DependentUpon>
     </Compile>
