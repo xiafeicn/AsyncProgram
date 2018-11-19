@@ -213,6 +213,7 @@
     <Compile Include="Common\HttpUnitHelperNosingleton.cs" />
     <Compile Include="Common\HttpWebCookie.cs" />
     <Compile Include="Common\HttpWebRequestUtility.cs" />
+    <Compile Include="Common\HttpWebResponseProxyHuake.cs" />
     <Compile Include="Common\HttpWebResponseProxyFLNSU.cs" />
     <Compile Include="Common\HttpWebResponseProxyMayi.cs" />
     <Compile Include="Common\HttpWebResponseProxyMogu.cs" />

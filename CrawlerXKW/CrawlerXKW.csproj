@@ -71,6 +71,7 @@
     <Compile Include="Area.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
+    <Compile Include="CrawlerQuestionHuake.cs" />
     <Compile Include="CrawlerQuestion.cs" />
     <Compile Include="CrawlerQuestionJiaoCaiPageList.cs" />
     <Compile Include="CrawlerJiaocaiDetail.cs" />

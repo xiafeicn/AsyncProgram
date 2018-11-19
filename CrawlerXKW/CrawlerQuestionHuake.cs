@@ -22,7 +22,7 @@ using OpenQA.Selenium.IE;
 
 namespace CrawlerXKW
 {
-    public class CrawlerQuestion
+    public class CrawlerQuestionHuake
     {
         public void Crawler()
         {
