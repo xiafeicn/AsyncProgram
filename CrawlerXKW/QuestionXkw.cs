@@ -36,5 +36,8 @@ namespace CrawlerXKW
         public int QuestionJiaoCaiSource { get; set; }
         public string PageUrl { get; set; }
         public string SourceUrl { get; set; }
+        public Nullable<int> JiaocaiId { get; set; }
+        public string AnswerImg { get; set; }
+        public string AnalysisImg { get; set; }
     }
 }

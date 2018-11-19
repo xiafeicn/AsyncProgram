@@ -29,45 +29,42 @@ namespace CrawlerXKW
             {
                 var listJiaocai = GetRandom10CrawlerJC();
 
-                Parallel.ForEach(listJiaocai, (jc) =>
+                foreach (var jc in listJiaocai)
                 {
                     var grades = listSubjectGrade.Where(t => t.SubjectId == jc.SubjectId);
-                    try
+                    Parallel.ForEach(grades, (grade) =>
                     {
-                        Parallel.ForEach(grades, (grade) =>
+                        Parallel.ForEach(listArea, (area) =>
                         {
-                            Parallel.ForEach(listArea, (area) =>
-                            {
-                                if (ExistGrabPageSource(area.AreaId, jc.JiaoCaiDetailId, grade.GradeId))
-                                    return;
-                                var url =
-                                    $"http://zujuan.xkw.com/{jc.Prefix}/zj{jc.JiaoCaiDetailId}/a{area.AreaId}g{grade.GradeId}/";
+                            if (ExistGrabPageSource(area.AreaId, jc.JiaoCaiDetailId, grade.GradeId))
+                                return;
+                            var url =
+                                $"http://zujuan.xkw.com/{jc.Prefix}/zj{jc.JiaoCaiDetailId}/a{area.AreaId}g{grade.GradeId}/";
 
 
-                                Console.WriteLine(url);
-                                var html = HttpWebResponseUtility.ExecuteCreateGetHttpResponseProxy(url, 3000, null);
+                            Console.WriteLine(url);
+                            var html = HttpWebResponseProxyMayi.ExecuteCreateGetHttpResponseProxy(url, 3000, null);
 
-                                var doc = NSoupClient.Parse(html);
-                                var totalCount = doc.GetElementById("questioncount").Text().NullToInt();
 
-                                var pageCount = totalCount/10 + 1;
+                         
+                            var totalCount = doc.GetElementById("questioncount").Text().NullToInt();
 
-                                AddGrabPageSource(area.AreaId, jc.JiaoCaiDetailId, grade.GradeId, totalCount);
+                            var pageCount = totalCount / 10 + 1;
+
+                            AddGrabPageSource(area.AreaId, jc.JiaoCaiDetailId, grade.GradeId, totalCount);
                                 //for (int i = 1; i <= pageCount; i++)
                                 //{
                                 //    AddGrabPageList(area.AreaId, jc.JiaoCaiDetailId, grade.GradeId, totalCount, i);
                                 //}
                             });
-                        });
+                    });
 
 
-                        UpdateJiaocaiDetailStatus(jc.JiaoCaiDetailId);
-                    }
-                    catch
-                    {
+                    UpdateJiaocaiDetailStatus(jc.JiaoCaiDetailId);
 
-                    }
-                });
+                }
+
+
             }
 
         }

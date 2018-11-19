@@ -59,7 +59,7 @@ namespace Grabzujuan
                 var data = db.Database.SqlQuery<Question>(@"
         declare @Rowid table(rowid int);
         BEGIN
-        set rowcount 300; --一次读取的行数
+        set rowcount 40; --一次读取的行数
         --先将要读取的记录状态更新
         update Question set[IsGrabAns] = 1 output deleted.ID into @Rowid Where [IsGrabAns] = 0 and IsRemoteDelete = 0;
 
@@ -257,8 +257,8 @@ namespace Grabzujuan
             {
 #if DEBUG
                 var a =
-                    HttpWebResponseProxyMogu.ExecuteCreateGetHttpResponseProxy(
-                        $"https://www.zujuan.com/question/detail-{questionId}.shtml", 10000, null);
+                    HttpWebResponseProxyMayi.ExecuteCreateGetHttpResponseProxy(
+                        $"https://www.zujuan.com/question/detail-{questionId}.shtml", 6000, null);
                 //var a = HttpClientHolder.Proxy_GetRequest2();
 #else
                 var a = HttpClientHolder.Proxy_GetRequestAbyyun($"https://www.zujuan.com/question/detail-{questionId}.shtml");

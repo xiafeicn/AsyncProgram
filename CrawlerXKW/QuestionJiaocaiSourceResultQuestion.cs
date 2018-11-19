@@ -12,16 +12,11 @@ namespace CrawlerXKW
     using System;
     using System.Collections.Generic;
     
-    public partial class QuestionJiaocaiSourceResult
+    public partial class QuestionJiaocaiSourceResultQuestion
     {
         public int Id { get; set; }
-        public int JiaocaiId { get; set; }
-        public int AreaId { get; set; }
-        public int Total { get; set; }
-        public int PageNum { get; set; }
-        public string Html { get; set; }
-        public string CrawlerUrl { get; set; }
-        public int QuestionJiaoCaiSourceId { get; set; }
-        public bool Status { get; set; }
+        public int QuestionJiaocaiSourceResultId { get; set; }
+        public int QuestionId { get; set; }
+        public System.DateTime CreateTime { get; set; }
     }
 }

@@ -61,6 +61,7 @@
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security" />
     <Reference Include="System.Web" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="WebDriver, Version=3.141.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Selenium.WebDriver.3.141.0\lib\net45\WebDriver.dll</HintPath>
@@ -72,7 +73,6 @@
     </Compile>
     <Compile Include="CrawlerQuestion.cs" />
     <Compile Include="CrawlerQuestionJiaoCaiPageList.cs" />
-    <Compile Include="CrawlerQuestionPageList.cs" />
     <Compile Include="CrawlerJiaocaiDetail.cs" />
     <Compile Include="CrawlerJiaocai.cs" />
     <Compile Include="CrawlerSubject.cs" />
@@ -86,6 +86,9 @@
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
     <Compile Include="JiaocaiDetail.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Log.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
     <Compile Include="Model1.Context.cs">
@@ -103,7 +106,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Model1.edmx</DependentUpon>
     </Compile>
-    <Compile Include="ParseQuestion.cs" />
+    <Compile Include="ParseQuestionXkw.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ProxyManager.cs" />
@@ -111,6 +114,9 @@
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
     <Compile Include="QuestionJiaocaiSourceResult.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
+    <Compile Include="QuestionJiaocaiSourceResultQuestion.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
     <Compile Include="QuestionPageAreaSource.cs">
@@ -147,6 +153,9 @@
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
     <Compile Include="V_QuestionJiaoCaiSource.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
+    <Compile Include="V_QuestionJiaocaiSourceResult.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
   </ItemGroup>

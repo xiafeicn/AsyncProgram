@@ -22,16 +22,16 @@ namespace QuestionGrabPublisher
                 {
                     return;
                 }
-                Parallel.ForEach(listQuestion, new ParallelOptions() { MaxDegreeOfParallelism = 1 }, (q) =>
-                       {
-                           GrabAnswers.CrawlerAnswer(q);
-                       });
+                Parallel.ForEach(listQuestion, new ParallelOptions() { MaxDegreeOfParallelism = 10 }, (q) =>
+                          {
+                              GrabAnswers.CrawlerAnswer(q);
+                          });
             }
             catch (Exception e)
             {
                 Console.WriteLine(e.ToString());
                 GrabAnswers.UpdateUnGrabQuestionStatus();
-               
+
             }
             //while (GetTopQuestion().Count > 0)
             //{

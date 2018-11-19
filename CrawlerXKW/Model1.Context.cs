@@ -30,8 +30,10 @@ namespace CrawlerXKW
         public virtual DbSet<Grade> Grade { get; set; }
         public virtual DbSet<JiaoCai> JiaoCai { get; set; }
         public virtual DbSet<JiaocaiDetail> JiaocaiDetail { get; set; }
+        public virtual DbSet<Log> Log { get; set; }
         public virtual DbSet<QuestionJiaoCaiSource> QuestionJiaoCaiSource { get; set; }
         public virtual DbSet<QuestionJiaocaiSourceResult> QuestionJiaocaiSourceResult { get; set; }
+        public virtual DbSet<QuestionJiaocaiSourceResultQuestion> QuestionJiaocaiSourceResultQuestion { get; set; }
         public virtual DbSet<QuestionPageAreaSource> QuestionPageAreaSource { get; set; }
         public virtual DbSet<QuestionPageList> QuestionPageList { get; set; }
         public virtual DbSet<QuestionPageSource> QuestionPageSource { get; set; }
@@ -44,5 +46,6 @@ namespace CrawlerXKW
         public virtual DbSet<V_JiaocaiDetail> V_JiaocaiDetail { get; set; }
         public virtual DbSet<V_JiaocaiDetailYSY> V_JiaocaiDetailYSY { get; set; }
         public virtual DbSet<V_QuestionJiaoCaiSource> V_QuestionJiaoCaiSource { get; set; }
+        public virtual DbSet<V_QuestionJiaocaiSourceResult> V_QuestionJiaocaiSourceResult { get; set; }
     }
 }

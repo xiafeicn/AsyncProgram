@@ -78,7 +78,7 @@ namespace Grabzujuan
             {
                 WebClientEx webClient = new WebClientEx();
 
-                webClient.Encoding = Encoding.GetEncoding("gb2312");
+                //webClient.Encoding = Encoding.GetEncoding("gb2312");
                 if (true)
                 {
                     //IP: 帐号: tets1106密码: tets1106开通成功！http端口：808
@@ -96,7 +96,6 @@ namespace Grabzujuan
                     webClient.Proxy = wp;
                 }
                 webClient.Headers.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36");
-                webClient.Headers.Add("cookie", "_ga=GA1.2.1590408373.1540594397; _gid=GA1.2.444123411.1542285873; isRemove=1; chid=27e8704a451201531cc9941f6f3b709b7e13397751c04b090603ffdb0a56dfb9a%3A2%3A%7Bi%3A0%3Bs%3A4%3A%22chid%22%3Bi%3A1%3Bs%3A1%3A%222%22%3B%7D; xd=ff8cc2c663e498cf1fffa3d89aaa8ae9f68a128de39a6036c46ec0a0ff0b9459a%3A2%3A%7Bi%3A0%3Bs%3A2%3A%22xd%22%3Bi%3A1%3Bs%3A1%3A%221%22%3B%7D; _csrf=1398d38e93448214bc3159f11f82c6cabe64e6424474799b7e13cf35c027f7e9a%3A2%3A%7Bi%3A0%3Bs%3A5%3A%22_csrf%22%3Bi%3A1%3Bs%3A32%3A%227Q3dvZPJu0TCJGVZskyZO_BCYDzkDojd%22%3B%7D; Hm_lvt_6de0a5b2c05e49d1c850edca0c13051f=1541849628,1542198947,1542285873,1542291479; Hm_lpvt_6de0a5b2c05e49d1c850edca0c13051f=1542291797");
                 Stream stream = webClient.OpenRead(url);
 
                 StreamReader sr = new StreamReader(stream);

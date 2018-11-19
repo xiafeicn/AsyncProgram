@@ -12,7 +12,7 @@ namespace CrawlerXKW
     using System;
     using System.Collections.Generic;
     
-    public partial class QuestionJiaocaiSourceResult
+    public partial class V_QuestionJiaocaiSourceResult
     {
         public int Id { get; set; }
         public int JiaocaiId { get; set; }
@@ -23,5 +23,7 @@ namespace CrawlerXKW
         public string CrawlerUrl { get; set; }
         public int QuestionJiaoCaiSourceId { get; set; }
         public bool Status { get; set; }
+        public Nullable<int> SubjectId { get; set; }
+        public string SubjectName { get; set; }
     }
 }
