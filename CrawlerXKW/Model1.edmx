@@ -5,6 +5,17 @@
     <!-- SSDL content -->
     <edmx:StorageModels>
     <Schema Namespace="XKWModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <!--生成过程中发现错误:
+警告 6002: 表/视图“XKW.dbo.!log2”未定义主键。已推断出该键，并将定义创建为只读的表/视图。-->
+        <EntityType Name="!log2">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Content" Type="text" />
+          <Property Name="Content2" Type="nvarchar(max)" />
+          <Property Name="CrawlerUrl" Type="nvarchar(max)" />
+        </EntityType>
         <EntityType Name="Area">
           <Key>
             <PropertyRef Name="Id" />
@@ -58,8 +69,9 @@
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="Content" Type="nvarchar(max)" />
+          <Property Name="Content" Type="text" />
           <Property Name="Content2" Type="nvarchar(max)" />
+          <Property Name="CrawlerUrl" Type="nvarchar(max)" />
         </EntityType>
         <EntityType Name="QuestionJiaoCaiSource">
           <Key>
@@ -337,6 +349,46 @@
           <Property Name="SubjectId" Type="int" />
           <Property Name="SubjectName" Type="nvarchar" MaxLength="50" />
         </EntityType>
+        <!--生成过程中发现错误:
+警告 6002: 表/视图“XKW.dbo.V_questionxkw”未定义主键。已推断出该键，并将定义创建为只读的表/视图。-->
+        <EntityType Name="V_questionxkw">
+          <Key>
+            <PropertyRef Name="Id" />
+            <PropertyRef Name="QuestionId" />
+            <PropertyRef Name="OriginHtml" />
+            <PropertyRef Name="CreateTime" />
+            <PropertyRef Name="QuestionJiaoCaiSource" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="QuestionId" Type="int" Nullable="false" />
+          <Property Name="OriginHtml" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="question-text" Type="nvarchar(max)" />
+          <Property Name="source" Type="nvarchar(max)" />
+          <Property Name="class" Type="nvarchar" MaxLength="500" />
+          <Property Name="guid" Type="nvarchar" MaxLength="500" />
+          <Property Name="childnum" Type="int" />
+          <Property Name="questitle" Type="nvarchar(max)" />
+          <Property Name="categories" Type="nvarchar(max)" />
+          <Property Name="qyid" Type="int" />
+          <Property Name="qyname" Type="nvarchar" MaxLength="500" />
+          <Property Name="qdid" Type="int" />
+          <Property Name="qdname" Type="nvarchar" MaxLength="500" />
+          <Property Name="key" Type="nvarchar" MaxLength="500" />
+          <Property Name="CrawlerUrl" Type="nvarchar" MaxLength="500" />
+          <Property Name="QuestionAnalysis" Type="nvarchar" MaxLength="1000" />
+          <Property Name="QuestionAnswer" Type="nvarchar" MaxLength="1000" />
+          <Property Name="CreateTime" Type="datetime" Nullable="false" />
+          <Property Name="QuestionJiaoCaiSource" Type="int" Nullable="false" />
+          <Property Name="PageUrl" Type="nvarchar" MaxLength="500" />
+          <Property Name="SourceUrl" Type="nvarchar" MaxLength="500" />
+          <Property Name="JiaocaiId" Type="int" />
+          <Property Name="AnswerImg" Type="nvarchar" MaxLength="500" />
+          <Property Name="AnalysisImg" Type="nvarchar" MaxLength="500" />
+          <Property Name="JCName" Type="nvarchar" MaxLength="50" />
+          <Property Name="CategoryName" Type="nvarchar" MaxLength="50" />
+          <Property Name="SubjectName" Type="nvarchar" MaxLength="50" />
+          <Property Name="GradeName" Type="nvarchar" MaxLength="50" />
+        </EntityType>
         <EntityContainer Name="XKWModelStoreContainer">
           <EntitySet Name="Area" EntityType="Self.Area" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Degree" EntityType="Self.Degree" Schema="dbo" store:Type="Tables" />
@@ -354,6 +406,14 @@
           <EntitySet Name="Subject" EntityType="Self.Subject" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SubjectCategory" EntityType="Self.SubjectCategory" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SubjectGrade" EntityType="Self.SubjectGrade" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="!log2" EntityType="Self.!log2" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [!log2].[Id] AS [Id], 
+    [!log2].[Content] AS [Content], 
+    [!log2].[Content2] AS [Content2], 
+    [!log2].[CrawlerUrl] AS [CrawlerUrl]
+    FROM [dbo].[!log2] AS [!log2]</DefiningQuery>
+          </EntitySet>
           <EntitySet Name="Test" EntityType="Self.Test" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
     [Test].[Id] AS [Id], 
@@ -443,6 +503,39 @@
     [V_QuestionJiaocaiSourceResult].[SubjectName] AS [SubjectName]
     FROM [dbo].[V_QuestionJiaocaiSourceResult] AS [V_QuestionJiaocaiSourceResult]</DefiningQuery>
           </EntitySet>
+          <EntitySet Name="V_questionxkw" EntityType="Self.V_questionxkw" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [V_questionxkw].[Id] AS [Id], 
+    [V_questionxkw].[QuestionId] AS [QuestionId], 
+    [V_questionxkw].[OriginHtml] AS [OriginHtml], 
+    [V_questionxkw].[question-text] AS [question-text], 
+    [V_questionxkw].[source] AS [source], 
+    [V_questionxkw].[class] AS [class], 
+    [V_questionxkw].[guid] AS [guid], 
+    [V_questionxkw].[childnum] AS [childnum], 
+    [V_questionxkw].[questitle] AS [questitle], 
+    [V_questionxkw].[categories] AS [categories], 
+    [V_questionxkw].[qyid] AS [qyid], 
+    [V_questionxkw].[qyname] AS [qyname], 
+    [V_questionxkw].[qdid] AS [qdid], 
+    [V_questionxkw].[qdname] AS [qdname], 
+    [V_questionxkw].[key] AS [key], 
+    [V_questionxkw].[CrawlerUrl] AS [CrawlerUrl], 
+    [V_questionxkw].[QuestionAnalysis] AS [QuestionAnalysis], 
+    [V_questionxkw].[QuestionAnswer] AS [QuestionAnswer], 
+    [V_questionxkw].[CreateTime] AS [CreateTime], 
+    [V_questionxkw].[QuestionJiaoCaiSource] AS [QuestionJiaoCaiSource], 
+    [V_questionxkw].[PageUrl] AS [PageUrl], 
+    [V_questionxkw].[SourceUrl] AS [SourceUrl], 
+    [V_questionxkw].[JiaocaiId] AS [JiaocaiId], 
+    [V_questionxkw].[AnswerImg] AS [AnswerImg], 
+    [V_questionxkw].[AnalysisImg] AS [AnalysisImg], 
+    [V_questionxkw].[JCName] AS [JCName], 
+    [V_questionxkw].[CategoryName] AS [CategoryName], 
+    [V_questionxkw].[SubjectName] AS [SubjectName], 
+    [V_questionxkw].[GradeName] AS [GradeName]
+    FROM [dbo].[V_questionxkw] AS [V_questionxkw]</DefiningQuery>
+          </EntitySet>
         </EntityContainer>
       </Schema></edmx:StorageModels>
     <!-- CSDL content -->
@@ -465,12 +558,14 @@
           <EntitySet Name="Subject" EntityType="XKWModel.Subject" />
           <EntitySet Name="SubjectCategory" EntityType="XKWModel.SubjectCategory" />
           <EntitySet Name="SubjectGrade" EntityType="XKWModel.SubjectGrade" />
+          <EntitySet Name="C_log2" EntityType="XKWModel.C_log2" />
           <EntitySet Name="Test" EntityType="XKWModel.Test" />
           <EntitySet Name="V_Jiaocai" EntityType="XKWModel.V_Jiaocai" />
           <EntitySet Name="V_JiaocaiDetail" EntityType="XKWModel.V_JiaocaiDetail" />
           <EntitySet Name="V_JiaocaiDetailYSY" EntityType="XKWModel.V_JiaocaiDetailYSY" />
           <EntitySet Name="V_QuestionJiaoCaiSource" EntityType="XKWModel.V_QuestionJiaoCaiSource" />
           <EntitySet Name="V_QuestionJiaocaiSourceResult" EntityType="XKWModel.V_QuestionJiaocaiSourceResult" />
+          <EntitySet Name="V_questionxkw" EntityType="XKWModel.V_questionxkw" />
         </EntityContainer>
         <EntityType Name="Area">
           <Key>
@@ -525,8 +620,9 @@
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Content" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Content" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="Content2" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="CrawlerUrl" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="QuestionJiaoCaiSource">
           <Key>
@@ -649,6 +745,15 @@
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="SubjectId" Type="Int32" Nullable="false" />
           <Property Name="GradeId" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="C_log2">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Content" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Content2" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="CrawlerUrl" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="Test">
           <Key>
@@ -792,6 +897,44 @@
           <Property Name="SubjectId" Type="Int32" />
           <Property Name="SubjectName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
+        <EntityType Name="V_questionxkw">
+          <Key>
+            <PropertyRef Name="Id" />
+            <PropertyRef Name="QuestionId" />
+            <PropertyRef Name="OriginHtml" />
+            <PropertyRef Name="CreateTime" />
+            <PropertyRef Name="QuestionJiaoCaiSource" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="QuestionId" Type="Int32" Nullable="false" />
+          <Property Name="OriginHtml" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="question_text" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="source" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="class" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="guid" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="childnum" Type="Int32" />
+          <Property Name="questitle" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="categories" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="qyid" Type="Int32" />
+          <Property Name="qyname" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="qdid" Type="Int32" />
+          <Property Name="qdname" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="key" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="CrawlerUrl" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="QuestionAnalysis" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Name="QuestionAnswer" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Name="CreateTime" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="QuestionJiaoCaiSource" Type="Int32" Nullable="false" />
+          <Property Name="PageUrl" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="SourceUrl" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="JiaocaiId" Type="Int32" />
+          <Property Name="AnswerImg" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="AnalysisImg" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="JCName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CategoryName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="SubjectName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="GradeName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -854,6 +997,7 @@
           <EntitySetMapping Name="Log">
             <EntityTypeMapping TypeName="XKWModel.Log">
               <MappingFragment StoreEntitySet="Log">
+                <ScalarProperty Name="CrawlerUrl" ColumnName="CrawlerUrl" />
                 <ScalarProperty Name="Content2" ColumnName="Content2" />
                 <ScalarProperty Name="Content" ColumnName="Content" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
@@ -992,6 +1136,16 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="C_log2">
+            <EntityTypeMapping TypeName="XKWModel.C_log2">
+              <MappingFragment StoreEntitySet="!log2">
+                <ScalarProperty Name="CrawlerUrl" ColumnName="CrawlerUrl" />
+                <ScalarProperty Name="Content2" ColumnName="Content2" />
+                <ScalarProperty Name="Content" ColumnName="Content" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="Test">
             <EntityTypeMapping TypeName="XKWModel.Test">
               <MappingFragment StoreEntitySet="Test">
@@ -1089,6 +1243,41 @@
                 <ScalarProperty Name="Total" ColumnName="Total" />
                 <ScalarProperty Name="AreaId" ColumnName="AreaId" />
                 <ScalarProperty Name="JiaocaiId" ColumnName="JiaocaiId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="V_questionxkw">
+            <EntityTypeMapping TypeName="XKWModel.V_questionxkw">
+              <MappingFragment StoreEntitySet="V_questionxkw">
+                <ScalarProperty Name="GradeName" ColumnName="GradeName" />
+                <ScalarProperty Name="SubjectName" ColumnName="SubjectName" />
+                <ScalarProperty Name="CategoryName" ColumnName="CategoryName" />
+                <ScalarProperty Name="JCName" ColumnName="JCName" />
+                <ScalarProperty Name="AnalysisImg" ColumnName="AnalysisImg" />
+                <ScalarProperty Name="AnswerImg" ColumnName="AnswerImg" />
+                <ScalarProperty Name="JiaocaiId" ColumnName="JiaocaiId" />
+                <ScalarProperty Name="SourceUrl" ColumnName="SourceUrl" />
+                <ScalarProperty Name="PageUrl" ColumnName="PageUrl" />
+                <ScalarProperty Name="QuestionJiaoCaiSource" ColumnName="QuestionJiaoCaiSource" />
+                <ScalarProperty Name="CreateTime" ColumnName="CreateTime" />
+                <ScalarProperty Name="QuestionAnswer" ColumnName="QuestionAnswer" />
+                <ScalarProperty Name="QuestionAnalysis" ColumnName="QuestionAnalysis" />
+                <ScalarProperty Name="CrawlerUrl" ColumnName="CrawlerUrl" />
+                <ScalarProperty Name="key" ColumnName="key" />
+                <ScalarProperty Name="qdname" ColumnName="qdname" />
+                <ScalarProperty Name="qdid" ColumnName="qdid" />
+                <ScalarProperty Name="qyname" ColumnName="qyname" />
+                <ScalarProperty Name="qyid" ColumnName="qyid" />
+                <ScalarProperty Name="categories" ColumnName="categories" />
+                <ScalarProperty Name="questitle" ColumnName="questitle" />
+                <ScalarProperty Name="childnum" ColumnName="childnum" />
+                <ScalarProperty Name="guid" ColumnName="guid" />
+                <ScalarProperty Name="class" ColumnName="class" />
+                <ScalarProperty Name="source" ColumnName="source" />
+                <ScalarProperty Name="question_text" ColumnName="question-text" />
+                <ScalarProperty Name="OriginHtml" ColumnName="OriginHtml" />
+                <ScalarProperty Name="QuestionId" ColumnName="QuestionId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>

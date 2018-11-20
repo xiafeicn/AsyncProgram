@@ -16,19 +16,21 @@ namespace CrawlerXKW
             //new CrawlerSubject().Crawler();
             //new CrawlerJiaocai().Crawler();
             //new CrawlerJiaocaiDetail().Crawler();
-            //new CrawlerQuestionJiaoCaiPageList().Crawler();
-            new Task(() =>
-            {
-                new CrawlerQuestion().Crawler();
-            }).Start();
-            while (( DateTime.Now - HttpWebResponseProxyFLNSU.DtLastSuccessTime).TotalSeconds <= 40)
-            {
-                System.Threading.Thread.Sleep(3000);
-            }
-            System.Windows.Forms.Application.Restart();
+            ////////new CrawlerQuestionJiaoCaiPageList().Crawler();
+            ////////new Task(() =>
+            ////////{
+            ////////    new CrawlerQuestionHuake().Crawler();
+            ////////}).Start();
+            ////////while ((DateTime.Now - HttpWebResponseProxyHuake.DtLastSuccessTime).TotalSeconds <= 60)
+            ////////{
+            ////////    System.Threading.Thread.Sleep(3000);
+            ////////}
+            ////////System.Windows.Forms.Application.Restart();
             //var res = HttpClientHolder.GetRequest("http://zujuan.xkw.com/gzyw/zj75639/");
 
             //new ParseQuestionXkw().TestDown();
+            //new ExportTest().export();
+            new HtmlTest().TestParseQuestion();
         }
 
         public static void StartImage()

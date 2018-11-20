@@ -21,12 +21,14 @@
         <EntityTypeShape EntityType="XKWModel.Subject" Width="1.5" PointX="4.75" PointY="9.75" />
         <EntityTypeShape EntityType="XKWModel.SubjectCategory" Width="1.5" PointX="10.75" PointY="0.75" />
         <EntityTypeShape EntityType="XKWModel.SubjectGrade" Width="1.5" PointX="10.75" PointY="3.75" />
-        <EntityTypeShape EntityType="XKWModel.Test" Width="1.5" PointX="10.75" PointY="6.75" />
-        <EntityTypeShape EntityType="XKWModel.V_Jiaocai" Width="1.5" PointX="6.75" PointY="10.75" />
-        <EntityTypeShape EntityType="XKWModel.V_JiaocaiDetail" Width="1.5" PointX="8.75" PointY="10.75" />
-        <EntityTypeShape EntityType="XKWModel.V_JiaocaiDetailYSY" Width="1.5" PointX="10.75" PointY="10.75" />
-        <EntityTypeShape EntityType="XKWModel.V_QuestionJiaoCaiSource" Width="1.5" PointX="0.75" PointY="11.75" />
-        <EntityTypeShape EntityType="XKWModel.V_QuestionJiaocaiSourceResult" Width="1.5" PointX="12.75" PointY="0.75" />
+        <EntityTypeShape EntityType="XKWModel.C_log2" Width="1.5" PointX="10.75" PointY="6.75" />
+        <EntityTypeShape EntityType="XKWModel.Test" Width="1.5" PointX="6.75" PointY="10.75" />
+        <EntityTypeShape EntityType="XKWModel.V_Jiaocai" Width="1.5" PointX="8.75" PointY="10.75" />
+        <EntityTypeShape EntityType="XKWModel.V_JiaocaiDetail" Width="1.5" PointX="10.75" PointY="9.75" />
+        <EntityTypeShape EntityType="XKWModel.V_JiaocaiDetailYSY" Width="1.5" PointX="0.75" PointY="11.75" />
+        <EntityTypeShape EntityType="XKWModel.V_QuestionJiaoCaiSource" Width="1.5" PointX="12.75" PointY="0.75" />
+        <EntityTypeShape EntityType="XKWModel.V_QuestionJiaocaiSourceResult" Width="1.5" PointX="2.75" PointY="12.75" />
+        <EntityTypeShape EntityType="XKWModel.V_questionxkw" Width="1.5" PointX="12.75" PointY="4.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

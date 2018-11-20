@@ -77,12 +77,17 @@
     <Compile Include="CrawlerJiaocaiDetail.cs" />
     <Compile Include="CrawlerJiaocai.cs" />
     <Compile Include="CrawlerSubject.cs" />
+    <Compile Include="C_log2.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
     <Compile Include="Degree.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
+    <Compile Include="ExportTest.cs" />
     <Compile Include="Grade.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
+    <Compile Include="HtmlTest.cs" />
     <Compile Include="JiaoCai.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
@@ -157,6 +162,9 @@
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
     <Compile Include="V_QuestionJiaocaiSourceResult.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
+    <Compile Include="V_questionxkw.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
   </ItemGroup>

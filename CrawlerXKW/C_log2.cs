@@ -12,7 +12,7 @@ namespace CrawlerXKW
     using System;
     using System.Collections.Generic;
     
-    public partial class Log
+    public partial class C_log2
     {
         public int Id { get; set; }
         public string Content { get; set; }

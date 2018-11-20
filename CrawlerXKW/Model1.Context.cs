@@ -41,11 +41,13 @@ namespace CrawlerXKW
         public virtual DbSet<Subject> Subject { get; set; }
         public virtual DbSet<SubjectCategory> SubjectCategory { get; set; }
         public virtual DbSet<SubjectGrade> SubjectGrade { get; set; }
+        public virtual DbSet<C_log2> C_log2 { get; set; }
         public virtual DbSet<Test> Test { get; set; }
         public virtual DbSet<V_Jiaocai> V_Jiaocai { get; set; }
         public virtual DbSet<V_JiaocaiDetail> V_JiaocaiDetail { get; set; }
         public virtual DbSet<V_JiaocaiDetailYSY> V_JiaocaiDetailYSY { get; set; }
         public virtual DbSet<V_QuestionJiaoCaiSource> V_QuestionJiaoCaiSource { get; set; }
         public virtual DbSet<V_QuestionJiaocaiSourceResult> V_QuestionJiaocaiSourceResult { get; set; }
+        public virtual DbSet<V_questionxkw> V_questionxkw { get; set; }
     }
 }
