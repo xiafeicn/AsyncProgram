@@ -82,7 +82,7 @@ namespace CrawlerXKW
                                        }
                                        var doc = NSoupClient.Parse(html);
                                        var elements = doc.GetElementsByTag("img");
-                                       new ParseQuestionXkw().SaveImage(elements);
+                                       new ParseQuestionXkw().SaveImage(elements, url);
                                        //////
                                        var listQuestion = new ParseQuestionXkw().AddQuestion(html, questionHtml, source.JiaocaiId, source.SubjectId.ToString(), url, source.AreaId, source.Id, source.Total, i);
                                        //var listQuestion = new ParseQuestionXkw().AddQuestion(html, source.JiaocaiId, source.SubjectId.ToString(), url);
@@ -147,16 +147,6 @@ namespace CrawlerXKW
                 entity.CrawlerUrl = crawlerUrl;
                 db.QuestionJiaocaiSourceResult.Add(entity);
                 db.SaveChanges();
-
-                foreach (var item in entities)
-                {
-                    QuestionJiaocaiSourceResultQuestion question = new QuestionJiaocaiSourceResultQuestion();
-                    question.QuestionId = item.QuestionId;
-                    question.QuestionJiaocaiSourceResultId = entity.Id;
-                    question.CreateTime = DateTime.Now;
-                    db.QuestionJiaocaiSourceResultQuestion.Add(question);
-                    db.SaveChanges();
-                }
             }
         }
 

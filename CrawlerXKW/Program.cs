@@ -16,49 +16,47 @@ namespace CrawlerXKW
             //new CrawlerSubject().Crawler();
             //new CrawlerJiaocai().Crawler();
             //new CrawlerJiaocaiDetail().Crawler();
-            ////////new CrawlerQuestionJiaoCaiPageList().Crawler();
-            ////////new Task(() =>
-            ////////{
-            ////////    new CrawlerQuestionHuake().Crawler();
-            ////////}).Start();
-            ////////while ((DateTime.Now - HttpWebResponseProxyHuake.DtLastSuccessTime).TotalSeconds <= 60)
-            ////////{
-            ////////    System.Threading.Thread.Sleep(3000);
-            ////////}
-            ////////System.Windows.Forms.Application.Restart();
+            //new CrawlerQuestionJiaoCaiPageList().Crawler();
+
             //var res = HttpClientHolder.GetRequest("http://zujuan.xkw.com/gzyw/zj75639/");
 
             //new ParseQuestionXkw().TestDown();
             //new ExportTest().export();
-            new HtmlTest().TestParseQuestion();
+            //new HtmlTest().TestParseQuestion();
+
+            ///*11111111111111111111111*/
+            //Part1();
+            //System.Windows.Forms.Application.Restart();
+
+            /*11111111111111111111111*/
+            Part2();
+            System.Windows.Forms.Application.Restart();
+            //new QuestionJiaoCaiDetailSourceCrawler().StartCrawler();
+            //new ImageDownloadTest().test();
         }
 
-        public static void StartImage()
+        public static void Part1()
         {
-            var list = GetList();
-
-            foreach (var item in list)
+            new Task(() =>
             {
-                try
-                {
-                    var doc = NSoupClient.Parse(item);
-                    var elements = doc.GetElementsByTag("img");
-                    new ParseQuestionXkw().SaveImage(elements);
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(item);
-                }
+                new CrawlerQuestionHuake().Crawler();
+            }).Start();
+            while ((DateTime.Now - HttpWebResponseProxyHuake.DtLastSuccessTime).TotalSeconds <= 60)
+            {
+                System.Threading.Thread.Sleep(3000);
+            }
+        }
+        public static void Part2()
+        {
+            new Task(() =>
+            {
+                new CrawlerQuestionHugeHuake().Crawler();
+            }).Start();
+            while ((DateTime.Now - HttpWebResponseProxyHuake.DtLastSuccessTime).TotalSeconds <= 60)
+            {
+                System.Threading.Thread.Sleep(3000);
             }
         }
 
-        public static List<string> GetList()
-        {
-            using (var db = new XKWEntities2())
-            {
-                return db.QuestionXkw.Select(t => t.OriginHtml).ToList();
-            }
-
-        }
     }
 }

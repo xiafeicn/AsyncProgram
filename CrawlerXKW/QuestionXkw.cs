@@ -39,5 +39,7 @@ namespace CrawlerXKW
         public Nullable<int> JiaocaiId { get; set; }
         public string AnswerImg { get; set; }
         public string AnalysisImg { get; set; }
+        public Nullable<int> QuestionJiaoCaiDetailSourceId { get; set; }
+        public bool ImageStatus { get; set; }
     }
 }
