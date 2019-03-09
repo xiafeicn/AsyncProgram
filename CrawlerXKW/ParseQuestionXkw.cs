@@ -35,8 +35,9 @@ namespace CrawlerXKW
         //    }
         //}
 
-        public void SaveImage(Elements elements)
+        public Dictionary<string, bool> SaveImage(Elements elements, string crawlerUrl)
         {
+            Dictionary<string, bool> dic = new Dictionary<string, bool>();
             Parallel.ForEach(elements, (element) =>
               {
                   var href = element.Attr("src").NullToString();
@@ -54,8 +55,14 @@ namespace CrawlerXKW
                   }
 
                   Debug.WriteLine(loalPath);
-                  ExecuteDownload(href, loalPath);
+                  var flag = ExecuteDownload(href, loalPath, crawlerUrl);
+                  if (!flag)
+                  {
+                      if (!dic.ContainsKey(href))
+                          dic.Add(href, false);
+                  }
               });
+            return dic;
         }
 
         public List<string> SaveAnswerImage(string questionId, string key, string subjectId)
@@ -71,9 +78,9 @@ namespace CrawlerXKW
             result.Add(localAnswerFile);
             return result;
         }
-        public bool ExecuteDownload(string url, string localfile)
+        public bool ExecuteDownload(string url, string localfile, string crawlerUrl = "")
         {
-            int retry = 3;
+            int retry = 2;
             for (var i = 0; i < retry; i++)
             {
                 bool hasException = false;
@@ -93,7 +100,7 @@ namespace CrawlerXKW
                     Task.Delay(1000);
                 }
             }
-            throw new Exception("error download image" + url);
+            //throw new Exception("error download image" + url);
             return false;
         }
 
@@ -149,18 +156,7 @@ namespace CrawlerXKW
                     db.QuestionJiaocaiSourceResult.Any(t => t.Status == false);
             }
         }
-        public List<V_QuestionJiaocaiSourceResult> GetRandom10QuestionJiaocaiSourceResult()
-        {
-            using (var db = new XKWEntities2())
-            {
-
-                return
-                    db.Database.SqlQuery<V_QuestionJiaocaiSourceResult>(
-                        @"
-select top 10 *, NewID() as random from [V_QuestionJiaocaiSourceResult] where status=0 ").ToList();
-            }
-        }
-        public List<QuestionXkw> AddQuestion(string html,string questionHtml, int jiaocaiId, string subjectId, string sourceUrl, int areaId, int sourceId, int total, int pageNum)
+        public List<QuestionXkw> AddQuestion(string html, string questionHtml, int jiaocaiId, string subjectId, string sourceUrl, int areaId, int sourceId, int total, int pageNum, Dictionary<string, bool> dicImageStaus)
         {
             List<QuestionXkw> result = new List<QuestionXkw>();
             var elements = NSoupClient.Parse(html).GetElementsByClass("quesbox");
@@ -213,6 +209,15 @@ select top 10 *, NewID() as random from [V_QuestionJiaocaiSourceResult] where st
                     entity.QuestionAnalysis = analysisUrl;
                     entity.QuestionAnswer = answerUrl;
                     entity.CreateTime = DateTime.Now;
+
+                    if (dicImageStaus.Any(t => entity.OriginHtml.IndexOf(t.Key, StringComparison.OrdinalIgnoreCase) > 0))
+                    {
+                        entity.ImageStatus = false;
+                    }
+                    else
+                    {
+                        entity.ImageStatus = true;
+                    }
                     result.Add(entity);
                 }
                 //catch (DbUpdateException exception)
@@ -238,7 +243,7 @@ select top 10 *, NewID() as random from [V_QuestionJiaocaiSourceResult] where st
                 //}
                 catch (Exception ex)
                 {
-                    WriteLog(questionHtml, ex.ToString(),sourceUrl);
+                    WriteLog(questionHtml, ex.ToString(), sourceUrl);
 
                     throw ex;
 
@@ -270,15 +275,140 @@ select top 10 *, NewID() as random from [V_QuestionJiaocaiSourceResult] where st
             }
             catch (Exception ex)
             {
-                WriteLog(questionHtml, ex.ToString(),sourceUrl);
+                WriteLog(questionHtml, ex.ToString(), sourceUrl);
 
                 throw ex;
             }
             return result;
         }
 
+        public List<QuestionXkw> AddQuestion2(string html, string questionHtml, int jiaocaiId, string subjectId, string sourceUrl, int areaId, int sourceId, int total, int pageNum, int QuestionJiaoCaiDetailSourceId, Dictionary<string, bool> dicImageStaus)
+        {
+            List<QuestionXkw> result = new List<QuestionXkw>();
+            var elements = NSoupClient.Parse(html).GetElementsByClass("quesbox");
+            foreach (var element in elements)
+            {
+                try
+                {
 
-        public void WriteLog(string error, string error2,string url)
+                    QuestionXkw entity = new QuestionXkw();
+                    entity.OriginHtml = element.Html();
+                    var detail = element.Select("div.join-sj>a")[0];
+                    entity.QuestionId = detail.Attr("quesid").NullToInt();
+                    entity.@class = detail.Attr("class").NullToString();
+                    entity.guid = detail.Attr("guid").NullToString();
+                    entity.childnum = detail.Attr("childnum").NullToInt();
+                    entity.questitle = detail.Attr("questitle").NullToString();
+                    entity.categories = detail.Attr("categories").NullToString();
+                    entity.qyid = detail.Attr("qyid").NullToInt();
+                    entity.qdid = detail.Attr("qdid").NullToInt();
+                    entity.qyname = detail.Attr("qyname").NullToString();
+                    entity.qdname = detail.Attr("qdname").NullToString();
+                    entity.JiaocaiId = jiaocaiId;
+                    var source = element.Select("div.quesource")[0];
+
+                    entity.source = source.Html();
+                    entity.SourceUrl = sourceUrl;
+
+                    var questiontitle = element.Select("div.question-inner")[0];
+                    entity.key = questiontitle.Attr("key").NullToString();
+                    entity.question_text = questiontitle.Html();
+
+                    var href = element.Select("a.detail")[0];
+                    entity.CrawlerUrl = href.Attr("href").NullToString();
+
+
+                    var str =
+                        entity.CrawlerUrl.Replace("http://zujuan.xkw.com/", "")
+                            .Replace("https://zujuan.xkw.com/", "");
+                    var bankId = str.Substring(0, str.IndexOf("q", StringComparison.OrdinalIgnoreCase));
+                    ;
+                    var analysisUrl =
+                        $"http://im.zujuan.xkw.com/Parse/{entity.QuestionId}/{bankId}/700/14/28/{entity.key}";
+                    var answerUrl =
+                        $"http://im.zujuan.xkw.com/Answer/{entity.QuestionId}/{bankId}/700/14/28/{entity.key}";
+
+
+                    var paths = new ParseQuestionXkw().SaveAnswerImage(entity.QuestionId.ToString(), entity.key, subjectId);
+                    entity.AnalysisImg = paths[0];
+                    entity.AnswerImg = paths[1];
+                    entity.QuestionAnalysis = analysisUrl;
+                    entity.QuestionAnswer = answerUrl;
+                    entity.CreateTime = DateTime.Now;
+                    entity.QuestionJiaoCaiDetailSourceId = QuestionJiaoCaiDetailSourceId;
+                    if (dicImageStaus.Any(t => entity.OriginHtml.IndexOf(t.Key, StringComparison.OrdinalIgnoreCase) > 0))
+                    {
+                        entity.ImageStatus = false;
+                    }
+                    else
+                    {
+                        entity.ImageStatus = true;
+                    }
+                    result.Add(entity);
+                }
+                //catch (DbUpdateException exception)
+                //{
+                //    var msg = string.Empty;
+
+                //    foreach (var validationError in ((DbUpdateException)exception).Data)
+                //    {
+                //        var o = validationError;
+                //    }
+                //    throw new Exception();
+                //}
+                //catch (DbEntityValidationException ex)
+                //{
+                //    var msg = string.Empty;
+
+                //    foreach (var validationError in ((DbEntityValidationException)ex).EntityValidationErrors)
+                //        foreach (var error in validationError.ValidationErrors)
+                //            msg += string.Format("Property: {0} Error: {1}", error.PropertyName, error.ErrorMessage);
+
+                //    var fail = new Exception(msg);
+                //    throw fail;
+                //}
+                catch (Exception ex)
+                {
+                    WriteLog(questionHtml, ex.ToString(), sourceUrl);
+
+                    throw ex;
+
+                }
+            }
+
+            try
+            {
+                using (var db = new XKWEntities2())
+                {
+                    db.QuestionXkw.AddRange(result);
+
+                    if (
+                        !db.QuestionJiaocaiSourceDetailResult.Any(
+                            t => t.JiaocaiDetailId == jiaocaiId && t.AreaId == areaId && t.PageNum == pageNum))
+                    {
+                        var entity = new QuestionJiaocaiSourceDetailResult();
+                        entity.AreaId = areaId;
+                        entity.JiaocaiId = jiaocaiId;
+                        entity.Html = html;
+                        entity.Total = total;
+                        entity.PageNum = pageNum;
+                        entity.QuestionJiaoCaiDetailSourceId = sourceId;
+                        entity.CrawlerUrl = sourceUrl;
+                        db.QuestionJiaocaiSourceDetailResult.Add(entity);
+                    }
+                    db.SaveChanges();
+                }
+            }
+            catch (Exception ex)
+            {
+                WriteLog(questionHtml, ex.ToString(), sourceUrl);
+
+                throw ex;
+            }
+            return result;
+        }
+
+        public void WriteLog(string error, string error2, string url)
         {
             using (var db = new XKWEntities2())
             {

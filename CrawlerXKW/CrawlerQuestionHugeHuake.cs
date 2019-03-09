@@ -22,7 +22,7 @@ using OpenQA.Selenium.IE;
 
 namespace CrawlerXKW
 {
-    public class CrawlerQuestionHuake
+    public class CrawlerQuestionHugeHuake
     {
         public void Crawler()
         {
@@ -42,7 +42,7 @@ namespace CrawlerXKW
                                               return;
 
                                           var url =
-                                                 $"http://zujuan.xkw.com/{source.Prefix}/zj{source.JiaocaiId}/a{source.AreaId}p{i}/";
+                                                 $"http://zujuan.xkw.com/{source.Prefix}/zj{source.JiaocaiDetailId}/a{source.AreaId}p{i}/";
 
 
                                           Console.WriteLine(url);
@@ -76,28 +76,25 @@ namespace CrawlerXKW
                                           var doc = NSoupClient.Parse(html);
                                           var questionHtml = doc.GetElementById("queslistbox").Html();
                                           var questions = doc.GetElementById("queslistbox").GetElementsByClass("quesbox");
-                                          if (url != "http://zujuan.xkw.com/gzsx/zj81565/a500000p117/")
+                                          if (i < pageCount - 1 && questions.Count < 10)
                                           {
-                                              if (i < pageCount - 1 && questions.Count < 10)
+                                              var totalCount = doc.GetElementById("questioncount").Text().NullToInt();
+                                              if (source.Total != totalCount)
                                               {
-                                                  var totalCount = doc.GetElementById("questioncount").Text().NullToInt();
-                                                  if (source.Total != totalCount)
-                                                  {
-                                                      UpdateQuestionJiaocaiSourceTotalCount(source.Id, totalCount);
-                                                  }
-                                                  throw new Exception();
+                                                  UpdateQuestionJiaocaiDetailSourceTotalCount(source.Id, totalCount);
                                               }
+                                              throw new Exception();
                                           }
-                                          
+                                        
                                           var elements = doc.GetElementsByTag("img");
-                                          var dicImageStaus = new ParseQuestionXkw().SaveImage(elements, url);
+                                          var dicImageStatus = new ParseQuestionXkw().SaveImage(elements, url);
                                           //////
-                                          var listQuestion = new ParseQuestionXkw().AddQuestion(html, questionHtml, source.JiaocaiId, source.SubjectId.ToString(), url, source.AreaId, source.Id, source.Total, i, dicImageStaus);
+                                          var listQuestion = new ParseQuestionXkw().AddQuestion2(html, questionHtml, source.JiaocaiId, source.SubjectId.ToString(), url, source.AreaId, source.Id, source.Total, i, source.Id, dicImageStatus);
                                           //AddQuestion(questionHtml, source.Id, url);
                                           //AddQuestionJiaocaiSourceResult(source.AreaId, source.JiaocaiId, source.Id, questionHtml, source.Total, i, url, listQuestion);
                                       });
 
-                             UpdateQuestionJiaocaiSourceResultStatus(source.Id);
+                             UpdateQuestionJiaocaiDetailSourceResultStatus(source.Id);
                          }
                          catch
                          {
@@ -110,41 +107,41 @@ namespace CrawlerXKW
             }
 
         }
-        public void UpdateQuestionJiaocaiSourceTotalCount(int id, int total)
+
+        public void UpdateQuestionJiaocaiDetailSourceTotalCount(int id, int total)
         {
             using (var db = new XKWEntities2())
             {
                 if (
-                    db.QuestionJiaoCaiSource.Any(t => t.Id == id))
+                    db.QuestionJiaoCaiDetailSource.Any(t => t.Id == id))
                 {
-                    var entity = db.QuestionJiaoCaiSource.FirstOrDefault(t => t.Id == id);
+                    var entity = db.QuestionJiaoCaiDetailSource.FirstOrDefault(t => t.Id == id);
                     entity.Total = total;
                     db.SaveChanges();
                 }
             }
         }
 
-
-        public void UpdateQuestionJiaocaiSourceResultStatus(int id)
+        public void UpdateQuestionJiaocaiDetailSourceResultStatus(int id)
         {
             using (var db = new XKWEntities2())
             {
                 if (
-                    db.QuestionJiaoCaiSource.Any(t => t.Id == id))
+                    db.QuestionJiaoCaiDetailSource.Any(t => t.Id == id))
                 {
-                    var entity = db.QuestionJiaoCaiSource.FirstOrDefault(t => t.Id == id);
+                    var entity = db.QuestionJiaoCaiDetailSource.FirstOrDefault(t => t.Id == id);
                     entity.Status = true;
                     db.SaveChanges();
                 }
             }
         }
 
-        public bool ExistQuestionJiaocaiSourceResult(int QuestionJiaoCaiSourceId, int pageNum)
+        public bool ExistQuestionJiaocaiSourceResult(int QuestionJiaoCaiDetailSourceId, int pageNum)
         {
             using (var db = new XKWEntities2())
             {
-                return db.QuestionJiaocaiSourceResult.Any(
-                    t => t.QuestionJiaoCaiSourceId == QuestionJiaoCaiSourceId && t.PageNum == pageNum);
+                return db.QuestionJiaocaiSourceDetailResult.Any(
+                    t => t.QuestionJiaoCaiDetailSourceId == QuestionJiaoCaiDetailSourceId && t.PageNum == pageNum);
             }
         }
 
@@ -156,54 +153,35 @@ namespace CrawlerXKW
                     db.QuestionJiaocaiSourceResult.Any(
                         t => t.JiaocaiId == jiaocaiId && t.AreaId == areaId && t.PageNum == pageNum))
                     return;
-                var entity = new QuestionJiaocaiSourceResult();
+                var entity = new QuestionJiaocaiSourceDetailResult();
                 entity.AreaId = areaId;
                 entity.JiaocaiId = jiaocaiId;
                 entity.Html = html;
                 entity.Total = total;
                 entity.PageNum = pageNum;
-                entity.QuestionJiaoCaiSourceId = sourceId;
+                entity.QuestionJiaoCaiDetailSourceId = sourceId;
                 entity.CrawlerUrl = crawlerUrl;
-                db.QuestionJiaocaiSourceResult.Add(entity);
+                db.QuestionJiaocaiSourceDetailResult.Add(entity);
                 db.SaveChanges();
 
-            }
-        }
-
-        public void AddGrabPageList(int areaId, int jiaocaiDetailId, int gradeId, int total, int pageNum)
-        {
-            using (var db = new XKWEntities2())
-            {
-                if (
-                    db.QuestionPageList.Any(
-                        t => t.AreaId == areaId && t.JiaocaiDetailId == jiaocaiDetailId && t.GradeId == gradeId && t.PageNum == pageNum))
-                    return;
-                var entity = new QuestionPageList();
-                entity.AreaId = areaId;
-                entity.JiaocaiDetailId = jiaocaiDetailId;
-                entity.GradeId = gradeId;
-                entity.Total = total;
-                entity.PageNum = pageNum;
-                db.QuestionPageList.Add(entity);
-                db.SaveChanges();
             }
         }
         public bool ExistCrawlerJcSource()
         {
             using (var db = new XKWEntities2())
             {
-                return db.V_QuestionJiaoCaiSource.Any(t => t.Status == false && t.Total > 0 && t.Total <= 12000);
+                return db.V_QuestionJiaoCaiDetailSource.Any(t => t.Status == false && t.Total > 0);
             }
         }
-        public List<V_QuestionJiaoCaiSource> GetRandom10CrawlerJcSource()
+        public List<V_QuestionJiaoCaiDetailSource> GetRandom10CrawlerJcSource()
         {
             using (var db = new XKWEntities2())
             {
 
                 return
-                    db.Database.SqlQuery<V_QuestionJiaoCaiSource>(
+                    db.Database.SqlQuery<V_QuestionJiaoCaiDetailSource>(
                         @"
-select top 2 *, NewID() as random from [V_QuestionJiaoCaiSource] where status=0 and total>0 and total<=12000 order by random").ToList();
+select top 2 *, NewID() as random from [V_QuestionJiaoCaiDetailSource] where status=0 and total>0  order by random").ToList();
             }
         }
         public List<SubjectGrade> GetSubjectGrade()
@@ -218,38 +196,6 @@ select top 2 *, NewID() as random from [V_QuestionJiaoCaiSource] where status=0 
             using (var db = new XKWEntities2())
             {
                 return db.Area.ToList();
-            }
-        }
-        public void AddJiaocai(int categoryId, int jiaocaiId, string jiaocaiName, string jiaocaiUrl)
-        {
-            using (var db = new XKWEntities2())
-            {
-                if (db.JiaoCai.Any(t => t.JiaoCaiId == jiaocaiId))
-                    return;
-                var entity = new JiaoCai();
-                entity.CategoryId = categoryId;
-                entity.JiaoCaiId = jiaocaiId;
-                entity.JCName = jiaocaiName;
-                entity.JiaoCaiUrl = jiaocaiUrl;
-                db.JiaoCai.Add(entity);
-                db.SaveChanges();
-            }
-
-        }
-
-        public void AddArea(int areaId, string name, string shortName)
-        {
-            using (var db = new XKWEntities2())
-            {
-                if (!db.Area.Any(t => t.AreaId == areaId))
-                {
-                    var entity = new Area();
-                    entity.AreaId = areaId;
-                    entity.Name = name;
-                    entity.ShortName = shortName;
-                    db.Area.Add(entity);
-                    db.SaveChanges();
-                }
             }
         }
     }
