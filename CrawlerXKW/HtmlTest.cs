@@ -13,7 +13,6 @@ namespace CrawlerXKW
     {
         public void TestParseQuestion()
         {
-
             var html = File.ReadAllText(@"D:\html.txt");
             AddQuestion(html, 1, "", "", 0, 0, 0, 0);
         }
@@ -63,9 +62,9 @@ namespace CrawlerXKW
                         $"http://im.zujuan.xkw.com/Answer/{entity.QuestionId}/{bankId}/700/14/28/{entity.key}";
 
 
-                    var paths = new ParseQuestionXkw().SaveAnswerImage(entity.QuestionId.ToString(), entity.key, subjectId);
-                    entity.AnalysisImg = paths[0];
-                    entity.AnswerImg = paths[1];
+                    //var paths = new ParseQuestionXkw().SaveAnswerImage(entity.QuestionId.ToString(), entity.key, subjectId);
+                    //entity.AnalysisImg = paths[0];
+                    //entity.AnswerImg = paths[1];
                     entity.QuestionAnalysis = analysisUrl;
                     entity.QuestionAnswer = answerUrl;
                     entity.CreateTime = DateTime.Now;

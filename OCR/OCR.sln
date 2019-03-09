@@ -5,6 +5,8 @@ VisualStudioVersion = 15.0.28010.2036
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OCR", "OCR.csproj", "{8EB9EF17-A2B3-496B-A528-1254E62FE23E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WaterMark", "..\WaterMark\WaterMark.csproj", "{05FADB93-7C71-4617-9E48-BBBD5893857E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{8EB9EF17-A2B3-496B-A528-1254E62FE23E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8EB9EF17-A2B3-496B-A528-1254E62FE23E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8EB9EF17-A2B3-496B-A528-1254E62FE23E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{05FADB93-7C71-4617-9E48-BBBD5893857E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{05FADB93-7C71-4617-9E48-BBBD5893857E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{05FADB93-7C71-4617-9E48-BBBD5893857E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{05FADB93-7C71-4617-9E48-BBBD5893857E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
